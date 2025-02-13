@@ -10,25 +10,27 @@ if($role !== 1){
     exit;
 }
 
-$row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
-$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
-$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
-$order = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
+$row = isset($_POST['start']) ? intval($_POST['start']) : 0;
+$limit = isset($_POST['length']) ? intval($_POST['length']) : 20;
 
-$extra = "ORDER BY $order_by $order";
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'last_login';
+$order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
+
+// Ensure ordering is either ASC or DESC to prevent SQL injection
+$order_as = strtoupper($order_as) === 'DESC' ? 'DESC' : 'ASC';
 
 $filters = [];
 
 $s = trim($_POST['search']['value'] ?? '');
 if ($s !== '') {
     $searchTerm = mysqli_real_escape_string($conn, $s);
-    $filters[] = "(email LIKE '%$searchTerm%' OR user_id LIKE '%$searchTerm%')";
+    $filters[] = "(email LIKE '%$searchTerm%' OR fullName LIKE '%$searchTerm%' OR id LIKE '%$searchTerm%')";
 }
 
 $f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : '';
 
-$Query = "SELECT * FROM users LIMIT $row, $limit";
-
+// Apply search filter, order, and pagination
+$Query = "SELECT * FROM users $f ORDER BY $order_by $order_as LIMIT $row, $limit";
 $users = mysqli_query($conn, $Query);
 
 $userData = [];
@@ -71,7 +73,7 @@ foreach ($userData as $user) {
     $r = [
         'id' => $user['id'],
         'email' => $user['email'],
-        'full_name' => $user['fullName'],
+        'fullName' => $user['fullName'],
         'provider' => $user['provider'],
         'role' => $user['role'],
         'status' => $user['isActive'],
@@ -129,6 +131,8 @@ $response = [
     "data" => $rx,
     //"debug" => $Query
 ];
+
+error_log($Query);
 
 if (empty($rx)) {
     $response['data'] = [];

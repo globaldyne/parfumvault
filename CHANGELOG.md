@@ -20,6 +20,8 @@
 - Audit added - manual configuration is required
 - Filter full name for illegal chars
 - Security updates
+- Fix users not properly loading all antries
+- Fix missing userid when logging from session monitor agent
 
 ### Version 12.5
 - Code clean-up

@@ -119,6 +119,7 @@ $(document).ready(function() {
 		],
 		dom: 'lfrtip',
 		processing: true,
+        serverSide: true,
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -127,12 +128,16 @@ $(document).ready(function() {
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
-		ajax: {	url: '/core/users_data.php' },
+		ajax: {	
+            url: '/core/users_data.php',
+            type: 'POST',
+			dataType: 'json',
+        },
 		columns: [
-            { data : 'is_logged_in', title: 'Online', render: is_logged_in },
+            { data : 'is_logged_in', title: 'Online', render: is_logged_in, orderable: false},
             { data : 'id', title: 'UUID', render: UUID, orderable: false},
-		    { data : 'full_name', title: 'Full name', render: name},
-		    { data : 'email', title: 'Username',},
+		    { data : 'fullName', title: 'Full name', render: name},
+		    { data : 'email', title: 'Username'},
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
             { data : 'isVerified', title: 'Verified', render: isVerified},
@@ -141,8 +146,8 @@ $(document).ready(function() {
 			{ data : 'last_login', title: 'Last login', render: last_login},
 			{ data : null, title: '', render: actions, orderable: false},		   
 		],
-		order: [[ 1, 'asc' ]],
-		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		order: [[ 2, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
 		pageLength: 20,
 		displayLength: 20,
 		drawCallback: function( settings ) {
@@ -190,7 +195,7 @@ $(document).ready(function() {
     };
 
     function name(data, type, row) {
-        var name = row.full_name;
+        var name = row.fullName;
         return name;
     };
 
@@ -470,7 +475,7 @@ $(document).ready(function() {
         var table = $('#tdUsers').DataTable();
         $.ajax({
             url: '/core/users_data.php',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function(data) {
                 var localData = table.ajax.json().data;

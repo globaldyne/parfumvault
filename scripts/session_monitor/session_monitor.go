@@ -114,7 +114,7 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 			}
 		} else {
 			log.Printf("Deleted unverified user: %s", userID)
-			_, auditErr := db.Exec(auditQuery, "", "", "", time.Now(), "delete_unverified_user", "success")
+			_, auditErr := db.Exec(auditQuery, userID, "", "", time.Now(), "delete_unverified_user", "success")
 			if auditErr != nil {
 				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
 			}
