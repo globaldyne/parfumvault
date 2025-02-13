@@ -22,6 +22,7 @@
 - Security updates
 - Fix users not properly loading all antries
 - Fix missing userid when logging from session monitor agent
+- Added an option to by pass strict ingredient check
 
 ### Version 12.5
 - Code clean-up

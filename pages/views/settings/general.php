@@ -164,6 +164,13 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
+
+        <div class="form-check mb-3">
+            <input name="allow_incomplete_ingredients" type="checkbox" class="form-check-input" id="allow_incomplete_ingredients" value="1" <?= $user_settings ['allow_incomplete_ingredients'] == '1' ? 'checked' : '' ?>/>
+            <label class="form-check-label" for="allow_incomplete_ingredients">Allow incomplete ingredients</label>
+            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="If enabled, the ingredient supplier filter will be disabled, allowing the use of the ingredient regardless. Note that using an incomplete ingredient in a formula may result in incorrect data generation, IFRA limits, usage, costs, etc."></a>
+        </div>
+
        <hr />
        <div class="col-sm-auto">
             <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Clear search preferences</a></a>
@@ -250,6 +257,7 @@ $(document).ready(function() {
 				grp_formula: $("#grp_formula").val(),
                 chem_vs_brand: $("#chem_vs_brand").is(':checked') ? 1 : 0,
                 multi_dim_perc: $("#multi_dim_perc").is(':checked') ? 1 : 0,
+                allow_incomplete_ingredients: $("#allow_incomplete_ingredients").is(':checked') ? 1 : 0,
 				mUnit: $("#mUnit").val(),
 				editor: $("#editor").val(),
 				user_pref_eng: $("#user_pref_eng").val(),
