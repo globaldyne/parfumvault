@@ -282,11 +282,11 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>' +
 			'<ul class="dropdown-menu">';	
-        data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
+        data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
         if (row.id !== "<?php echo $userID; ?>") {
-            data += '<li><a class="dropdown-item" href="#" id="impersonateUser" rel="tip" title="Impersonate ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-person-bounding-box mx-2"></i>Impersonate</a></li>';
+            data += '<li><a class="dropdown-item" href="#" id="impersonateUser" rel="tip" title="Impersonate ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName + '"><i class="bi bi-person-bounding-box mx-2"></i>Impersonate</a></li>';
         }
-		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};

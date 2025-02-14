@@ -16,7 +16,7 @@
 - Separated column added to users to indicate if online or not
 - Fix PV Library ingredient import failing for some users
 - Session monitor disabled by default
-- Inactive users will be removed after 30 days of inactivity
+- Inactive users will be removed after 30 days of inactivity (non admins only)
 - Audit added - manual configuration is required
 - Filter full name for illegal chars
 - Security updates
@@ -28,6 +28,7 @@
 - Improve logo handling for documents
 - Fixed columns alignment for finished product PDF export
 - Update PHP to 8.3
+- Added user option to exclude from emails
 
 ### Version 12.5
 - Code clean-up

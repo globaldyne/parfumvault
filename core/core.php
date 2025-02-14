@@ -101,6 +101,7 @@ if($role === 1) {
         $role = (int)$_POST['role'];
         $isActive = (int)$_POST['isActive'];
         $isVerified = (int)$_POST['isVerified'];
+        $receiveEmails = (int)$_POST['receiveEmails'];
 
         // Validate password if provided
         if (!empty($password) && !isPasswordComplex($password)) {
@@ -141,7 +142,7 @@ if($role === 1) {
         }
 
         // Prepare queries
-        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?, isVerified = ?";
+        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?, isVerified = ?, receiveEmails = ?";
         if (!empty($password)) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $updateQuery .= ", password = ?";
@@ -154,25 +155,27 @@ if($role === 1) {
         $stmt = $conn->prepare($updateQuery);
         if (!empty($password)) {
             $stmt->bind_param(
-                "sssiiiss",
+                "sssiiiiss",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
                 $isVerified,
+                $receiveEmails,
                 $hashedPassword,
                 $user_id
             );
         } else {
             $stmt->bind_param(
-                "sssiiis",
+                "sssiiiis",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
                 $isVerified,
+                $receiveEmails,
                 $user_id
             );
         }

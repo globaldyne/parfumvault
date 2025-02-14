@@ -31,7 +31,8 @@ check_column_exists() {
 # Function to add the required columns if they do not exist
 add_columns() {
     ALTER_QUERY="ALTER TABLE \`users\` 
-                ADD \`last_login\` TIMESTAMP NULL DEFAULT NULL AFTER \`created_at\`;"
+                ADD \`last_login\` TIMESTAMP NULL DEFAULT NULL AFTER \`created_at\`,
+                ADD \`receiveEmails\` INT DEFAULT 1 AFTER \`last_login\`;"
 
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -D "$DB_NAME" -e "$ALTER_QUERY" 2>/dev/null
     if [ $? -eq 0 ]; then
