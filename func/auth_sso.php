@@ -103,7 +103,7 @@ function auth_sso() {
 
         if ($isActive == 0) {
             $response = [];
-            $response['error'] = 'User account is inactive';
+            $response['error'] = 'User account is inactive '.$email;
             $_SESSION['temp_response'] = $response;
             header('Location: /index.php');
             return;
