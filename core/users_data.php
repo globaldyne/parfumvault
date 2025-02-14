@@ -133,8 +133,6 @@ $response = [
     //"debug" => $Query
 ];
 
-error_log($Query);
-
 if (empty($rx)) {
     $response['data'] = [];
 }
