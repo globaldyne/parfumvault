@@ -119,7 +119,7 @@ $(document).ready(function() {
 		],
 		dom: 'lfrtip',
 		processing: true,
-        serverSide: true,
+        //serverSide: true,
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -134,8 +134,8 @@ $(document).ready(function() {
 			dataType: 'json',
         },
 		columns: [
-            { data : 'is_logged_in', title: 'Online', render: is_logged_in, orderable: false},
-            { data : 'id', title: 'UUID', render: UUID, orderable: false},
+            { data : 'is_logged_in', title: 'Online', render: is_logged_in},
+            { data : 'id', title: 'UUID', render: UUID},
 		    { data : 'fullName', title: 'Full name', render: name},
 		    { data : 'email', title: 'Username'},
             { data : 'status', title: 'Status', render: status},
@@ -153,7 +153,7 @@ $(document).ready(function() {
 		drawCallback: function( settings ) {
 			extrasShow();
 		},
-		stateSave: true,
+		stateSave: false,
 		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
 			$.ajax( {
@@ -470,7 +470,7 @@ $(document).ready(function() {
             }
         });
     });
-
+/*
     function reload_data() {
         var table = $('#tdUsers').DataTable();
         $.ajax({
@@ -491,7 +491,7 @@ $(document).ready(function() {
     };
 
     setInterval(reload_data, 10000); // Check for updates every 10 seconds
-
+*/
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			 html: true,

@@ -10,14 +10,12 @@ if($role !== 1){
     exit;
 }
 
-$row = isset($_POST['start']) ? intval($_POST['start']) : 0;
-$limit = isset($_POST['length']) ? intval($_POST['length']) : 20;
+$row = isset($_POST['start']) && $_POST['start'] !== '' ? intval($_POST['start']) : null;
+$limit = isset($_POST['length']) && $_POST['length'] !== '' ? intval($_POST['length']) : null;
+
 
 $order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'last_login';
 $order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
-
-// Ensure ordering is either ASC or DESC to prevent SQL injection
-$order_as = strtoupper($order_as) === 'DESC' ? 'DESC' : 'ASC';
 
 $filters = [];
 
@@ -30,7 +28,10 @@ if ($s !== '') {
 $f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : '';
 
 // Apply search filter, order, and pagination
-$Query = "SELECT * FROM users $f ORDER BY $order_by $order_as LIMIT $row, $limit";
+$Query = "SELECT * FROM users $f ORDER BY $order_by $order_as";
+if ($row !== null && $limit !== null) {
+    $Query .= " LIMIT $row, $limit";
+}
 $users = mysqli_query($conn, $Query);
 
 $userData = [];
@@ -131,6 +132,8 @@ $response = [
     "data" => $rx,
     //"debug" => $Query
 ];
+
+error_log($Query);
 
 if (empty($rx)) {
     $response['data'] = [];

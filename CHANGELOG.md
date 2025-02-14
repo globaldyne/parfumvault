@@ -23,6 +23,11 @@
 - Fix users not properly loading all antries
 - Fix missing userid when logging from session monitor agent
 - Added an option to by pass strict ingredient check
+- Ignore non numeric values for sys_timeout
+- IFRA html template clean-up (new install only)
+- Improve logo handling for documents
+- Fixed columns alignment for finished product PDF export
+
 
 ### Version 12.5
 - Code clean-up

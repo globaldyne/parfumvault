@@ -19,6 +19,10 @@ if (getenv('PLATFORM') === "CLOUD") {
 
 $current_time = time();
 $session_start_time = $_SESSION['parfumvault_time'] ?? $current_time;
+if (!is_numeric($session_timeout)) {
+    error_log("Invalid session timeout value: $session_timeout. Using default value of 1800 seconds.");
+    $session_timeout = 1800;
+}
 $time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);

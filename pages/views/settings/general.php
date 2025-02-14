@@ -6,6 +6,12 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/convertTime.php');
 
+if (!is_numeric($session_timeout)) {
+    error_log("Invalid session timeout value: $session_timeout. Using default value of 1800 seconds.");
+    $session_timeout = 1800;
+}
+$time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
+
 $session_validity_calc = convertTime($session_timeout);
 
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC"); //PUBLIC

@@ -739,7 +739,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  <font face="Arial, sans-serif"><span >We certify that the above mixture is in compliance with the Standards of the INTERNATIONAL FRAGRANCE ASSOCIATION (IFRA), up to and including the <strong>%IFRA_AMENDMENT%</strong> Amendment to the IFRA Standards (published </span><b>%IFRA_AMENDMENT_DATE%</span></b>),
  provided it is used in the following</span></font> <font face="Arial, sans-serif"><span >category(ies)
  at a maximum concentration level of:</span></font></p>
- <p class="western" style="margin-right: -0.12in"> </p>
+ <p class="western" style="margin-right: -0.12in"></p>
  <table class="table table-stripped">
  <tr>
  <th bgcolor="#d9d9d9"><strong>IFRA Category</strong></th>
@@ -755,7 +755,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><b>%BRAND_NAME%</b></font><font face="Arial, sans-serif"><span >.
  </span></font></p>
  <p class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face="Arial, sans-serif"><B>%PRODUCT_NAME%</b></font><font face="Arial, sans-serif"><span> is as follows:</span></font></p>
- <p class="western" style="margin-right: -0.12in"> </p>
+ <p class="western" style="margin-right: -0.12in"></p>
  <table class="table table-stripped">
  <tr>
  <th width="22%" bgcolor="#d9d9d9"><strong>Material(s) under the scope of IFRA Standards:</strong></th>
@@ -766,7 +766,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  </tr>
  %IFRA_MATERIALS_LIST%
  </table>
- <p> </p>
+ <p></p>
  <p><font face="Arial, sans-serif"><span >Signature </span></font><font face="Arial, sans-serif"><span><i>(If generated electronically, no signature)</i></span></font></p>
  <p><font face="Arial, sans-serif"><span >Date: </span></font><strong>%CURRENT_DATE%</strong></p>
  </p>
