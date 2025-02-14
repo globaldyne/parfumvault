@@ -470,7 +470,7 @@ $(document).ready(function() {
             }
         });
     });
-/*
+
     function reload_data() {
         var table = $('#tdUsers').DataTable();
         $.ajax({
@@ -491,7 +491,7 @@ $(document).ready(function() {
     };
 
     setInterval(reload_data, 10000); // Check for updates every 10 seconds
-*/
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			 html: true,
