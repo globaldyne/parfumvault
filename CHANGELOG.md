@@ -28,6 +28,7 @@
 - Improve logo handling for documents
 - Fixed columns alignment for finished product PDF export
 - Update PHP to 8.3
+- Update nginx to 1.26
 - Added user option to exclude from emails
 
 ### Version 12.5
