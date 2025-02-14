@@ -27,7 +27,7 @@
 - IFRA html template clean-up (new install only)
 - Improve logo handling for documents
 - Fixed columns alignment for finished product PDF export
-
+- Update PHP to 8.3
 
 ### Version 12.5
 - Code clean-up
