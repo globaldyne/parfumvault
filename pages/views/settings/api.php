@@ -31,6 +31,7 @@ require_once(__ROOT__.'/inc/settings.php');
 		<div class="col-md-8 password-input-container">
 			<input name="pv_api_key" type="password" class="form-control password-input bg-secondary" id="pv_api_key" value="<?=$user['API_key']?>" readonly />
 			<i class="toggle-password fa fa-eye"></i>
+			<i class="copy-api-key fa fa-copy mx-2" style="cursor: pointer;"></i>
 		</div>
 		<div class="col-md-4">
 			<button type="button" id="regenerate-api-key" class="btn btn-warning border border-secondary mt-2">Regenerate</button>
@@ -77,6 +78,16 @@ $(document).ready(function() {
 			api_key = '******';
         }
     });
+
+	$(".copy-api-key").click(function () {
+		var copyText = document.getElementById("pv_api_key");
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		document.execCommand("copy");
+		$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>API Key copied to clipboard');
+		$('.toast-header').removeClass().addClass('toast-header alert-success');
+		$('.toast').toast('show');
+	});
 	
    $('#endpointsTable').DataTable({
 	   	dom: '',

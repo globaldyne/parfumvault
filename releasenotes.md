@@ -13,4 +13,5 @@ Whats New in v12.6
 - Added meta data (formulas, ingredients,...) count for users in the admin dashboard
 - Validate size upload limit function improvements
 - Make API test url non link when the API Key is not visible
+- Added API key copy button
 - This release may include more changes, for full details please refer to the CHANGELOG

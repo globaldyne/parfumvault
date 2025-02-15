@@ -31,6 +31,7 @@
 - Update nginx to 1.26
 - Added user option to exclude from emails
 - Make API test url non link when the API Key is not visible
+- Added API key copy button
 
 ### Version 12.5
 - Code clean-up
