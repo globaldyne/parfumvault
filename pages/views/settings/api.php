@@ -60,7 +60,7 @@ require_once(__ROOT__.'/inc/settings.php');
 <script>
 $(document).ready(function() {
 	$.fn.dataTable.ext.errMode = 'none';
-	var	api_key = 'xxxxxx';
+	var	api_key = '******';
 
 	$(".toggle-password").click(function () {
         var passwordInput = $($(this).siblings(".password-input"));
@@ -74,7 +74,7 @@ $(document).ready(function() {
         } else {
             passwordInput.attr("type", "password");
             icon.removeClass("fa-eye-slash").addClass("fa-eye");
-			api_key = 'xxxxxx';
+			api_key = '******';
         }
     });
 	
@@ -106,7 +106,11 @@ $(document).ready(function() {
 	
 	function syntax(data, type, row){
 		var furl = '/api.php?key=' + api_key + '&do=' + row.do + '&type=' + row.type;
-		data = '<a href="' + furl + '" target="_blank" class="text-info-emphasis">' + furl + '<i class="fa-solid fa-arrow-up-right-from-square mx-2"></i></a>';
+		if (api_key === '******') {
+			data = '<span class="text-info-emphasis">' + furl + '</span>';
+		} else {
+			data = '<a href="' + furl + '" id="apitest" target="_blank" class="text-info-emphasis">' + furl + '<i class="fa-solid fa-arrow-up-right-from-square mx-2"></i></a>';
+		}
 		return data;
 	}
 	
