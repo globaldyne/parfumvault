@@ -12,7 +12,9 @@ if (!is_writable($tmp_path)) {
     respondWithError("Upload directory not writable. Make sure you have write permissions.");
 }
 
-$target_path = $tmp_path . basename($_FILES['backupFile']['name']);
+$random_string = bin2hex(random_bytes(8));
+$target_path = $tmp_path.'/'.$random_string.'_'. basename($_FILES['backupFile']['name']);
+error_log("PV: Target path: $target_path");
 
 // Validate JSON decoding
 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -220,20 +222,28 @@ function processIngredientDocuments($documents) {
     global $conn, $userID;
 
     foreach ($documents as $docs) {
-        $docs = array_map(function($value) use ($conn) {
-            return mysqli_real_escape_string($conn, $value);
-        }, $docs);
+        try {
+            $docs = array_map(function($value) use ($conn) {
+                return mysqli_real_escape_string($conn, $value);
+            }, $docs);
 
-        $query_check = "SELECT COUNT(*) FROM `documents` WHERE `name` = '{$docs['name']}' AND `owner_id` = '$userID' AND `type` = '{$docs['type']}'";
-        $exists = mysqli_fetch_row(mysqli_query($conn, $query_check))[0];
+            $query_check = "SELECT COUNT(*) FROM `documents` WHERE `name` = '{$docs['name']}' AND `owner_id` = '$userID' AND `type` = '{$docs['type']}'";
+            $exists = mysqli_fetch_row(mysqli_query($conn, $query_check))[0];
 
-        if ($exists == 0) {
-            $query = "INSERT INTO `documents` (ownerID, type, name, notes, docData, isBatch, isSDS, created_at, updated_at, owner_id) 
-                      VALUES ('{$docs['ownerID']}', '{$docs['type']}', '{$docs['name']}', '{$docs['notes']}', '{$docs['docData']}', '{$docs['isBatch']}', '{$docs['isSDS']}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), '$userID')";
-            
-            if (!mysqli_query($conn, $query)) {
-                respondWithError('Error executing query: ' . mysqli_error($conn));
+            if ($exists == 0) {
+                $query = "INSERT INTO `documents` (ownerID, type, name, notes, docData, isBatch, isSDS, created_at, updated_at, owner_id) 
+                          VALUES ('{$docs['ownerID']}', '{$docs['type']}', '{$docs['name']}', '{$docs['notes']}', '{$docs['docData']}', '{$docs['isBatch']}', '{$docs['isSDS']}', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), '$userID')";
+                
+                if (!mysqli_query($conn, $query)) {
+                    throw new Exception('Error executing query: ' . mysqli_error($conn));
+                }
+                error_log("Document '{$docs['name']}' inserted successfully.");
+            } else {
+                error_log("Document '{$docs['name']}' already exists.");
             }
+        } catch (Exception $e) {
+            error_log("Exception caught while processing documents: " . $e->getMessage());
+            respondWithError($e->getMessage());
         }
     }
 }
