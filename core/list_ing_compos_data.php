@@ -10,14 +10,21 @@ $defPercentage = $settings['defPercentage'];
 
 $ingID = base64_decode($_GET["id"]);
 
-$q = mysqli_query($conn, "SELECT id,ing,name,cas,ec,min_percentage,max_percentage,GHS,toDeclare FROM ingredient_compounds WHERE ing = '$ingID' AND owner_id = '$userID'");
-while($res = mysqli_fetch_array($q)){
+$stmt = $conn->prepare("SELECT id,ing,name,cas,ec,min_percentage,max_percentage,GHS,toDeclare FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+$stmt->bind_param("ss", $ingID, $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+while($res = $result->fetch_array(MYSQLI_ASSOC)){
     $compos[] = $res;
 }
+$stmt->close();
 
 foreach ($compos as $compo) {
-	 
-	$chkIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT ifra_key, $defCatClass, risk FROM IFRALibrary WHERE cas = '".$compo['cas']."' AND owner_id = '$userID'"));
+    $stmt = $conn->prepare("SELECT ifra_key, $defCatClass, risk FROM IFRALibrary WHERE cas = ? AND owner_id = ?");
+    $stmt->bind_param("ss", $compo['cas'], $userID);
+    $stmt->execute();
+    $chkIFRA = $stmt->get_result()->fetch_array(MYSQLI_ASSOC);
+    $stmt->close();
 	
     $r = [
         'id' => (int)$compo['id'],

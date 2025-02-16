@@ -2802,77 +2802,94 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 
 //ADD composition
 if($_POST['composition'] == 'add'){
-	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
-	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
-	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
-	$minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']),'%');
-	$maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']),'%');
-	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
+    $allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
+    $allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
+    $allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);
+    $minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']), '%');
+    $maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']), '%');
+    $GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
 
-	$ing = base64_decode($_POST['ing']);
-	
-	if($_POST['addToDeclare'] == 'true'){
-		$declare = '1';
-	}else{
-		$declare = '0';
-	}
-	
-	if(empty($allgName)){
-		$response["error"] = 'Name is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($allgCAS)){
-		$response["error"] = 'CAS number is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($minPerc)){
-		$response["error"] = 'Minimum percentage is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($maxPerc)){
-		$response["error"] = 'Max percentage is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(!is_numeric($minPerc)){
-		$response["error"] = 'Minimum percentage value needs to be numeric';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(!is_numeric($maxPerc)){
-		$response["error"] = 'Maximum percentage value needs to be numeric';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'  AND owner_id = '$userID'"))){
-		$response["error"] = $allgName.' already exists';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing, owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing','$userID')")){
-		$response["success"] = $allgName.' added to the composition';
-	}else{
-		$response["error"] = mysqli_error($conn);
-	}
-	
-	if($_POST['addToIng'] == 'true'){
-		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName' AND owner_id = '$userID'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs,owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$userID')");		
-		}
-	}
-	
-	echo json_encode($response);
-	return;
+    $ing = base64_decode($_POST['ing']);
+
+    $declare = ($_POST['addToDeclare'] == 'true') ? '1' : '0';
+
+    if(empty($allgName)){
+        $response["error"] = 'Name is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($allgCAS)){
+        $response["error"] = 'CAS number is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($minPerc)){
+        $response["error"] = 'Minimum percentage is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($maxPerc)){
+        $response["error"] = 'Max percentage is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(!is_numeric($minPerc)){
+        $response["error"] = 'Minimum percentage value needs to be numeric';
+        echo json_encode($response);
+        return;
+    }
+
+    if(!is_numeric($maxPerc)){
+        $response["error"] = 'Maximum percentage value needs to be numeric';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("SELECT name FROM ingredient_compounds WHERE name = ? AND ing = ? AND owner_id = ?");
+    $stmt->bind_param('sss', $allgName, $ing, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if($stmt->num_rows > 0){
+        $response["error"] = $allgName.' already exists';
+        echo json_encode($response);
+        return;
+    }
+    $stmt->close();
+
+    $stmt = $conn->prepare("INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('sssssssss', $allgName, $allgCAS, $allgEC, $minPerc, $maxPerc, $GHS, $declare, $ing, $userID);
+
+    if($stmt->execute()){
+        $response["success"] = $allgName.' added to the composition';
+    } else {
+        $response["error"] = $stmt->error;
+    }
+    $stmt->close();
+
+    if($_POST['addToIng'] == 'true'){
+        $stmt = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
+        $stmt->bind_param('ss', $allgName, $userID);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if($stmt->num_rows == 0){
+            $stmt->close();
+            $stmt = $conn->prepare("INSERT INTO ingredients (name, cas, einecs, owner_id) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param('ssss', $allgName, $allgCAS, $allgEC, $userID);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $stmt->close();
+        }
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //UPDATE composition
