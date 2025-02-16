@@ -1445,6 +1445,12 @@ hr.hr-text::before {
   background-color: #1d2124;
 }
 
+.badge-shared {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #9f0292;
+}
+
 .form-check-input {
   position: inherit !important;
 }
