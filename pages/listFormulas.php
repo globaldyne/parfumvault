@@ -269,19 +269,26 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function fName(data, type, row, meta){
-		if(type === 'display'){
-			if(row.isProtected == 1){
-				var pad = 'class="fas fa-lock" rel="tip" title="Formula is protected"';
-			}else{
-				var pad = 'class="fas fa-unlock"  rel="tip" title="Formula is not protected"';
+	function fName(data, type, row, meta) {
+		if (type === 'display') {
+			var pad = row.isProtected == 1 
+				? '<i class="fas fa-lock me-1" rel="tip" title="Formula is protected"></i>'
+				: '<i class="fas fa-unlock me-1" rel="tip" title="Formula is not protected"></i>';
+			
+			var content = '<div>' + 
+							pad + 
+							'<a href="/?do=Formula&id=' + row.id + '" target="_blank">' + data + '</a>' + 
+						'</div>';
+			
+			if (row.gid) {
+				content += '<div class="badge rounded-pill badge-shared mt-1">Shared</div>';
 			}
-			data = '<div '+ pad +'></div><a href="/?do=Formula&id=' + row.id + '" target="_blank"> ' + data + '</a>';
+
+			return content;
 		}
-	  return data;
-	};
-	
-	
+		return data;
+	}
+
 	function pName(data, type, row, meta){
 		data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
 		
@@ -360,7 +367,11 @@ $(document).ready(function() {
 	
 	
 			data += '<div class="dropdown-divider"></div>';
-			data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+			if (row.gid) {
+				data += '<li><a class="dropdown-item" href="/?do=Formula&id='+ row.id +'&gid='+ row.gid +'"><i class="fas fa-share-alt mx-2"></i>View shared formula</a></li>';
+			} else {
+				data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+			}
 			data += '</ul></div>';
 		
 		return data;

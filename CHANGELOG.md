@@ -32,6 +32,8 @@
 - Added user option to exclude from emails
 - Make API test url non link when the API Key is not visible
 - Added API key copy button
+- Fix IFRA cat description in formulas not showing properly
+- Update select2 library to 4.1.0-rc.0
 
 ### Version 12.5
 - Code clean-up

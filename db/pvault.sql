@@ -1027,3 +1027,12 @@ ALTER TABLE `formulas` ADD INDEX(`fid`);
 ALTER TABLE `formulas` ADD INDEX(`ingredient`);
 ALTER TABLE `ingredients` ADD INDEX(`owner_id`);
 ALTER TABLE `ingredients` ADD INDEX(`name`);
+
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `fid` varchar(255) NOT NULL,
+  `owner_id` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

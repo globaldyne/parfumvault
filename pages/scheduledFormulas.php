@@ -58,7 +58,7 @@ $(document).ready(function() {
 	var tdDataScheduled = $('#tdDataScheduled').DataTable({
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
-			{ orderable: false, targets: [1, 4] },
+			{ orderable: false, targets: [1, 2, 4] },
 		],
 		dom: 'lrftip',
 		processing: true,

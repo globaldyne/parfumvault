@@ -26,9 +26,32 @@ if(!$_REQUEST['id']){
 }
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
-$query = "SELECT name,fid,catClass,finalType,defView,isProtected,notes,product_name,owner_id FROM formulasMetaData WHERE owner_id = '$userID' AND id = '$id'";
+/*
+//PLACE HOLDER FOR GROUPS IMPLEMENTATION
+$query = "
+	SELECT 
+		fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
+		fm.finalType, fm.defView, fm.notes, fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
+		(SELECT updated_at 
+		 FROM formulas 
+		 WHERE fid = fm.fid AND owner_id = ? 
+		 ORDER BY updated_at DESC 
+		 LIMIT 1) AS updated_at, 
+		(SELECT COUNT(id) 
+		 FROM formulas 
+		 WHERE fid = fm.fid AND owner_id = ?) AS ingredients,
+		(SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = ? LIMIT 1) AS gid 
+	FROM formulasMetaData fm
+	WHERE fm.owner_id = ? AND fm.id = ?;
+";
+*/
+$query = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name, owner_id FROM formulasMetaData WHERE owner_id = ? AND id = ?";
 
-$meta = mysqli_fetch_array(mysqli_query($conn, $query));
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ss", $userID, $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$meta = $result->fetch_array(MYSQLI_ASSOC);
 
 if (!$meta || !$meta['fid']) {
 	$response['error'] = "Requested ID is not valid or you do not have access.";
@@ -52,8 +75,14 @@ if(!$meta['fid']){
 }
 
 if($_POST['solvents_only'] === 'true'){
-	
-	$q = mysqli_query($conn,"SELECT formulas.ingredient,formulas.ingredient_id,formulas.quantity,ingredients.profile FROM formulas,ingredients WHERE fid = '".$meta['fid']."' AND ingredients.id = formulas.ingredient_id AND ingredients.profile='solvent' AND ingredients.owner_id = '$userID'");
+	$sQuery = "SELECT formulas.ingredient, formulas.ingredient_id, formulas.quantity, ingredients.profile 
+			   FROM formulas, ingredients 
+			   WHERE fid = ? AND ingredients.id = formulas.ingredient_id 
+			   AND ingredients.profile = 'solvent' AND ingredients.owner_id = ?";
+	$stmt = $conn->prepare($sQuery);
+	$stmt->bind_param("ss", $meta['fid'], $userID);
+	$stmt->execute();
+	$q = $stmt->get_result();
 	while($res = mysqli_fetch_array($q)){
     	$solvents[] = $res;
 	}

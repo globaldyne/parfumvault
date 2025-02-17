@@ -14,4 +14,5 @@ Whats New in v12.6
 - Validate size upload limit function improvements
 - Make API test url non link when the API Key is not visible
 - Added API key copy button
+- Fix IFRA cat description in formulas not showing properly
 - This release may include more changes, for full details please refer to the CHANGELOG
