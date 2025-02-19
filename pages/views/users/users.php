@@ -180,7 +180,7 @@ $(document).ready(function() {
 
     function is_logged_in (data, type, row) {
         if (row.is_logged_in == 1) {
-            data = '<span class="text-success" rel="tip" title="Session validity ' + row.session_valid_until + '"><i class="fa fa-circle mx-2"></i></span>';
+            data = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>';
             if (row.id !== "<?php echo $userID; ?>") {
                 data += '<br><a href="#" rel="tip" title="Session validity">' + row.session_valid_until + '</a>';
             }

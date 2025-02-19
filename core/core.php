@@ -290,7 +290,7 @@ if($role === 1) {
                 "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
                 "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
                 "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-                "templates", "user_prefs", "user_settings"
+                "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
             ];
 
             foreach ($tables as $table) {
@@ -314,6 +314,158 @@ if($role === 1) {
         return;
     }
 } // End of admin-only actions
+
+//HANDLE ORDERS
+if (isset($_POST['action']) && $_POST['action'] === 'addorder') {
+    $randomString = bin2hex(random_bytes(8)); // Generates a 16-character random string
+    $uploadDir = $tmp_path . "/uploads/" . $randomString . "/";
+
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0740, true);
+    }
+    // Validate received data
+    $supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
+
+    $supplierQuery = $conn->prepare("SELECT name FROM ingSuppliers WHERE id = ? AND owner_id = ?");
+    $supplierQuery->bind_param("is", $supplier_id, $userID);
+    $supplierQuery->execute();
+    $supplierResult = $supplierQuery->get_result();
+    $supplierData = $supplierResult->fetch_assoc();
+    $supplier_name = $supplierData['name'];
+    $supplierQuery->close();
+
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $order_items = $_POST['order_items']; // Assuming order_items is an array
+    $tax = (float)$_POST['tax'] ?: 0;
+    $shipping = (float)$_POST['shipping'] ?: 0;
+    $discount = (float)$_POST['discount'] ?: 0;
+    $notes = mysqli_real_escape_string($conn, $_POST['notes']);
+    $reference_number = mysqli_real_escape_string($conn, $_POST['reference_number']);
+    $order_number = mysqli_real_escape_string($conn, $_POST['order_number']);
+
+    $missingFields = [];
+    if (empty($supplier_name)) $missingFields[] = 'Supplier';
+    if (empty($currency)) $missingFields[] = 'Currency';
+    if (empty($order_number)) $missingFields[] = 'Order number';
+    if (empty($order_items)) $missingFields[] = 'Order items';
+
+    if (!empty($missingFields)) {
+        echo json_encode(['error' => 'The following fields are required: ' . implode(', ', $missingFields)]);
+        return;
+    }
+
+    // Handle file upload if provided
+    $attachments = null;
+    if (isset($_FILES['orderFile']) && $_FILES['orderFile']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['orderFile']['tmp_name'];
+        $file_name = $_FILES['orderFile']['name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_ext = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv'];
+
+        if (in_array($file_ext, $allowed_ext)) {
+            $file_path = $uploadDir . $file_name;
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $attachments = file_get_contents($file_path); // Read file contents
+            } else {
+                echo json_encode(['error' => 'Failed to upload file.']);
+                return;
+            }
+        } else {
+            echo json_encode(['error' => 'Invalid file type. Allowed types: ' . implode(', ', $allowed_ext)]);
+            return;
+        }
+    }
+
+    // Insert order into the database
+    $status = 'pending';
+    $orderQuery = "INSERT INTO orders (order_id, reference_number, supplier, currency, status, tax, shipping, discount, received, notes, attachments, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($orderQuery);
+    $stmt->bind_param('sssssdddssss', $order_number, $reference_number, $supplier_name, $currency, $status, $tax, $shipping, $discount, $received, $notes, $attachments, $userID);
+
+    if ($stmt->execute()) {
+        $order_id = $stmt->insert_id;
+
+        // Insert order items
+        $itemQuery = "INSERT INTO order_items (order_id, material, size, unit_price, quantity, lot, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $itemStmt = $conn->prepare($itemQuery);
+
+        foreach ($order_items as $item) {
+            $material = mysqli_real_escape_string($conn, $item['item']);
+            $size = mysqli_real_escape_string($conn, $item['size']);
+            $unit_price = mysqli_real_escape_string($conn, $item['unit_price']);
+            $quantity = mysqli_real_escape_string($conn, $item['quantity']);
+            $lot = mysqli_real_escape_string($conn, $item['lot_number']) ?: '-';
+
+            $itemStmt->bind_param('isdddss', $order_id, $material, $size, $unit_price, $quantity, $lot, $userID);
+            $itemStmt->execute();
+        }
+
+        $itemStmt->close();
+
+        // Remove the uploaded file after successful insertion
+        if ($attachments) {
+         //   unlink($attachments);
+            rmdir($uploadDir);
+        }
+
+        echo json_encode(['success' => 'Order added successfully']);
+    } else {
+        echo json_encode(['error' => 'Failed to add order: ' . $stmt->error]);
+        error_log("Error adding order: " . $stmt->error);
+    }
+
+    $stmt->close();
+
+    return;
+}
+
+//UPDATE ORDER
+if(isset($_POST['action']) && $_POST['action'] === 'updateorder') {
+    $order_id = mysqli_real_escape_string($conn, $_POST['order_id']);
+    $orderStatus = mysqli_real_escape_string($conn, $_POST['orderStatus']);
+    $orderDate = mysqli_real_escape_string($conn, $_POST['orderDate']);
+    $receivedDate = mysqli_real_escape_string($conn, $_POST['receivedDate']) ?: null;
+    $reference_number = mysqli_real_escape_string($conn, $_POST['reference_number']);
+
+    $updateQuery = $conn->prepare("UPDATE orders SET status = ?, placed = ?, received = ?, reference_number = ? WHERE id = ? AND owner_id = ?");
+    $updateQuery->bind_param("ssssis", $orderStatus, $orderDate, $receivedDate, $reference_number, $order_id, $userID);
+
+    if ($updateQuery->execute()) {
+        $response['success'] = 'Order updated successfully';
+    } else {
+        $response['error'] = 'Failed to update order: ' . $updateQuery->error;
+    }
+
+    echo json_encode($response);
+    return;
+}
+
+
+//DELETE ORDER
+if(isset($_GET['action']) && $_GET['action'] === 'deleteorder') {
+    $order_id = mysqli_real_escape_string($conn, $_GET['order_id']);
+
+    $deleteOrderQuery = $conn->prepare("DELETE FROM orders WHERE id = ? AND owner_id = ?");
+    $deleteOrderQuery->bind_param("is", $order_id, $userID);
+
+    $deleteOrderItemsQuery = $conn->prepare("DELETE FROM order_items WHERE order_id = ? AND owner_id = ?");
+    $deleteOrderItemsQuery->bind_param("is", $order_id, $userID);
+    
+    if ($deleteOrderItemsQuery->execute()) {
+        $response['success'] = 'Order items deleted successfully';
+    } else {
+        $response['error'] = 'Failed to delete order items: ' . $deleteOrderItemsQuery->error;
+    }
+
+    if ($deleteOrderQuery->execute()) {
+        $response['success'] = 'Order deleted successfully';
+    } else {
+        $response['error'] = 'Failed to delete order: ' . $deleteOrderQuery->error;
+    }
+
+    echo json_encode($response);
+    return;
+}
 
 //DELETE PROFILE
 if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
@@ -357,7 +509,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
             "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-            "templates", "user_prefs", "user_settings", "branding"
+            "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
         ];
 
         foreach ($tables as $table) {

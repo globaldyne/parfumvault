@@ -1,5 +1,6 @@
 Whats New in v12.6
 --------------------------
+- Added orders tracking under the inventory
 - Added an option to by pass strict ingredient check
 - Fix PV Library ingredient import failing for some users
 - Separated column added to users to indicate if online or not

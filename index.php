@@ -155,7 +155,7 @@ $(document).ready(function() {
 
     <li class="nav-item">
     <?php 
-      $inventoryPages = ['ingredients', 'bottles', 'accessories', 'suppliers', 'customers', 'compounds'];
+      $inventoryPages = ['ingredients', 'bottles', 'accessories', 'suppliers', 'orders', 'customers', 'compounds'];
       $isActiveInventory = in_array($_GET['do'], $inventoryPages);
       $expand = $isActiveInventory ? 'show' : ''; 
       $class = $isActiveInventory ? '' : 'collapsed'; 
@@ -169,6 +169,7 @@ $(document).ready(function() {
       <div class="bg-white py-2 collapse-inner rounded">
       <a class="collapse-item <?= $_GET['do'] === 'ingredients' ? 'active' : '' ?>" href="/?do=ingredients">Ingredients</a>
       <a class="collapse-item <?= $_GET['do'] === 'suppliers' ? 'active' : '' ?>" href="/?do=suppliers">Suppliers</a>
+      <a class="collapse-item <?= $_GET['do'] === 'orders' ? 'active' : '' ?>" href="/?do=orders">Supply orders</a>
       <a class="collapse-item <?= $_GET['do'] === 'customers' ? 'active' : '' ?>" href="/?do=customers">Customers</a>
       <a class="collapse-item <?= $_GET['do'] === 'compounds' ? 'active' : '' ?>" href="/?do=compounds">Compounds</a>
       <a class="collapse-item <?= $_GET['do'] === 'bottles' ? 'active' : '' ?>" href="/?do=bottles">Bottles</a>
@@ -255,6 +256,9 @@ $(document).ready(function() {
       break;
     case 'suppliers':
       require_once(__ROOT__.'/pages/views/inventory/suppliers.php');
+      break;
+    case 'orders':
+      require_once(__ROOT__.'/pages/views/inventory/orders.php');
       break;
     case 'sellFormula':
       require_once(__ROOT__.'/pages/sellFormula.php');

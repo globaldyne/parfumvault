@@ -9,7 +9,7 @@ $supplierID = (int)mysqli_real_escape_string($conn,$_GET['supplier_id']);
 $ingredient = 0;
 $rx = [];
 
-$stmt = $conn->prepare("SELECT ingID, supplierLink FROM suppliers WHERE ingSupplierID = ? AND owner_id = ?");
+$stmt = $conn->prepare("SELECT ingID, supplierLink, price, size, supplier_sku FROM suppliers WHERE ingSupplierID = ? AND owner_id = ?");
 $stmt->bind_param("is", $supplierID,$userID);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -27,6 +27,9 @@ while ($res = $result->fetch_assoc()) {
         $r['created'] = (string)($i['created_at'] ?? '-');
         $r['odor'] = (string)($i['odor'] ?? '-');
         $r['supplier_link'] = (string)$res['supplierLink'];
+        $r['price'] = (float)$res['price'];
+        $r['size'] = (float)$res['size'];
+        $r['supplier_sku'] = (string)$res['supplier_sku'];
 		
         $rx[] = $r;
         $ingredient++;

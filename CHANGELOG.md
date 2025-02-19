@@ -34,6 +34,8 @@
 - Added API key copy button
 - Fix IFRA cat description in formulas not showing properly
 - Update select2 library to 4.1.0-rc.0
+- Added orders tracking under the inventory
+
 
 ### Version 12.5
 - Code clean-up
