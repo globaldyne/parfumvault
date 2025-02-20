@@ -982,7 +982,7 @@ $(document).ready(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import formulas from a JSON file</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="JSRestMsg"></div>
@@ -998,13 +998,15 @@ $(document).ready(function() {
           </div>
           <div class="col-md-12 mt-3">
             <hr />
-            <p><strong>IMPORTANT</strong></p>
-            <ul>
-              <li>
-                <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
-              </li>
-              <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
-            </ul>
+			<div class="alert alert-info">
+			  <i class="fa-solid fa-circle-info mx-2"></i><strong>IMPORTANT</strong>
+              <ul>
+                <li>
+                  <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>
+                </li>
+                <li>Any formula with the same id will be replaced. Please make sure you have taken a backup before importing a JSON file.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -1046,7 +1048,5 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-
-
 
 <script src="/js/import.formulas.js"></script>

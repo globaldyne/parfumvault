@@ -5251,7 +5251,8 @@ if($_GET['restore'] == 'db_bk'){
 			mkdir($tmp_path, 0777, true);
 		}
 		
-		$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
+        $original_filename = basename($_FILES['backupFile']['name']);
+        $target_path = $tmp_path . $fid . '_' . $original_filename;
 
 		if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
 			$gz_tmp = basename($_FILES['backupFile']['name']);
@@ -5453,71 +5454,85 @@ if($_GET['action'] == 'exportFormulas'){
 
 //IMPORT FORMULAS
 if($_GET['action'] == 'restoreFormulas'){
+    require_once(__ROOT__.'/func/genFID.php');
+
+    $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
+
     $result = [];
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0777, true);
-	}
-	
-	if (!is_writable($tmp_path)) {
-		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
-		echo json_encode($result);
-		return;
-	}
-	
-	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
+    if (!file_exists($tmp_path)) {
+        mkdir($tmp_path, 0777, true);
+    }
+    
+    if (!is_writable($tmp_path)) {
+        $result['error'] = "Upload directory not writable. Make sure you have write permissions.";
+        echo json_encode($result);
+        return;
+    }
+    
+    $original_filename = basename($_FILES['backupFile']['name']);
+    $target_path = $tmp_path . $fid . '_' . $original_filename;
 
-	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
-    	$data = json_decode(file_get_contents($target_path), true);
-		
-		if(!$data['formulasMetaData']){
-			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
-			echo json_encode($result);
-			return;
-		}
-		
-		foreach ($data['formulasMetaData'] as $meta ){				
-			$name = mysqli_real_escape_string($conn, $meta['name']);
-			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
-			$notes = mysqli_real_escape_string($conn, $meta['notes']);
-			
-			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,gender,notes,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating,owner_id) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['gender']."','".$notes."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."','$userID')";
-			
-			if(mysqli_query($conn,$sql)){
-				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID'");
-			}else{
-				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
-				echo json_encode($result);
-				return;
-			}
-		}
-		
-		foreach ($data['formulas'] as $formula ){	
-	
-			$name = mysqli_real_escape_string($conn, $formula['name']);
-			$notes = mysqli_real_escape_string($conn, $formula['notes']);
-			$ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
-			$exclude_from_summary = $formula['exclude_from_summary'] ?: 0;
-			$exclude_from_calculation = $formula['exclude_from_calculation'] ?: 0;
+    if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
+        $data = json_decode(file_get_contents($target_path), true);
+        
+        if(!$data['formulasMetaData']){
+            $result['error'] = "JSON File seems invalid. Please make sure you are importing the right file";
+            echo json_encode($result);
+            return;
+        }
+        
+        foreach ($data['formulasMetaData'] as $meta ){                
+            $name = mysqli_real_escape_string($conn, $meta['name']);
+            $product_name = mysqli_real_escape_string($conn, $meta['product_name']);
+            $notes = mysqli_real_escape_string($conn, $meta['notes']);
+            $scheduledOn = !empty($meta['scheduledOn']) && strtotime($meta['scheduledOn']) ? $meta['scheduledOn'] : date('Y-m-d');
 
-			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,owner_id) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$exclude_from_summary."','".$exclude_from_calculation."','".$notes."','$userID')";
-			
-			if(mysqli_query($conn,$sql)){
-				$result['success'] = "Import complete";
-				unlink($target_path);
-			}else{
-				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
-				
-			}
-		}
-		
-	} else {
-		$result['error'] = "There was an error processing backup file $target_path, please try again!";
-		echo json_encode($result);
+            // Check if the name already exists
+            $original_name = $name;
+            $counter = 1;
+            while (mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$name' AND owner_id = '$userID'")) > 0) {
+                $name = $original_name . ' (' . $counter . ')';
+                $counter++;
+            }
 
-	}
-	echo json_encode($result);
-	return;
+            $stmt = $conn->prepare("INSERT INTO formulasMetaData(name,product_name,fid,profile,gender,notes,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating,owner_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt->bind_param("ssssssssssssssssssi", $name, $product_name, $fid, $meta['profile'], $meta['gender'], $notes, $meta['isProtected'], $meta['defView'], $meta['catClass'], $meta['revision'], $meta['finalType'], $meta['isMade'], $meta['madeOn'], $scheduledOn, $meta['customer_id'], $meta['status'], $meta['toDo'], $meta['rating'], $userID);
+            
+            if(!$stmt->execute()){
+                $result['error'] = "There was an error importing your JSON file ".$stmt->error;
+                echo json_encode($result);
+                return;
+            }
+            $stmt->close();
+        }
+        
+        foreach ($data['formulas'] as $formula ){    
+    
+            $name = mysqli_real_escape_string($conn, $formula['name']);
+            $notes = mysqli_real_escape_string($conn, $formula['notes']);
+            $ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
+            $exclude_from_summary = $formula['exclude_from_summary'] ?: 0;
+            $exclude_from_calculation = $formula['exclude_from_calculation'] ?: 0;
 
+            $stmt = $conn->prepare("INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,owner_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt->bind_param("sssiiddissi", $fid, $name, $ingredient, $formula['ingredient_id'], $formula['concentration'], $formula['dilutant'], $formula['quantity'], $exclude_from_summary, $exclude_from_calculation, $notes, $userID);
+            
+            if($stmt->execute()){
+                $result['success'] = "Import complete";
+                unlink($target_path);
+            }else{
+                $result['error'] = "There was an error importing your JSON file ".$stmt->error;
+            }
+            $stmt->close();
+        }
+        
+    } else {
+        $result['error'] = "There was an error processing backup file $target_path, please try again!";
+        echo json_encode($result);
+
+    }
+    echo json_encode($result);
+    return;
 }
 
 //IMPORT INGREDIENTS

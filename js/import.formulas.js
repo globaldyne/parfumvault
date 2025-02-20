@@ -74,14 +74,14 @@ $("#backupFile").change(function(){
 	$("#JSRestMsg").html('');
 	var fileSizePHP = $("#raw").data("size");
 	if(!allowedTypes.includes(fileType)){
-		$("#JSRestMsg").html('<div class="alert alert-info">Invalid file selected. Please select a JSON file exported from PV.</div>');
+		$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Invalid file selected. Please select a JSON file exported from Perfumers Vault</div>');
 		$("#backupFile").val('');
 		$("#btnRestoreFormulas").prop("disabled", true);
 		return false;
 	}
 	
 	if (fileSize > fileSizePHP){
-		$("#JSRestMsg").html('<div class="alert alert-info">File size <strong>('+formatBytes(fileSize)+')</strong> is exceeding your server file upload limit '+ formatBytes(fileSizePHP)+'</div>');
+		$("#JSRestMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>File size <strong>(' + formatBytes(fileSize) + ')</strong> is exceeding your server file upload limit ' + formatBytes(fileSizePHP) + '</div>');
 		$("#backupFile").val('');
 		$("#btnRestoreFormulas").prop("disabled", true);
 		return false;
@@ -130,6 +130,7 @@ $('#btnRestoreFormulas').click(function() {
 				var msg = '<div class="alert alert-success"><i class="fa-solid fa-circle-check mx-2"></i>'+data.success+'</div>';
 				$("#btnRestoreFormulas").hide();
 				$("#backupArea").css('display', 'none');
+				$('#all-table').DataTable().ajax.reload(null, true);
 
 			}else if(data.error){
 				var msg = '<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>'+data.error+'</div>';
