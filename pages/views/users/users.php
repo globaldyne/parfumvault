@@ -225,7 +225,7 @@ $(document).ready(function() {
             var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">Standard user</span>';
         }
         if(row.role == 1){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">System admin</span>';
+            var data = '<span class="badge rounded-pill d-block p-2 badge-shared">System admin</span>';
         }
         return data;
 	};

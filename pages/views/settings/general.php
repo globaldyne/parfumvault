@@ -36,14 +36,14 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     }
                     ?>
                 </select>
-                <label for="currency" class="form-label">Currency</label>
+                <label for="currency" class="form-label mx-2"><strong>Currency</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <select name="user_pref_eng" id="user_pref_eng" class="form-select">
                     <option value="1" <?= $user_settings ['user_pref_eng'] == "1" ? 'selected' : '' ?>>PHP SESSION</option>
                     <option value="2" <?= $user_settings ['user_pref_eng'] == "2" ? 'selected' : '' ?>>DB Backend</option>
                 </select>
-                <label for="user_pref_eng" class="form-label">User preferences engine</label>
+                <label for="user_pref_eng" class="form-label mx-2"><strong>User preferences engine</strong></label>
             </div>
         </div>
 
@@ -56,7 +56,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="3" <?= $user_settings ['grp_formula'] == "3" ? 'selected' : '' ?>>By physical state</option>
 
                 </select>
-                <label for="grp_formula" class="form-label">Group formula</label>
+                <label for="grp_formula" class="form-label mx-2"><strong>Group formula</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <?php if ($system_settings['SYSTEM_pubChem'] == '1') { ?>
@@ -69,7 +69,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="">Disabled by admin</option>
                 </select>
                 <?php } ?>
-                <label for="pubchem_view" class="form-label">PubChem view</label>
+                <label for="pubchem_view" class="form-label mx-2"><strong>PubChem view</strong></label>
             </div>
         </div>
 
@@ -81,7 +81,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="3" <?= $user_settings ['qStep'] == "3" ? 'selected' : '' ?>>0.000</option>
                     <option value="4" <?= $user_settings ['qStep'] == "4" ? 'selected' : '' ?>>0.0000</option>
                 </select>
-                <label for="qStep" class="form-label">Quantity Decimal</label>
+                <label for="qStep" class="form-label mx-2"><strong>Quantity Decimal</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -92,7 +92,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     </option>
                     <?php } ?>
                 </select>
-                <label for="defCatClass" class="form-label">Default Category</label>
+                <label for="defCatClass" class="form-label mx-2"><strong>Default Category</strong></label>
             </div>
         </div>
 
@@ -104,14 +104,14 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="L" <?= $user_settings ['mUnit'] == "L" ? 'selected' : '' ?>>Liter</option>
                     <option value="fl. oz." <?= $user_settings ['mUnit'] == "fl. oz." ? 'selected' : '' ?>>Fluid ounce (fl. oz.)</option>
                 </select>
-                <label for="mUnit" class="form-label">Measurement Unit</label>
+                <label for="mUnit" class="form-label mx-2"><strong>Measurement Unit</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <select name="editor" id="editor" class="form-select">
                     <option value="1" <?= $user_settings ['editor'] == "1" ? 'selected' : '' ?>>Standard</option>
                     <option value="2" <?= $user_settings ['editor'] == "2" ? 'selected' : '' ?>>Advanced</option>
                 </select>
-                <label for="editor" class="form-label">Formula editor</label>
+                <label for="editor" class="form-label mx-2"><strong>Formula editor</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -120,7 +120,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="max_percentage" <?= $user_settings ['defPercentage'] == "max_percentage" ? 'selected' : '' ?>>Maximum value</option>
                     <!-- <option value="avg_percentage" <?= $user_settings ['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option> -->
                 </select>
-                <label for="defPercentage" class="form-label">Calculate sub materials as</label>
+                <label for="defPercentage" class="form-label mx-2"><strong>Calculate sub materials as</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -128,7 +128,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="light" <?= $user_settings ['bs_theme'] == "light" ? 'selected' : '' ?>>Light</option>
                     <option value="dark" <?= $user_settings ['bs_theme'] == "dark" ? 'selected' : '' ?>>Dark</option>
                 </select>
-                <label for="bs_theme" class="form-label">Theme</label>
+                <label for="bs_theme" class="form-label mx-2"><strong>Theme</strong></label>
             </div>
             
             <div class="mb-3 col-md-6 form-floating">
@@ -137,7 +137,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                    <option value="°F" <?= $user_settings ['temp_sys'] == "°F" ? 'selected' : '' ?>>Fahrenheit (°F)</option>
                    <option value="K" <?= $user_settings ['temp_sys'] == "K" ? 'selected' : '' ?>>Kelvin (K)</option>
                </select>
-               <label for="temp_sys" class="form-label">Temperature unit</label>
+               <label for="temp_sys" class="form-label mx-2"><strong>Temperature unit</strong></label>
             </div>
             
         </div>
