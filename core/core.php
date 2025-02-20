@@ -450,14 +450,6 @@ if(isset($_POST['action']) && $_POST['action'] === 'reorder') {
     $currency = mysqli_real_escape_string($conn, $_POST['currency']);
     $response = [];
 
-    // Fetch order details
-    $orderQuery = $conn->prepare("SELECT * FROM orders WHERE id = ? AND owner_id = ?");
-    $orderQuery->bind_param("is", $order_id, $userID);
-    $orderQuery->execute();
-    $orderResult = $orderQuery->get_result();
-    $order = $orderResult->fetch_assoc();
-    $orderQuery->close();
-
     // Insert new order
     $status = 'pending';
     $tax = 0;
