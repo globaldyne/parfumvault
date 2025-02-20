@@ -441,6 +441,87 @@ if(isset($_POST['action']) && $_POST['action'] === 'updateorder') {
     return;
 }
 
+//RE-ORDER
+if(isset($_POST['action']) && $_POST['action'] === 'reorder') {
+    $supplierEmail = mysqli_real_escape_string($conn, $_POST['supplierEmail']);
+    $orderItems = $_POST['items'];
+    $supplier = mysqli_real_escape_string($conn, $_POST['supplier']);
+    $notes = mysqli_real_escape_string($conn, $_POST['notes']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $response = [];
+
+    // Fetch order details
+    $orderQuery = $conn->prepare("SELECT * FROM orders WHERE id = ? AND owner_id = ?");
+    $orderQuery->bind_param("is", $order_id, $userID);
+    $orderQuery->execute();
+    $orderResult = $orderQuery->get_result();
+    $order = $orderResult->fetch_assoc();
+    $orderQuery->close();
+
+    // Insert new order
+    $status = 'pending';
+    $tax = 0;
+    $shipping = 0;
+    $discount = 0;
+
+    $orderNumber = bin2hex(random_bytes(8)); // Generates a 16-character random string
+    $orderQuery = $conn->prepare("INSERT INTO orders (order_id, supplier, currency, status, tax, shipping, discount, notes, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $orderQuery->bind_param("ssssdddss", $orderNumber, $supplier, $currency, $status, $tax, $shipping, $discount, $notes, $userID);
+
+    if ($orderQuery->execute()) {
+        $newOrderID = $orderQuery->insert_id;
+
+        // Insert order items
+        $itemQuery = $conn->prepare("INSERT INTO order_items (order_id, material, size, unit_price, quantity, lot, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $itemQuery->bind_param("isdddss", $newOrderID, $material, $size, $unit_price, $quantity, $lot, $userID);
+
+        foreach ($orderItems as $item) {
+            $material = $item['item'];
+            $size = $item['size'];
+            $unit_price = $item['unit_price'];
+            $quantity = $item['quantity'];
+            $lot = $item['sku'] ?: '-';
+            $itemQuery->execute();
+        }
+
+        $itemQuery->close();
+
+        $templateContent = file_get_contents(__ROOT__.'/emailTemplates/reorderIngredientsTemplate.html');
+
+        // Replace placeholders in the template
+        $templateContent = str_replace('{{supplier}}', htmlspecialchars($supplier, ENT_QUOTES, 'UTF-8'), $templateContent);
+        $templateContent = str_replace('{{notes}}', nl2br(htmlspecialchars($notes, ENT_QUOTES, 'UTF-8')), $templateContent);
+
+        $itemsHtml = '';
+        foreach ($orderItems as $item) {
+            $itemsHtml .= '<tr>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['item'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['size'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['unit_price'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['quantity'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['sku'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '</tr>';
+        }
+        $templateContent = str_replace('{{orderItems}}', $itemsHtml, $templateContent);
+
+        // Send email
+        $subject = $orderNumber.' - New order Request';
+        $sendMail = sendMail($supplierEmail, $subject, $templateContent);
+
+        if ($sendMail) {
+            $response['success'] = 'Order successfully placed and email sent.';
+        } else {
+            $response['error'] = 'Order placed but failed to send email.';
+        }
+    } else {
+        $response['error'] = 'Failed to create new order: ' . $orderQuery->error;
+    }
+
+    $orderQuery->close();
+    echo json_encode($response);
+    return;
+}
+
 
 //DELETE ORDER
 if(isset($_GET['action']) && $_GET['action'] === 'deleteorder') {

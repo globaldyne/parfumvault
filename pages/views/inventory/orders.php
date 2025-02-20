@@ -40,7 +40,7 @@ require_once(__ROOT__.'/pages/top.php');
 
 <!-- add order modal -->
 <div class="modal fade" id="addOrderModal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-add-order">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addOrderModalLabel">Add new order</h5>
@@ -81,6 +81,22 @@ require_once(__ROOT__.'/pages/top.php');
             </div>
             <div id="viewOrderModalMsg" class="mx-2"></div>
             <div class="modal-body" id="viewOrderModalBody">
+                <!-- Content will be loaded here from the AJAX call -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- re-order modal -->
+<div class="modal fade" id="reOrderModal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="reOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reOrderModalLabel">Re-order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="reOrderModalMsg" class="mx-2"></div>
+            <div class="modal-body" id="reOrderModalBody">
                 <!-- Content will be loaded here from the AJAX call -->
             </div>
         </div>
@@ -233,6 +249,7 @@ $(document).ready(function() {
             '<ul class="dropdown-menu dropdown-menu-right">';
         data += '<li><a class="dropdown-item pv_point_gen" data-bs-toggle="modal" data-bs-target="#viewOrderModal" id="viewOrder" data-id="' + row.id + '"><i class="fas fa-eye mx-2"></i>View</a></li>';
         data += '<li><a class="dropdown-item pv_point_gen" data-bs-toggle="modal" data-bs-target="#updateOrderModal" id="updateOrder" data-id="' + row.id + '"><i class="fas fa-sync-alt mx-2"></i>Update</a></li>';
+        data += '<li><a class="dropdown-item pv_point_gen" data-bs-toggle="modal" data-bs-target="#reOrderModal" id="reOrder" data-id="' + row.id + '"><i class="fas fa-redo mx-2"></i>Re-order</a></li>';
         data += '<div class="dropdown-divider"></div>';
         data += '<li><a class="dropdown-item pv_point_gen text-danger" id="delete" data-order=' + row.order_id + ' data-id=' + row.id + '><i class="fas fa-trash mx-2"></i>Delete</a></li>';
         data += '</ul></div>';
@@ -358,6 +375,27 @@ $(document).ready(function() {
                 },
                 error: function(xhr, status, error) {
                     $('#viewOrderModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred while loading order data. ' + error + '</div>');
+                }
+            });
+        });
+
+        $('#tdOrdersData').on('click', '#reOrder', function() {
+            var order_id = $(this).data('id');
+            $('#reOrderModalMsg').html('');
+            $('#reOrderModal').modal('show');
+            $('#reOrderModalLabel').html('Re-order');
+            $('#reOrderModalBody').html('Loading...');
+            $.ajax({
+                url: '/pages/views/inventory/re_order.php',
+                type: 'GET',
+                data: {
+                    order_id: order_id
+                },
+                success: function(data) {
+                    $('#reOrderModalBody').html(data);
+                },
+                error: function(xhr, status, error) {
+                    $('#reOrderModalBody').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>An error occurred while loading order data. ' + error + '</div>');
                 }
             });
         });

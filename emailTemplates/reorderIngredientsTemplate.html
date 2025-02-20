@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reorder Request</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reorder Request</h1>
+    <p>Supplier: {{supplier}}</p>
+    <p>Notes: {{notes}}</p>
+    <h2>Order Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Size</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>SKU</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{orderItems}}
+        </tbody>
+    </table>
+    <footer>
+        <p>Created with <a href="https://www.perfumersvault.com">Perfumers Vault</a></p>
+    </footer>
+</body>
+</html>

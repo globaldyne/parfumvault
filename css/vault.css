@@ -466,12 +466,21 @@ formula td, table.table th {
   max-width: 600px;
 }
 
+.modal-add-order {
+  --bs-modal-width: 1700px;
+}
+
+.order-items {
+  width: 300px; 
+}
+
 .mgmIngHeader {
 	font-size: 3rem;
 	line-height: 3rem;
 	color: var( --bs-body-color);
 	background: var( --bs-body-bg);
 }
+
 .mgmIngHeader-with-separator::after {
     content: '';
     display: block;
