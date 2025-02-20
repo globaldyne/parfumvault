@@ -20,9 +20,9 @@ require_once(__ROOT__.'/pages/top.php');
             <table class="table table-striped" id="tdOrdersData" width="100%" cellspacing="0">
                 <thead>
                     <tr>
+                        <th>Supplier</th>
                         <th>Order #</th>
                         <th>Tracking #</th>
-                        <th>Supplier</th>
                         <th>Status</th>
                         <th>Total</th>
                         <th>Items</th>
@@ -119,9 +119,9 @@ $(document).ready(function() {
             dataType: 'json',
         },
         columns: [
-            { data: 'order_id', title: 'Order #', render: order_id },
-            {data: 'reference_number', title: 'Tracking #', render: reference_number },
             { data: 'supplier', title: 'Supplier', render: supplier },
+            { data: 'order_id', title: 'Order #', render: order_id },
+            { data: 'reference_number', title: 'Tracking #', render: reference_number },
             { data: 'status', title: 'Status', render: status },
             { data: 'total', title: 'Total', render: total },
             { data: 'items', title: 'Items', render: items },

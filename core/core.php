@@ -426,9 +426,10 @@ if(isset($_POST['action']) && $_POST['action'] === 'updateorder') {
     $orderDate = mysqli_real_escape_string($conn, $_POST['orderDate']);
     $receivedDate = mysqli_real_escape_string($conn, $_POST['receivedDate']) ?: null;
     $reference_number = mysqli_real_escape_string($conn, $_POST['reference_number']);
+    $orderNotes = mysqli_real_escape_string($conn, $_POST['orderNotes']);
 
-    $updateQuery = $conn->prepare("UPDATE orders SET status = ?, placed = ?, received = ?, reference_number = ? WHERE id = ? AND owner_id = ?");
-    $updateQuery->bind_param("ssssis", $orderStatus, $orderDate, $receivedDate, $reference_number, $order_id, $userID);
+    $updateQuery = $conn->prepare("UPDATE orders SET status = ?, placed = ?, received = ?, reference_number = ?, notes = ? WHERE id = ? AND owner_id = ?");
+    $updateQuery->bind_param("sssssis", $orderStatus, $orderDate, $receivedDate, $reference_number, $orderNotes, $order_id, $userID);
 
     if ($updateQuery->execute()) {
         $response['success'] = 'Order updated successfully';
