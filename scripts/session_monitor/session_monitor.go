@@ -150,7 +150,17 @@ func cleanupInactiveUsers(db *sql.DB) {
 
 	deleteQuery := "DELETE FROM users WHERE id = ?"
 	auditQuery := "INSERT INTO audit_log (email, ip, browser, timestamp, action, result) VALUES (?, ?, ?, ?, ?, ?)"
+	tables := []string{
+		"batchIDHistory", "bottles", "cart", "customers", "documents",
+		"formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
+		"formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
+		"ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
+		"inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
+		"templates", "user_prefs", "user_settings", "branding", "orders", "order_items",
+	}
+
 	for _, userID := range inactiveUsers {
+		// Delete from users table
 		_, err := db.Exec(deleteQuery, userID)
 		if err != nil {
 			error_log(fmt.Sprintf("Error deleting inactive user %s: %v", userID, err))
@@ -163,6 +173,17 @@ func cleanupInactiveUsers(db *sql.DB) {
 			_, auditErr := db.Exec(auditQuery, userID, "", "", time.Now(), "delete_inactive_user", "success")
 			if auditErr != nil {
 				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
+			}
+
+			// Delete from other tables
+			for _, table := range tables {
+				deleteTableQuery := fmt.Sprintf("DELETE FROM %s WHERE owner_id = ?", table)
+				_, err := db.Exec(deleteTableQuery, userID)
+				if err != nil {
+					error_log(fmt.Sprintf("Error deleting from table %s for user %s: %v", table, userID, err))
+				} else {
+					log.Printf("Deleted records from table %s for user %s", table, userID)
+				}
 			}
 		}
 	}
