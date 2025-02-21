@@ -21,7 +21,8 @@ const (
 	envTimeout     = "SESSION_TIMEOUT"
 	defaultDBHost  = "127.0.0.1"
 	defaultTimeout = "1800"
-	checkInterval  = 60 // Check every 60 seconds
+	checkInterval  = 60      // Check every 60 seconds
+	version        = "1.0.0" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -219,7 +220,7 @@ func main() {
 	stopChan := make(chan os.Signal, 1)
 	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("Session monitoring daemon started...")
+	log.Printf("Session monitoring daemon (version %s) started...", version)
 
 	// Daemon loop
 	for {
