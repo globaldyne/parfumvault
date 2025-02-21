@@ -9,6 +9,19 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
+// Check if API is enabled in system settings
+if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] != 1) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'draw' => intval($_REQUEST['draw'] ?? 0),
+        'recordsTotal' => 0,
+        'recordsFiltered' => 0,
+        'data' => [],
+        'error' => 'API is administratively disabled'
+    ]);
+    return;
+}
+
 // Default image for formulas
 $defImage = base64_encode(file_get_contents(DEFAULT_IMAGE));
 

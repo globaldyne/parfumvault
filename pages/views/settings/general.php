@@ -6,6 +6,12 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/convertTime.php');
 
+if (!is_numeric($session_timeout)) {
+    error_log("Invalid session timeout value: $session_timeout. Using default value of 1800 seconds.");
+    $session_timeout = 1800;
+}
+$time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
+
 $session_validity_calc = convertTime($session_timeout);
 
 $cats_q = mysqli_query($conn, "SELECT id,name,description,type FROM IFRACategories ORDER BY id ASC"); //PUBLIC
@@ -30,14 +36,14 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     }
                     ?>
                 </select>
-                <label for="currency" class="form-label">Currency</label>
+                <label for="currency" class="form-label mx-2"><strong>Currency</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <select name="user_pref_eng" id="user_pref_eng" class="form-select">
                     <option value="1" <?= $user_settings ['user_pref_eng'] == "1" ? 'selected' : '' ?>>PHP SESSION</option>
                     <option value="2" <?= $user_settings ['user_pref_eng'] == "2" ? 'selected' : '' ?>>DB Backend</option>
                 </select>
-                <label for="user_pref_eng" class="form-label">User preferences engine</label>
+                <label for="user_pref_eng" class="form-label mx-2"><strong>User preferences engine</strong></label>
             </div>
         </div>
 
@@ -50,7 +56,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="3" <?= $user_settings ['grp_formula'] == "3" ? 'selected' : '' ?>>By physical state</option>
 
                 </select>
-                <label for="grp_formula" class="form-label">Group formula</label>
+                <label for="grp_formula" class="form-label mx-2"><strong>Group formula</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <?php if ($system_settings['SYSTEM_pubChem'] == '1') { ?>
@@ -63,7 +69,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="">Disabled by admin</option>
                 </select>
                 <?php } ?>
-                <label for="pubchem_view" class="form-label">PubChem view</label>
+                <label for="pubchem_view" class="form-label mx-2"><strong>PubChem view</strong></label>
             </div>
         </div>
 
@@ -75,7 +81,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="3" <?= $user_settings ['qStep'] == "3" ? 'selected' : '' ?>>0.000</option>
                     <option value="4" <?= $user_settings ['qStep'] == "4" ? 'selected' : '' ?>>0.0000</option>
                 </select>
-                <label for="qStep" class="form-label">Quantity Decimal</label>
+                <label for="qStep" class="form-label mx-2"><strong>Quantity Decimal</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -86,7 +92,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     </option>
                     <?php } ?>
                 </select>
-                <label for="defCatClass" class="form-label">Default Category</label>
+                <label for="defCatClass" class="form-label mx-2"><strong>Default Category</strong></label>
             </div>
         </div>
 
@@ -98,14 +104,14 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="L" <?= $user_settings ['mUnit'] == "L" ? 'selected' : '' ?>>Liter</option>
                     <option value="fl. oz." <?= $user_settings ['mUnit'] == "fl. oz." ? 'selected' : '' ?>>Fluid ounce (fl. oz.)</option>
                 </select>
-                <label for="mUnit" class="form-label">Measurement Unit</label>
+                <label for="mUnit" class="form-label mx-2"><strong>Measurement Unit</strong></label>
             </div>
             <div class="mb-3 col-md-6 form-floating">
                 <select name="editor" id="editor" class="form-select">
                     <option value="1" <?= $user_settings ['editor'] == "1" ? 'selected' : '' ?>>Standard</option>
                     <option value="2" <?= $user_settings ['editor'] == "2" ? 'selected' : '' ?>>Advanced</option>
                 </select>
-                <label for="editor" class="form-label">Formula editor</label>
+                <label for="editor" class="form-label mx-2"><strong>Formula editor</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -114,7 +120,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="max_percentage" <?= $user_settings ['defPercentage'] == "max_percentage" ? 'selected' : '' ?>>Maximum value</option>
                     <!-- <option value="avg_percentage" <?= $user_settings ['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option> -->
                 </select>
-                <label for="defPercentage" class="form-label">Calculate sub materials as</label>
+                <label for="defPercentage" class="form-label mx-2"><strong>Calculate sub materials as</strong></label>
             </div>
 
             <div class="mb-3 col-md-6 form-floating">
@@ -122,7 +128,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                     <option value="light" <?= $user_settings ['bs_theme'] == "light" ? 'selected' : '' ?>>Light</option>
                     <option value="dark" <?= $user_settings ['bs_theme'] == "dark" ? 'selected' : '' ?>>Dark</option>
                 </select>
-                <label for="bs_theme" class="form-label">Theme</label>
+                <label for="bs_theme" class="form-label mx-2"><strong>Theme</strong></label>
             </div>
             
             <div class="mb-3 col-md-6 form-floating">
@@ -131,7 +137,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                    <option value="°F" <?= $user_settings ['temp_sys'] == "°F" ? 'selected' : '' ?>>Fahrenheit (°F)</option>
                    <option value="K" <?= $user_settings ['temp_sys'] == "K" ? 'selected' : '' ?>>Kelvin (K)</option>
                </select>
-               <label for="temp_sys" class="form-label">Temperature unit</label>
+               <label for="temp_sys" class="form-label mx-2"><strong>Temperature unit</strong></label>
             </div>
             
         </div>
@@ -164,6 +170,13 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <label class="form-check-label" for="multi_dim_perc">Multi-dimensional lookup</label>
             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enable to include into formulas limits calculation the ingredient's sub materials if exists."></a>
         </div>
+
+        <div class="form-check mb-3">
+            <input name="allow_incomplete_ingredients" type="checkbox" class="form-check-input" id="allow_incomplete_ingredients" value="1" <?= $user_settings ['allow_incomplete_ingredients'] == '1' ? 'checked' : '' ?>/>
+            <label class="form-check-label" for="allow_incomplete_ingredients">Allow incomplete ingredients</label>
+            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="If enabled, the ingredient supplier filter will be disabled, allowing the use of the ingredient regardless. Note that using an incomplete ingredient in a formula may result in incorrect data generation, IFRA limits, usage, costs, etc."></a>
+        </div>
+
        <hr />
        <div class="col-sm-auto">
             <a href="#" data-bs-toggle="modal" data-bs-target="#clear_search_pref"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Clear search preferences</a></a>
@@ -183,7 +196,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 
     <div class="row">
         <div class="col-sm-12 text-start">
-            <input type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary"/>
+            <button type="submit" name="save-general" id="save-general" value="Save" class="btn btn-primary">Save</button>
         </div>
     </div>
 </div>
@@ -250,6 +263,7 @@ $(document).ready(function() {
 				grp_formula: $("#grp_formula").val(),
                 chem_vs_brand: $("#chem_vs_brand").is(':checked') ? 1 : 0,
                 multi_dim_perc: $("#multi_dim_perc").is(':checked') ? 1 : 0,
+                allow_incomplete_ingredients: $("#allow_incomplete_ingredients").is(':checked') ? 1 : 0,
 				mUnit: $("#mUnit").val(),
 				editor: $("#editor").val(),
 				user_pref_eng: $("#user_pref_eng").val(),

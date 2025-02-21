@@ -87,6 +87,7 @@ CREATE TABLE `makeFormula` (
  `skip` INT NOT NULL DEFAULT '0', 
  `toAdd` int(11) NOT NULL,
  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
  `owner_id` VARCHAR(255) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -317,7 +318,7 @@ CREATE TABLE `inventory_accessories` (
 CREATE TABLE `pv_meta` (
   `schema_ver` varchar(255) NOT NULL,
   `app_ver` varchar(255) NOT NULL,
-  `updated_at_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE update_history (
@@ -341,8 +342,10 @@ CREATE TABLE `users` (
   `API_key` VARCHAR(255) NULL DEFAULT NULL,
   `isVerified` INT NOT NULL,
   `token` VARCHAR(255) NULL, 
-  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
+  `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  `last_login` TIMESTAMP NULL DEFAULT NULL,
+  `receiveEmails` INT NOT NULL DEFAULT '1',
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -405,7 +408,7 @@ CREATE TABLE `suppliers` (
  `mUnit` VARCHAR(255) NULL, 
  `stock` decimal(10,3) NOT NULL,
  `status` INT NOT NULL DEFAULT '1' COMMENT '1 = Available\r\n2 = Limited Availability\r\n3 = Not available', 
- `updated_at_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+ `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
  `supplier_sku` VARCHAR(255) NULL, 
  `internal_sku` VARCHAR(255) NULL,
@@ -646,7 +649,7 @@ CREATE TABLE `synonyms` (
 	`source` VARCHAR(255) NULL DEFAULT NULL, 
 	`created_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`owner_id` VARCHAR(255) NOT NULL
-) ENGINE = InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 ALTER TABLE `synonyms` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
 
@@ -737,7 +740,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  <font face="Arial, sans-serif"><span >We certify that the above mixture is in compliance with the Standards of the INTERNATIONAL FRAGRANCE ASSOCIATION (IFRA), up to and including the <strong>%IFRA_AMENDMENT%</strong> Amendment to the IFRA Standards (published </span><b>%IFRA_AMENDMENT_DATE%</span></b>),
  provided it is used in the following</span></font> <font face="Arial, sans-serif"><span >category(ies)
  at a maximum concentration level of:</span></font></p>
- <p class="western" style="margin-right: -0.12in"> </p>
+ <p class="western" style="margin-right: -0.12in"></p>
  <table class="table table-stripped">
  <tr>
  <th bgcolor="#d9d9d9"><strong>IFRA Category</strong></th>
@@ -753,7 +756,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  <font face="Arial, sans-serif"><span >For other kinds of, application or use at higher concentration levels, a new evaluation may be needed; please contact </span></font><font face="Arial, sans-serif"><b>%BRAND_NAME%</b></font><font face="Arial, sans-serif"><span >.
  </span></font></p>
  <p class="western" style="margin-right: -0.12in"><font face="Arial, sans-serif"><span >Information about presence and concentration of fragrance ingredients subject to IFRA Standards in the fragrance mixture </span></font><font face="Arial, sans-serif"><B>%PRODUCT_NAME%</b></font><font face="Arial, sans-serif"><span> is as follows:</span></font></p>
- <p class="western" style="margin-right: -0.12in"> </p>
+ <p class="western" style="margin-right: -0.12in"></p>
  <table class="table table-stripped">
  <tr>
  <th width="22%" bgcolor="#d9d9d9"><strong>Material(s) under the scope of IFRA Standards:</strong></th>
@@ -764,7 +767,7 @@ INSERT INTO `templates` (`id`, `name`, `content`, `created_at`, `updated_at`, `d
  </tr>
  %IFRA_MATERIALS_LIST%
  </table>
- <p> </p>
+ <p></p>
  <p><font face="Arial, sans-serif"><span >Signature </span></font><font face="Arial, sans-serif"><span><i>(If generated electronically, no signature)</i></span></font></p>
  <p><font face="Arial, sans-serif"><span >Date: </span></font><strong>%CURRENT_DATE%</strong></p>
  </p>
@@ -1024,3 +1027,43 @@ ALTER TABLE `formulas` ADD INDEX(`fid`);
 ALTER TABLE `formulas` ADD INDEX(`ingredient`);
 ALTER TABLE `ingredients` ADD INDEX(`owner_id`);
 ALTER TABLE `ingredients` ADD INDEX(`name`);
+
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `fid` varchar(255) NOT NULL,
+  `owner_id` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE orders (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `order_id` VARCHAR(255) NULL,
+    `reference_number` VARCHAR(255) NULL,
+    `supplier` VARCHAR(255) NOT NULL,
+    `currency` VARCHAR(255) NOT NULL,
+    `status` ENUM('pending', 'processing', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    `tax` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    `shipping` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    `discount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    `placed` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `received` DATETIME NULL,
+    `notes` TEXT NULL,
+    `attachments` longblob DEFAULT NULL,
+    `owner_id` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE order_items (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `order_id` VARCHAR(255) NULL,
+    `material` VARCHAR(255) NOT NULL,
+    `size` VARCHAR(255) NOT NULL,
+    `unit_price` DECIMAL(10, 2) NOT NULL,
+    `quantity` DECIMAL(10, 2) NOT NULL,
+    `lot` VARCHAR(255) NOT NULL,
+    `owner_id` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+

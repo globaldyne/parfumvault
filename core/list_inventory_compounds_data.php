@@ -13,7 +13,7 @@ $order_by  = $_POST['order_by'] ?: 'name';
 $order  = $_POST['order_as'] ?: 'ASC';
 $extra = "ORDER BY ".$order_by." ".$order;
 
-$s = trim($_POST['search']['value']);
+$s = trim(mysqli_real_escape_string($conn,$_POST['search']['value']));
 $t = 'inventory_compounds';
 
 if($s != ''){
@@ -21,11 +21,10 @@ if($s != ''){
 }
 
 $q = mysqli_query($conn, "SELECT * FROM $t $f $extra LIMIT $row, $limit");
+
 while($res = mysqli_fetch_array($q)){
     $rs[] = $res;
 }
-
-
 
 function calculateBottles($totalVolume, $alcoholPercentage, $defBtlSize) {
     $alcoholVolume = $defBtlSize * ($alcoholPercentage / 100); // volume of alcohol in each bottle

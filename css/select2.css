@@ -25,7 +25,9 @@
 }
 	  
 .select2-container .select2-selection--single .select2-selection__clear {
-  position: relative; 
+  position: relative;
+  padding: 4px 21px 0px 0px;
+  border: none;
 }
 
 .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
@@ -147,7 +149,7 @@
   width: auto;
   opacity: 0;
   z-index: 99;
-  background-color: #fff;
+  background-color: var(--bs-body-bg);
   filter: alpha(opacity=0); 
 }
 

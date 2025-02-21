@@ -18,6 +18,11 @@ $('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
     $("#qr").text(qr);
     $("#updateStock").prop("checked", true);
     $('#supplier').prop('disabled', false);
+	
+	// Clear supplier select2 selection
+	$("#supplier").val(null).trigger('change');
+	$("#replacement").val(null).trigger('change');
+
     $("#notes").val('');
     $("#collapseAdvanced").removeClass('show');
     
@@ -40,7 +45,6 @@ $('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
             dataType: 'json',
             type: 'GET',
             delay: 100,
-            quietMillis: 250,
             data: function (params) {
                 return {
                     ingID: ingID,

@@ -368,7 +368,42 @@ if(isset($_SESSION['parfumvault'])){
     </div>
 </div>
 </body>
+<?php if (isset($system_settings['GOOGLE_analytics_status']) && $system_settings['GOOGLE_analytics_status'] == 1) { ?>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
+    gtag('config', '<?= htmlspecialchars($system_settings['GOOGLE_analytics_key']) ?>');
+
+    function acceptCookies() {
+        document.getElementById('cookieConsent').style.display = 'none';
+        // Set a cookie to remember the user's consent
+        document.cookie = "cookieConsent=true; max-age=" + 60*60*24*365 + "; path=/";
+    }
+
+    // Check if the user has already accepted cookies
+    if (document.cookie.indexOf('cookieConsent=true') === -1) {
+        document.getElementById('cookieConsent').style.display = 'block';
+    }
+</script>
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" class="bg-danger text-white p-3">
+    <div class="cookieConsentContainer">
+        <div class="cookieTitle">
+            <a class="text-white">Cookies Notice</a>
+        </div>
+        <div class="cookieDesc">
+            <p>We use cookies to enhance your browsing experience and provide personalized content. By continuing to use our site, you accept our use of cookies.</p>
+        </div>
+        <div class="cookieButton">
+            <a class="btn btn-light" onclick="acceptCookies();">I Understand</a>
+        </div>
+    </div>
+</div>
+<?php } ?>
 </html>
 
 <?php 

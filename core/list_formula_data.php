@@ -30,12 +30,30 @@ if ($s !== '') {
     $filters[] = "(name LIKE '%$searchTerm%' OR product_name LIKE '%$searchTerm%' OR notes LIKE '%$searchTerm%') AND owner_id = '$userID'";
 }
 
-$f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : " WHERE owner_id = '$userID'";
-
+//$f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : " WHERE owner_id = '$userID'";
+$f = !empty($filters) ? 'AND ' . implode(' AND ', $filters) : '';
+//$Query = "
+//    SELECT id, fid, name, product_name, isProtected, profile, gender, created_at, catClass, isMade, madeOn, status, rating, revision, (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
+//        (SELECT COUNT(id) FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID') AS ingredients FROM formulasMetaData $f $extra LIMIT $row, $limit";
 $Query = "
-    SELECT id, fid, name, product_name, isProtected, profile, gender, created_at, catClass, isMade, madeOn, status, rating, revision, (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
-        (SELECT COUNT(id) FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID') AS ingredients FROM formulasMetaData $f $extra LIMIT $row, $limit";
-
+        SELECT 
+            fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
+            fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
+            (SELECT updated_at 
+             FROM formulas 
+             WHERE fid = fm.fid AND owner_id = '$userID' 
+             ORDER BY updated_at DESC 
+             LIMIT 1) AS updated_at, 
+            (SELECT COUNT(id) 
+             FROM formulas 
+             WHERE fid = fm.fid AND owner_id = '$userID') AS ingredients,
+            (SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = '$userID' LIMIT 1) AS gid 
+        FROM formulasMetaData fm
+        WHERE (fm.owner_id = '$userID' 
+           OR fm.fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) 
+        $f $extra 
+        LIMIT $row, $limit;
+    ";
 $formulas = mysqli_query($conn, $Query);
 
 $formulaData = [];
@@ -68,12 +86,13 @@ foreach ($formulaData as $formula) {
 }
 
 $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE owner_id = '$userID'"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData $f"));
+//$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData $f"));
+//$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE (owner_id = '$userID' OR fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) $f"));
 
 $response = [
     "draw" => (int)$_POST['draw'],
     "recordsTotal" => (int)$total['entries'],
-    "recordsFiltered" => (int)$filtered['entries'],
+    "recordsFiltered" => count($rx),
     "data" => $rx,
     "debug" => $Query
 ];

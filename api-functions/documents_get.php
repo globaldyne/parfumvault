@@ -25,7 +25,8 @@ $rows = array();
 
 // Process the results
 while ($rx = mysqli_fetch_assoc($sql)) {
-    $r['id'] = (int)$rx['id'];
+    //$r['id'] = (int)$rx['id'];
+    unset($rx['id']);
     $r['ownerID'] = $rx['ownerID'] ?: 0;
     $r['type'] = (int)$rx['type'] ?: 0;
     $r['name'] = (string)$rx['name'] ?: "-";

@@ -1,4 +1,47 @@
 # CHANGELOG
+### Version 12.6
+- Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
+- Monitored user changes in the admin dashboard
+- Added last login timestamp for users
+- Improved formula making process
+- Enhanced upload size validation function
+- Added support for Google Analytics
+- Improved API security
+- Implemented a unique auto-generated 32-bit key for API access
+- Fixed synonym search functionality
+- Improved price scraper
+- Handled suppliers during ingredients import
+- Notified only active admin accounts about new/deleted users
+- Added session and user clean-up daemon
+- Added a column to indicate if users are online
+- Fixed PV Library ingredient import issue for some users
+- Disabled session monitor by default
+- Removed inactive non-admin users after 30 days of inactivity
+- Added audit functionality (manual configuration required)
+- Filtered full names for illegal characters
+- Applied security updates
+- Fixed issue with users not loading all entries
+- Fixed missing user ID when logging from session monitor agent
+- Added an option to bypass strict ingredient check
+- Ignored non-numeric values for sys_timeout
+- Cleaned up IFRA HTML template (new install only)
+- Improved logo handling for documents
+- Fixed column alignment for finished product PDF export
+- Updated PHP to version 8.3
+- Updated nginx to version 1.26
+- Added user option to exclude from emails
+- Made API test URL non-clickable when the API key is not visible
+- Added API key copy button
+- Fixed IFRA category description not showing properly in formulas
+- Updated select2 library to version 4.1.0-rc.0
+- Added order tracking under inventory
+- Split import formulas function from core.php
+- Split export formulas function from core.php
+- Rewrote formulas import/export functionality
+- Updated wording when no formulas are available
+- Fixed duplicate table ID for supply orders
+- Prevented re-ordering if no items are available
+
 ### Version 12.5
 - Code clean-up
 - Various overall security improvements

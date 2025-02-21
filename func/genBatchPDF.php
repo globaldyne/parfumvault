@@ -137,11 +137,9 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 		$allergen[] = $getAllergen['name'];
 	}
 	
-	$coverText = "Profile: ".$meta['profile']." \nGender: ".$meta['sex']." \nCreated: ".$meta['created']." \nMade: ".$meta['madeOn']." \n".$meta['notes'];
-	$allergenFinal = implode(", ",array_unique(array_filter($allergen)));
-	if(empty($allergenFinal)){
-		$allergenFinal = 'None found';
-	}
+	$coverText = "Profile: ".$meta['profile']." \nGender: ".$meta['gender']." \nCreated: ".$meta['created']." \nMade: ".$meta['madeOn']." \n".$meta['notes'];
+	$allergen = array_filter($allergen);
+	$allergenFinal = !empty($allergen) ? implode(", ", array_unique($allergen)) : 'None found';
 	
 	$pdf = new PDF( 'L', 'mm', 'A4');
 

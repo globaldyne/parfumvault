@@ -16,9 +16,10 @@ $defCatClass = $settings['defCatClass'];
 $defImage = base64_encode(file_get_contents(__ROOT__.'/img/pv_molecule.png'));
 
 $s = trim($_POST['search']['value']);
+$safe_search = mysqli_real_escape_string($conn, $s);
 
-if($s != ''){
-   $f = " WHERE 1 AND (name LIKE '%".$s."%') AND owner_id = '$userID'";
+if($safe_search != ''){
+	$f = " WHERE 1 AND (name LIKE '%".$safe_search."%') AND owner_id = '$userID'";
 } else {
 	$f = " WHERE owner_id = '$userID'";
 }

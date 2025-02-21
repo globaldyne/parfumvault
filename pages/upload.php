@@ -460,20 +460,29 @@ if (isset($_GET['type']) && $_GET['type'] === 'cmpCSVImport') {
                 }
 
                 // Check if the compound already exists
-                $checkQuery = "SELECT name FROM ingredient_compounds WHERE ing = '$ing' AND name = '$name' AND owner_id = '$userID'";
-                if (!mysqli_num_rows(mysqli_query($conn, $checkQuery))) {
+                $checkQuery = "SELECT name FROM ingredient_compounds WHERE ing = ? AND name = ? AND owner_id = ?";
+                $stmtCheck = mysqli_prepare($conn, $checkQuery);
+                mysqli_stmt_bind_param($stmtCheck, "sss", $ing, $name, $userID);
+                mysqli_stmt_execute($stmtCheck);
+                mysqli_stmt_store_result($stmtCheck);
+
+                if (mysqli_stmt_num_rows($stmtCheck) == 0) {
                     // Insert new compound into the database
                     $insertQuery = "
                         INSERT INTO ingredient_compounds 
                         (ing, name, cas, ec, min_percentage, max_percentage, GHS, owner_id) 
-                        VALUES ('$ing', '$name', '$cas', '$ec', '$min_percentage', '$max_percentage', '$GHS', '$userID')
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     ";
-                    $result = mysqli_query($conn, $insertQuery);
+                    $stmtInsert = mysqli_prepare($conn, $insertQuery);
+                    mysqli_stmt_bind_param($stmtInsert, "ssssssss", $ing, $name, $cas, $ec, $min_percentage, $max_percentage, $GHS, $userID);
+                    $result = mysqli_stmt_execute($stmtInsert);
 
                     if ($result) {
                         $i++;
                     }
+                    mysqli_stmt_close($stmtInsert);
                 }
+                mysqli_stmt_close($stmtCheck);
             }
 
             fclose($file);

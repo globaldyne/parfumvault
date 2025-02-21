@@ -31,15 +31,17 @@ if($role !== 1){
 <table id="tdUsers" class="table table-striped" style="width:100%">
   <thead>
       <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Role</th>
-          <th>Verified</th>
-          <th>Auth method</th>
-          <th>Created</th>
-          <th>Updated</th>
-          <th></th>
+        <th>Online</th>
+        <th>UUID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Role</th>
+        <th>Verified</th>
+        <th>Auth method</th>
+        <th>Created</th>
+        <th>Last login</th>
+        <th></th>
       </tr>
    </thead>
 </table>
@@ -114,10 +116,10 @@ $(document).ready(function() {
 	var tdUsers = $('#tdUsers').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [7] }
 		],
 		dom: 'lfrtip',
 		processing: true,
+        //serverSide: true,
 		language: {
 			loadingRecords: '&nbsp;',
 			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
@@ -126,26 +128,32 @@ $(document).ready(function() {
 			search: '',
 			searchPlaceholder: 'Search by name...',
 		},
-		ajax: {	url: '/core/users_data.php' },
+		ajax: {	
+            url: '/core/users_data.php',
+            type: 'POST',
+			dataType: 'json',
+        },
 		columns: [
-		    { data : 'full_name', title: 'Full name', render: name},
+            { data : 'is_logged_in', title: 'Online', render: is_logged_in},
+            { data : 'id', title: 'UUID', render: UUID},
+		    { data : 'fullName', title: 'Full name', render: name},
 		    { data : 'email', title: 'Username'},
             { data : 'status', title: 'Status', render: status},
             { data : 'role', title: 'Role', render: role},
             { data : 'isVerified', title: 'Verified', render: isVerified},
             { data : 'provider', title: 'Auth method', render: provider},
             { data : 'created_at', title: 'Created', render: created_at},
-			{ data : 'updated_at', title: 'Updated', render: updated_at},
-			{ data : null, title: '', render: actions},		   
+			{ data : 'last_login', title: 'Last login', render: last_login},
+			{ data : null, title: '', render: actions, orderable: false},		   
 		],
-		order: [[ 1, 'asc' ]],
-		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+		order: [[ 2, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
 		pageLength: 20,
 		displayLength: 20,
 		drawCallback: function( settings ) {
 			extrasShow();
 		},
-		stateSave: true,
+		stateSave: false,
 		stateDuration: -1,
 		stateLoadCallback: function (settings, callback) {
 			$.ajax( {
@@ -170,13 +178,24 @@ $(document).ready(function() {
     });
 
 
-    function name(data, type, row) {
-        var name = row.full_name;
+    function is_logged_in (data, type, row) {
         if (row.is_logged_in == 1) {
-            name = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>' + name;
+            data = '<span class="text-success" rel="tip" title="Online"><i class="fa fa-circle mx-2"></i></span>';
+            if (row.id !== "<?php echo $userID; ?>") {
+                data += '<br><a href="#" rel="tip" title="Session validity">' + row.session_valid_until + '</a>';
+            }
+            return data;
         } else if (row.is_logged_in == 0) {
-            name = '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>' + name;
+            return '<span class="text-danger" rel="tip" title="Offline"><i class="fa fa-circle mx-2"></i></span>';
         }
+    };
+
+    function UUID(data, type, row) {
+        return '<span class="text-decoration-underline" id="UUID">' + row.id + '</span>';
+    };
+
+    function name(data, type, row) {
+        var name = row.fullName;
         return name;
     };
 
@@ -206,7 +225,7 @@ $(document).ready(function() {
             var data = '<span class="badge rounded-pill d-block p-2 text-bg-secondary">Standard user</span>';
         }
         if(row.role == 1){
-            var data = '<span class="badge rounded-pill d-block p-2 text-bg-success">System admin</span>';
+            var data = '<span class="badge rounded-pill d-block p-2 badge-shared">System admin</span>';
         }
         return data;
 	};
@@ -220,6 +239,21 @@ $(document).ready(function() {
         }
         return data;
 
+    };
+
+    function last_login(data, type, row){
+        const date = new Date(data);
+        if (isNaN(date.getTime())) {
+            return '-';
+        }
+        return date.toLocaleDateString(navigator.language || 'en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }) + ' ' + date.toLocaleTimeString(navigator.language || 'en-GB', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     function updated_at(data, type, row){
@@ -248,15 +282,37 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 		'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>' +
 			'<ul class="dropdown-menu">';	
-        data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
+        data += '<li><a class="dropdown-item" href="#" data-bs-target="#editUser" data-bs-toggle="editUser" id="editUser" rel="tip" title="Edit ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName +'"><i class="bi bi-pencil-square mx-2"></i>Edit</a></li>';
         if (row.id !== "<?php echo $userID; ?>") {
-            data += '<li><a class="dropdown-item" href="#" id="impersonateUser" rel="tip" title="Impersonate ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-person-bounding-box mx-2"></i>Impersonate</a></li>';
+            data += '<li><a class="dropdown-item" href="#" id="impersonateUser" rel="tip" title="Impersonate ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName + '"><i class="bi bi-person-bounding-box mx-2"></i>Impersonate</a></li>';
         }
-		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.full_name + '" data-id=' + row.id + ' data-name="' + row.full_name + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item text-danger" href="#" id="deleteUser" rel="tip" title="Delete ' + row.fullName + '" data-id=' + row.id + ' data-name="' + row.fullName + '"><i class="bi bi-trash mx-2"></i>Delete</a></li>';
 		data += '</ul></div>';
 		return data;
 	};
 	
+    tdUsers.on('click', '#UUID', function (e) {
+		let tr = e.target.closest('tr');
+		let row = tdUsers.row(tr); 
+		if (row.child.isShown()) {
+			row.child.hide();
+		} else {
+			row.child(format(row.data())).show();
+		}
+	});
+
+    function format(d) {
+        var details = '<strong>' + d.email + '</strong><br><hr/>';
+        $.each(d.stats, function(i, stats) {
+            if (i.includes('_')) {
+                i = i.replace(/.*?_/, '');
+            }
+            details += '<span class="details"><strong>' + stats + ' ' + i + '</span><br>';
+        });
+        return details;
+    };
+
+
     $('#tdUsers').on('click', '#impersonateUser', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
@@ -415,10 +471,27 @@ $(document).ready(function() {
         });
     });
 
-	function reload_data() {
-		$('#tdUsers').DataTable().ajax.reload(null, true);
-	};
-	
+    function reload_data() {
+        var table = $('#tdUsers').DataTable();
+        $.ajax({
+            url: '/core/users_data.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(data) {
+                var localData = table.ajax.json().data;
+                if (JSON.stringify(localData) !== JSON.stringify(data.data)) {
+                    table.ajax.reload(null, true);
+                    console.log('Changes detected, data reloaded');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking data:', error);
+            }
+        });
+    };
+
+    setInterval(reload_data, 10000); // Check for updates every 10 seconds
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			 html: true,
