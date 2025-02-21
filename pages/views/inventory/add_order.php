@@ -63,9 +63,10 @@ $res_ingSupplier = $stmt->get_result();
                 <!-- Dynamic rows will be added here -->
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary" id="addItem" disabled>Add ingredient</button> - or -
-        <button type="button" class="btn btn-secondary" id="importItems" disabled>Import</button>
-
+        <div class="mt-2">
+            <button type="button" class="btn btn-primary" id="addItem" disabled>Add ingredient</button> - or -
+            <button type="button" class="btn btn-secondary" id="importItems" disabled>Import</button>
+        </div>
         <!-- Import Modal -->
         <div class="modal fade" id="importModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">

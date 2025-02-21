@@ -63,7 +63,7 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
 								<?php if ($cFormulas) { ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
-                                    <a class="dropdown-item" href="/core/core.php?action=exportFormulas">
+                                    <a class="dropdown-item" href="/pages/export.php?action=exportFormulas">
                                         <i class="fa-solid fa-file-export mx-2"></i>Export all formulas as JSON
                                     </a>
                                 </li>
@@ -97,12 +97,9 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                 </div>
 
                 <?php
-                if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
-                    echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
-                }
-                if (empty($cFormulas)) {
-                    echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>';
-                } else {
+				if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
+					echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
+				} else {
                 ?>
                 <div id="listFormulas">
                     <ul>
@@ -153,7 +150,7 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                                 </thead>
                             </table>
                         </div>
-                        <?php } ?>
+						<?php } ?>
                     </div>
                 </div>
                 <?php } ?>
@@ -215,8 +212,8 @@ $(document).ready(function() {
 			language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-				emptyTable: '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas yet, click <a href="#" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add or use the <a href="/?do=marketplace">Marketplace</a> to import a demo one</strong></div></div>',
-				zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas found</strong></div></div>',
+				emptyTable: '<div class="mt-1 row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas available. Click <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add a new formula, or visit the <a href="/?do=marketplace" class="link-primary">Marketplace</a> to import a demo. You can also explore more options in the Actions menu.</strong></div></div>',
+				zeroRecords: '<div class="mt-1 row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas found</strong></div></div>',
 				searchPlaceholder: 'Search by formula, or product name...',
 				search: ''
 			},
@@ -357,7 +354,7 @@ $(document).ready(function() {
 				
 			data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
 	
-			data += '<li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
+			data += '<li><a class="dropdown-item" href="/pages/export.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
 			
 			data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
 			
@@ -986,7 +983,7 @@ $(document).ready(function() {
       </div>
       <div class="modal-body">
         <div id="JSRestMsg"></div>
-        <div class="progress">  
+        <div class="progress" style="display: none;">  
           <div id="uploadProgressBar" class="progress-bar" role="progressbar" aria-valuemin="0"></div>
         </div>
         <div id="backupArea" class="mt-4">
@@ -998,8 +995,8 @@ $(document).ready(function() {
           </div>
           <div class="col-md-12 mt-3">
             <hr />
-			<div class="alert alert-info">
-			  <i class="fa-solid fa-circle-info mx-2"></i><strong>IMPORTANT</strong>
+            <div class="alert alert-info">
+              <i class="fa-solid fa-circle-info mx-2"></i><strong>IMPORTANT</strong>
               <ul>
                 <li>
                   <div id="raw" data-size="<?=getMaximumFileUploadSizeRaw()?>">Maximum file size: <strong><?=getMaximumFileUploadSize()?></strong></div>

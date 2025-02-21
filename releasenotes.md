@@ -1,19 +1,19 @@
 Whats New in v12.6
 --------------------------
-- Added orders tracking under the inventory
-- Added an option to by pass strict ingredient check
-- Fix PV Library ingredient import failing for some users
-- Separated column added to users to indicate if online or not
-- Inform only active admin accounts for new/deleted users
-- Added session and user clean-up daemon
-- Price scraper improvements
-- Fixed synonym search
-- Improved API security
-- Implemented a unique auto generate 32 bit key for API access
-- Formula making improvements
-- Added meta data (formulas, ingredients,...) count for users in the admin dashboard
-- Validate size upload limit function improvements
-- Make API test url non link when the API Key is not visible
-- Added API key copy button
-- Fix IFRA cat description in formulas not showing properly
-- This release may include more changes, for full details please refer to the CHANGELOG
+- Introduced order tracking in the inventory section
+- Added an option to bypass strict ingredient checks
+- Fixed PV Library ingredient import issues for some users
+- Added a column to indicate if users are online
+- Notify only active admin accounts about new or deleted users
+- Added a daemon for session and user clean-up
+- Improved price scraper functionality
+- Fixed issues with synonym search
+- Enhanced API security
+- Implemented a unique auto-generated 32-bit key for API access
+- Improved formula creation process
+- Added metadata counts (formulas, ingredients, etc.) for users in the admin dashboard
+- Improved upload size validation function
+- Made API test URL non-clickable when the API key is hidden
+- Added a button to copy the API key
+- Fixed IFRA category descriptions not displaying correctly in formulas
+- This release may include additional changes; for full details, please refer to the CHANGELOG

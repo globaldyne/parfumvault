@@ -60,15 +60,15 @@ $receivedChecked = !empty($order['received']) ? 'checked' : '';
     <hr class="my-4">
     <!-- Order Items -->
     <div class="table-responsive">
-        <table id="orderItemsTable" class="table table-hover">
+        <table id="orderViewTable" class="table table-hover">
             <thead>
                 <tr>
-                    <th>Item</th>
+                    <th>Ingredient</th>
                     <th>Size</th>
                     <th>Unit Price</th>
                     <th>Quantity</th>
                     <th>Subtotal</th>
-                    <th>Lot Number</th>
+                    <th>SKU</th>
                 </tr>
             </thead>
             <tbody>
@@ -126,7 +126,6 @@ $receivedChecked = !empty($order['received']) ? 'checked' : '';
                         case 'image/png':
                             $extension = 'png';
                             break;
-                        // Add more cases as needed
                         default:
                             $extension = 'bin';
                     }
@@ -165,7 +164,7 @@ $receivedChecked = !empty($order['received']) ? 'checked' : '';
 
 <script>
 $(document).ready(function() {
-    $('#orderItemsTable').DataTable({
+    $('#orderViewTable').DataTable({
         paging: false,
         searching: true,
         info: false,
@@ -174,11 +173,9 @@ $(document).ready(function() {
             {
                 extend: 'csv',
                 text: 'Export to CSV',
-                className: 'btn btn-primary'
+                className: 'btn btn-primary',
+                title: 'supply_order_<?php echo htmlspecialchars($order['order_id'], ENT_QUOTES, 'UTF-8'); ?>'
             }
-        ],
-        columnDefs: [
-            { className: 'text-center', targets: '_all' }
         ],
         language: {
             emptyTable: '<div class="alert alert-info mt-3"><i class="fa fa-info-circle mx-2"></i>No items found for this order.</div>',

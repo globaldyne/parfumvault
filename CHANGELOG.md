@@ -1,41 +1,46 @@
 # CHANGELOG
 ### Version 12.6
-- Added meta data (formulas, ingredients,...) count for users in the admin dashboard
-- Monitor user changes in users admin dashboard
-- Added last login for users
-- Formula making improvements
-- Validate size upload limit function improvements
-- Added support for Google analytics
+- Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
+- Monitored user changes in the admin dashboard
+- Added last login timestamp for users
+- Improved formula making process
+- Enhanced upload size validation function
+- Added support for Google Analytics
 - Improved API security
-- Implemented a unique auto generate 32 bit key for API access
-- Fixed synonym search
-- Price scraper improvements
-- Ingedients import, suppliers handle
-- Inform only active admin accounts for new/deleted users
+- Implemented a unique auto-generated 32-bit key for API access
+- Fixed synonym search functionality
+- Improved price scraper
+- Handled suppliers during ingredients import
+- Notified only active admin accounts about new/deleted users
 - Added session and user clean-up daemon
-- Separated column added to users to indicate if online or not
-- Fix PV Library ingredient import failing for some users
-- Session monitor disabled by default
-- Inactive users will be removed after 30 days of inactivity (non admins only)
-- Audit added - manual configuration is required
-- Filter full name for illegal chars
-- Security updates
-- Fix users not properly loading all antries
-- Fix missing userid when logging from session monitor agent
-- Added an option to by pass strict ingredient check
-- Ignore non numeric values for sys_timeout
-- IFRA html template clean-up (new install only)
-- Improve logo handling for documents
-- Fixed columns alignment for finished product PDF export
-- Update PHP to 8.3
-- Update nginx to 1.26
+- Added a column to indicate if users are online
+- Fixed PV Library ingredient import issue for some users
+- Disabled session monitor by default
+- Removed inactive non-admin users after 30 days of inactivity
+- Added audit functionality (manual configuration required)
+- Filtered full names for illegal characters
+- Applied security updates
+- Fixed issue with users not loading all entries
+- Fixed missing user ID when logging from session monitor agent
+- Added an option to bypass strict ingredient check
+- Ignored non-numeric values for sys_timeout
+- Cleaned up IFRA HTML template (new install only)
+- Improved logo handling for documents
+- Fixed column alignment for finished product PDF export
+- Updated PHP to version 8.3
+- Updated nginx to version 1.26
 - Added user option to exclude from emails
-- Make API test url non link when the API Key is not visible
+- Made API test URL non-clickable when the API key is not visible
 - Added API key copy button
-- Fix IFRA cat description in formulas not showing properly
-- Update select2 library to 4.1.0-rc.0
-- Added orders tracking under the inventory
-
+- Fixed IFRA category description not showing properly in formulas
+- Updated select2 library to version 4.1.0-rc.0
+- Added order tracking under inventory
+- Split import formulas function from core.php
+- Split export formulas function from core.php
+- Rewrote formulas import/export functionality
+- Updated wording when no formulas are available
+- Fixed duplicate table ID for supply orders
+- Prevented re-ordering if no items are available
 
 ### Version 12.5
 - Code clean-up
