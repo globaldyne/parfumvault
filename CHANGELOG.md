@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.7
+
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
 - Monitored user changes in the admin dashboard
