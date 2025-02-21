@@ -67,6 +67,111 @@ if($role === 1){
     }
 }
 
+//EXPORT FORMULAS JSON
+if($_GET['action'] == 'exportFormulas'){
+    $filter = " WHERE fm.owner_id = '$userID'";
+    if($_GET['fid']){
+        $filter .= " AND fm.fid ='".$_GET['fid']."'";
+    }
+
+    if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'")))){
+        $msg['error'] = 'No formulas found to export';
+        echo json_encode($msg);
+        return;
+    }
+
+    require_once(__ROOT__.'/func/genFID.php');
+    $formulas = 0;
+    $ingredients = 0;
+
+    $result = [
+        'formulasMetaData' => [],
+        'formulas' => [],
+        'pvMeta' => [
+            'product' => $product,
+            'version' => $ver,
+            'formulas' => 0,
+            'ingredients' => 0,
+            'timestamp' => date('d-m-Y H:i:s')
+        ]
+    ];
+
+    $query = "
+        SELECT 
+            fm.*, 
+            f.name AS formula_name, f.ingredient, f.ingredient_id, f.concentration, f.dilutant, f.quantity, 
+            f.exclude_from_summary, f.exclude_from_calculation, f.notes AS formula_notes, f.created_at, f.updated_at
+        FROM 
+            formulasMetaData fm
+        LEFT JOIN 
+            formulas f ON fm.fid = f.fid
+        $filter
+    ";
+    $res = mysqli_query($conn, $query);
+
+    $processedFids = [];
+    $filename = "All_formulas";
+
+    while($row = mysqli_fetch_assoc($res)){
+        if (!isset($processedFids[$row['fid']])) {
+            $newfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz'); // Generate new fid for each formula
+            $result['formulasMetaData'][] = [
+                'name' => (string)$row['name'],
+                'product_name' => (string)$row['product_name'] ?: $row['name'],
+                'fid' => (string)$newfid,
+                'profile' => (string)$row['profile'],
+                'category' => (string)$row['profile'] ?: 'Default',
+                'gender' => (string)$row['gender'],
+                'notes' => (string)$row['notes'] ?: 'None',
+                'created_at' => (string)$row['created_at'],
+                'isProtected' => (int)$row['isProtected'] ?: 0,
+                'defView' => (int)$row['defView'],
+                'catClass' => (string)$row['catClass'],
+                'revision' => (int)$row['revision'] ?: 0,
+                'finalType' => (int)$row['finalType'] ?: 100,
+                'isMade' => (int)$row['isMade'],
+                'madeOn' => (string)$row['madeOn'] ?: "0000-00-00 00:00:00",
+                'scheduledOn' => (string)$row['scheduledOn'] ?: "0000-00-00 00:00:00",
+                'customer_id' => (int)$row['customer_id'],
+                'status' => (int)$row['status'],
+                'toDo' => (int)$row['toDo'],
+                'rating' => (int)$row['rating'] ?: 0
+            ];
+            $formulas++;
+            $processedFids[$row['fid']] = $newfid;
+
+            // Set filename based on the formula name if fid is provided
+            if ($_GET['fid']) {
+                $filename = $row['name'];
+            }
+        }
+
+        if ($row['formula_name']) {
+            $result['formulas'][] = [
+                'fid' => (string)$processedFids[$row['fid']],
+                'name' => (string)$row['formula_name'],
+                'ingredient' => (string)$row['ingredient'],
+                'concentration' => (float)$row['concentration'] ?: 100,
+                'dilutant' => (string)$row['dilutant'] ?: 'None',
+                'quantity' => (float)$row['quantity'],
+                'exclude_from_summary' => (int)$row['exclude_from_summary'],
+                'exclude_from_calculation' => (int)$row['exclude_from_calculation'],
+                'notes' => (string)$row['formula_notes'] ?: 'None',
+                'created_at' => (string)$row['created_at'] ?: "0000-00-00 00:00:00",
+                'updated_at' => (string)$row['updated_at'] ?: "0000-00-00 00:00:00"
+            ];
+            $ingredients++;
+        }
+    }
+
+    $result['pvMeta']['formulas'] = $formulas;
+    $result['pvMeta']['ingredients'] = $ingredients;
+
+    header('Content-disposition: attachment; filename='.preg_replace('/[^a-zA-Z0-9-_]/', '_', $filename).'.json');
+    header('Content-type: application/json');
+    echo json_encode($result, JSON_PRETTY_PRINT);
+    return;
+}
 
 
 
@@ -104,7 +209,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'accessories') {
         'product'              => $product,
         'version'              => $ver,
         'inventory_accessories' => $accessoryCount,
-        'timestamp'            => date('d/m/Y H:i:s'),
+        'timestamp'            => date('d-m-Y H:i:s'),
     ];
 
     // Prepare the result

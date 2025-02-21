@@ -74,10 +74,10 @@ $receivedChecked = !empty($order['received']) ? 'checked' : '';
         <hr class="my-4">
         <!-- Order Items -->
         <div class="table-responsive">
-            <table id="orderItemsTable" class="table table-hover">
+            <table id="orderReTable" class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Item</th>
+                        <th>Ingredient</th>
                         <th>Size</th>
                         <th>Unit Price</th>
                         <th>Quantity</th>
@@ -109,26 +109,39 @@ $receivedChecked = !empty($order['received']) ? 'checked' : '';
 
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Re-order</button>
+            <button type="submit" class="btn btn-primary" id="reOrderButton">Re-order</button>
         </div>
     </form>
 </div>
 
 <script>
 $(document).ready(function() {
-    var table = $('#orderItemsTable').DataTable({
+    var table = $('#orderReTable').DataTable({
         paging: false,
         searching: false,
         info: false,
         dom: 'frtip',
+        language: {
+            emptyTable: '<div class="alert alert-info"><i class="bi bi-exclamation-triangle mx-2"></i>No items to reorder.</div>',
+            zeroRecords: '<div class="alert alert-info"><i class="bi bi-exclamation-triangle mx-2"></i>No matching items found.</div>'
+        },
         columnDefs: [
             { className: 'text-center', targets: '_all' },
             { orderable: false, targets: -1 }
         ]
     });
 
-    $('#orderItemsTable tbody').on('click', '.removeItem', function() {
+    function toggleReOrderButton() {
+        if (table.rows().count() === 0) {
+            $('#reOrderButton').prop('disabled', true);
+        } else {
+            $('#reOrderButton').prop('disabled', false);
+        }
+    }
+
+    $('#orderReTable tbody').on('click', '.removeItem', function() {
         table.row($(this).parents('tr')).remove().draw();
+        toggleReOrderButton();
     });
 
     function validateEmail(email) {
@@ -143,7 +156,7 @@ $(document).ready(function() {
         row.find('input.unit-price-input').val(unitPrice.toFixed(2));
     }
 
-    $('#orderItemsTable').on('input', 'input.size-input, input.quantity-input', function() {
+    $('#orderReTable').on('input', 'input.size-input, input.quantity-input', function() {
         var row = $(this).closest('tr');
         calculateUnitPrice(row);
     });
@@ -157,6 +170,11 @@ $(document).ready(function() {
             return;
         }
 
+        if (table.rows().count() === 0) {
+            $('#reOrderModalMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle mx-2"></i>Please add at least one item to reorder.</div>');
+            return;
+        }
+
         var formData = $(this).serializeArray();
         formData.push({ name: 'action', value: 'reorder' });
         formData.push({ name: 'supplier', value: '<?php echo $order['supplier']; ?>' });
@@ -164,7 +182,7 @@ $(document).ready(function() {
         formData.push({ name: 'supplierEmail', value: supplierEmail });
         formData.push({ name: 'notes', value: $('#notes').val() });
 
-        $('#orderItemsTable tbody tr').each(function(index, tr) {
+        $('#orderReTable tbody tr').each(function(index, tr) {
             var item = $(tr).find('td').eq(0).text();
             var size = $(tr).find('input[name="size[]"]').val();
             var unit_price = $(tr).find('input[name="unit_price[]"]').val();
@@ -185,7 +203,7 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $('#reOrderModalMsg').html('<div class="alert alert-success alert-dismissible fade show"><i class="bi bi-check-circle mx-2"></i>Order successfully placed.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                    //$('#reOrderModalMsg').html('<div class="alert alert-success alert-dismissible fade show"><i class="bi bi-check-circle mx-2"></i>Order successfully placed.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
                     $('#tdOrdersData').DataTable().ajax.reload(null, true);
 
                     $('#reOrderModal').modal('hide');
@@ -198,5 +216,8 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Initial check to disable the button if no items
+    toggleReOrderButton();
 });
 </script>
