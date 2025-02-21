@@ -56,11 +56,22 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         # Execute the update_db_schema.sh script
         /usr/bin/update_db_schema.sh
         if [ $? -eq 0 ]; then
-            echo "Users table is up to date."
+            echo "The users schema is up to date. No changes needed."
         else
             echo "update_db_schema.sh script failed. Please check the logs."
         fi
 
+        # Start the session monitor if SESSION_MONITOR is true
+        if [ "$SESSION_MONITOR" = "true" ]; then
+            /usr/bin/session_monitor &
+            if [ $? -ne 0 ]; then
+            echo "Failed to start session monitor. Exiting."
+            exit 1
+            fi
+        else
+            echo "Session monitor is disabled."
+        fi
+        
         # Execute the sync_db.sh script
         #/usr/bin/sync_db.sh
         #if [ $? -eq 0 ]; then

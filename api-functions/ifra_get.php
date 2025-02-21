@@ -31,7 +31,8 @@ while ($r = mysqli_fetch_assoc($sql)) {
     }
 
     // Cast id to integer
-    $r['id'] = (int)$r['id'];
+   // $r['id'] = (int)$r['id'];
+    unset($r['id']);
     $r['amendment'] = (int)$r['amendment'];
     $r['cas'] = (string)$r['cas'] ?: '-';
     $r['flavor_use'] = (string)$r['flavor_use'] ?: '-';

@@ -15,12 +15,9 @@ require_once(__ROOT__.'/inc/opendb.php');
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
                     <div class="dropdown-menu dropdown-menu-left">
-                        <li><a href="#" class="dropdown-item" id="export_pdf"><i
-                                    class="fa-solid fa-file-export mx-2"></i>Export to PDF</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i
-                                    class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i
-                                    class="fa-solid fa-font mx-2"></i>View Box Back Label</a></li>
+                        <li><a href="#" class="dropdown-item" id="export_pdf"><i class="fa-solid fa-file-export mx-2"></i>Export to PDF</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#IFRA"><i class="fa-solid fa-certificate mx-2"></i>IFRA Document</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ViewBoxLabel"><i class="fa-solid fa-font mx-2"></i>View Box Back Label</a></li>
                     </div>
                 </div>
             </div>
@@ -227,7 +224,7 @@ require_once(__ROOT__.'/inc/opendb.php');
             buttons: [{
                 extend: 'pdfHtml5',
                 customize: function(doc) {
-                    doc.pageMargins = [50, 20, 50, 20];
+                    doc.pageMargins = [50, 50, 50, 50];
                     doc.content[1].table.widths = ['*', '*', '*', '*', '*'];
 
                     doc.styles.tableHeader.fontSize = 9;

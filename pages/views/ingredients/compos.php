@@ -50,8 +50,7 @@ $ingName = mysqli_real_escape_string($conn, $_GET["name"]);
 
 <script>
 $(document).ready(function() {
-	
-
+	$.fn.dataTable.ext.errMode = 'none';
 	var tdCompositions;
  	if ($.fn.DataTable.isDataTable('#tdCompositions')) {
         // Destroy existing DataTable instance
@@ -96,7 +95,11 @@ $(document).ready(function() {
 		displayLength: 20,
 		scrollCollapse: false,
     	scrollY: '500px'
+	}).on('error.dt', function(e, settings, techNote, message) {
+		var m = message.split(' - ');
+		$('#tdCompositions').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
+
 	
 	$('#allgName').on('input', function(){
 		var searchTerm = $(this).val();

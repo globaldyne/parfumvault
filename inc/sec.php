@@ -62,7 +62,8 @@ if(!isset($_SESSION['parfumvault'])){
 	if(isset($_GET['do'])){
 		$redirect = '?do='.$_GET['do'];
 	}
-	$login = $server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php'.$redirect;
+    $redirect = isset($redirect) ? $redirect : '';
+    $login = $server_request_scheme.'://'.$_SERVER['HTTP_HOST'].'/login.php'.$redirect;
 	header('Location: '.$login);
 	exit;
 }

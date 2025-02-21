@@ -101,6 +101,7 @@ if($role === 1) {
         $role = (int)$_POST['role'];
         $isActive = (int)$_POST['isActive'];
         $isVerified = (int)$_POST['isVerified'];
+        $receiveEmails = (int)$_POST['receiveEmails'];
 
         // Validate password if provided
         if (!empty($password) && !isPasswordComplex($password)) {
@@ -141,7 +142,7 @@ if($role === 1) {
         }
 
         // Prepare queries
-        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?, isVerified = ?";
+        $updateQuery = "UPDATE users SET fullName = ?, email = ?, country = ?, role = ?, isActive = ?, isVerified = ?, receiveEmails = ?";
         if (!empty($password)) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $updateQuery .= ", password = ?";
@@ -154,25 +155,27 @@ if($role === 1) {
         $stmt = $conn->prepare($updateQuery);
         if (!empty($password)) {
             $stmt->bind_param(
-                "sssiiiss",
+                "sssiiiiss",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
                 $isVerified,
+                $receiveEmails,
                 $hashedPassword,
                 $user_id
             );
         } else {
             $stmt->bind_param(
-                "sssiiis",
+                "sssiiiis",
                 $full_name,
                 $email,
                 $country,
                 $role,
                 $isActive,
                 $isVerified,
+                $receiveEmails,
                 $user_id
             );
         }
@@ -287,7 +290,7 @@ if($role === 1) {
                 "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
                 "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
                 "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-                "templates", "user_prefs", "user_settings"
+                "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
             ];
 
             foreach ($tables as $table) {
@@ -311,6 +314,232 @@ if($role === 1) {
         return;
     }
 } // End of admin-only actions
+
+//HANDLE ORDERS
+if (isset($_POST['action']) && $_POST['action'] === 'addorder') {
+    $randomString = bin2hex(random_bytes(8)); // Generates a 16-character random string
+    $uploadDir = $tmp_path . "/uploads/" . $randomString . "/";
+
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0740, true);
+    }
+    // Validate received data
+    $supplier_id = mysqli_real_escape_string($conn, $_POST['supplier_id']);
+
+    $supplierQuery = $conn->prepare("SELECT name FROM ingSuppliers WHERE id = ? AND owner_id = ?");
+    $supplierQuery->bind_param("is", $supplier_id, $userID);
+    $supplierQuery->execute();
+    $supplierResult = $supplierQuery->get_result();
+    $supplierData = $supplierResult->fetch_assoc();
+    $supplier_name = $supplierData['name'];
+    $supplierQuery->close();
+
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $order_items = $_POST['order_items']; // Assuming order_items is an array
+    $tax = (float)$_POST['tax'] ?: 0;
+    $shipping = (float)$_POST['shipping'] ?: 0;
+    $discount = (float)$_POST['discount'] ?: 0;
+    $notes = mysqli_real_escape_string($conn, $_POST['notes']);
+    $reference_number = mysqli_real_escape_string($conn, $_POST['reference_number']);
+    $order_number = mysqli_real_escape_string($conn, $_POST['order_number']);
+
+    $missingFields = [];
+    if (empty($supplier_name)) $missingFields[] = 'Supplier';
+    if (empty($currency)) $missingFields[] = 'Currency';
+    if (empty($order_number)) $missingFields[] = 'Order number';
+    if (empty($order_items)) $missingFields[] = 'Order items';
+
+    if (!empty($missingFields)) {
+        echo json_encode(['error' => 'The following fields are required: ' . implode(', ', $missingFields)]);
+        return;
+    }
+
+    // Handle file upload if provided
+    $attachments = null;
+    if (isset($_FILES['orderFile']) && $_FILES['orderFile']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['orderFile']['tmp_name'];
+        $file_name = $_FILES['orderFile']['name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_ext = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv'];
+
+        if (in_array($file_ext, $allowed_ext)) {
+            $file_path = $uploadDir . $file_name;
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $attachments = file_get_contents($file_path); // Read file contents
+            } else {
+                echo json_encode(['error' => 'Failed to upload file.']);
+                return;
+            }
+        } else {
+            echo json_encode(['error' => 'Invalid file type. Allowed types: ' . implode(', ', $allowed_ext)]);
+            return;
+        }
+    }
+
+    // Insert order into the database
+    $status = 'pending';
+    $orderQuery = "INSERT INTO orders (order_id, reference_number, supplier, currency, status, tax, shipping, discount, received, notes, attachments, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($orderQuery);
+    $stmt->bind_param('sssssdddssss', $order_number, $reference_number, $supplier_name, $currency, $status, $tax, $shipping, $discount, $received, $notes, $attachments, $userID);
+
+    if ($stmt->execute()) {
+        $order_id = $stmt->insert_id;
+
+        // Insert order items
+        $itemQuery = "INSERT INTO order_items (order_id, material, size, unit_price, quantity, lot, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $itemStmt = $conn->prepare($itemQuery);
+
+        foreach ($order_items as $item) {
+            $material = mysqli_real_escape_string($conn, $item['item']);
+            $size = mysqli_real_escape_string($conn, $item['size']);
+            $unit_price = mysqli_real_escape_string($conn, $item['unit_price']);
+            $quantity = mysqli_real_escape_string($conn, $item['quantity']);
+            $lot = mysqli_real_escape_string($conn, $item['lot_number']) ?: '-';
+
+            $itemStmt->bind_param('isdddss', $order_id, $material, $size, $unit_price, $quantity, $lot, $userID);
+            $itemStmt->execute();
+        }
+
+        $itemStmt->close();
+
+        // Remove the uploaded file after successful insertion
+        if ($attachments) {
+         //   unlink($attachments);
+            rmdir($uploadDir);
+        }
+
+        echo json_encode(['success' => 'Order added successfully']);
+    } else {
+        echo json_encode(['error' => 'Failed to add order: ' . $stmt->error]);
+        error_log("Error adding order: " . $stmt->error);
+    }
+
+    $stmt->close();
+
+    return;
+}
+
+//UPDATE ORDER
+if(isset($_POST['action']) && $_POST['action'] === 'updateorder') {
+    $order_id = mysqli_real_escape_string($conn, $_POST['order_id']);
+    $orderStatus = mysqli_real_escape_string($conn, $_POST['orderStatus']);
+    $orderDate = mysqli_real_escape_string($conn, $_POST['orderDate']);
+    $receivedDate = mysqli_real_escape_string($conn, $_POST['receivedDate']) ?: null;
+    $reference_number = mysqli_real_escape_string($conn, $_POST['reference_number']);
+    $orderNotes = mysqli_real_escape_string($conn, $_POST['orderNotes']);
+
+    $updateQuery = $conn->prepare("UPDATE orders SET status = ?, placed = ?, received = ?, reference_number = ?, notes = ? WHERE id = ? AND owner_id = ?");
+    $updateQuery->bind_param("sssssis", $orderStatus, $orderDate, $receivedDate, $reference_number, $orderNotes, $order_id, $userID);
+
+    if ($updateQuery->execute()) {
+        $response['success'] = 'Order updated successfully';
+    } else {
+        $response['error'] = 'Failed to update order: ' . $updateQuery->error;
+    }
+
+    echo json_encode($response);
+    return;
+}
+
+//RE-ORDER
+if(isset($_POST['action']) && $_POST['action'] === 'reorder') {
+    $supplierEmail = mysqli_real_escape_string($conn, $_POST['supplierEmail']);
+    $orderItems = $_POST['items'];
+    $supplier = mysqli_real_escape_string($conn, $_POST['supplier']);
+    $notes = mysqli_real_escape_string($conn, $_POST['notes']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $response = [];
+
+    // Insert new order
+    $status = 'pending';
+    $tax = 0;
+    $shipping = 0;
+    $discount = 0;
+
+    $orderNumber = bin2hex(random_bytes(8)); // Generates a 16-character random string
+    $orderQuery = $conn->prepare("INSERT INTO orders (order_id, supplier, currency, status, tax, shipping, discount, notes, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $orderQuery->bind_param("ssssdddss", $orderNumber, $supplier, $currency, $status, $tax, $shipping, $discount, $notes, $userID);
+
+    if ($orderQuery->execute()) {
+        $newOrderID = $orderQuery->insert_id;
+
+        // Insert order items
+        $itemQuery = $conn->prepare("INSERT INTO order_items (order_id, material, size, unit_price, quantity, lot, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $itemQuery->bind_param("isdddss", $newOrderID, $material, $size, $unit_price, $quantity, $lot, $userID);
+
+        foreach ($orderItems as $item) {
+            $material = $item['item'];
+            $size = $item['size'];
+            $unit_price = $item['unit_price'];
+            $quantity = $item['quantity'];
+            $lot = $item['sku'] ?: '-';
+            $itemQuery->execute();
+        }
+
+        $itemQuery->close();
+
+        $templateContent = file_get_contents(__ROOT__.'/emailTemplates/reorderIngredientsTemplate.html');
+
+        // Replace placeholders in the template
+        $templateContent = str_replace('{{supplier}}', htmlspecialchars($supplier, ENT_QUOTES, 'UTF-8'), $templateContent);
+        $templateContent = str_replace('{{notes}}', nl2br(htmlspecialchars($notes, ENT_QUOTES, 'UTF-8')), $templateContent);
+
+        $itemsHtml = '';
+        foreach ($orderItems as $item) {
+            $itemsHtml .= '<tr>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['item'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['size'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['unit_price'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['quantity'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '<td>' . htmlspecialchars($item['sku'], ENT_QUOTES, 'UTF-8') . '</td>';
+            $itemsHtml .= '</tr>';
+        }
+        $templateContent = str_replace('{{orderItems}}', $itemsHtml, $templateContent);
+
+        // Send email
+        $subject = $orderNumber.' - New order Request';
+        $sendMail = sendMail($supplierEmail, $subject, $templateContent);
+
+        if ($sendMail) {
+            $response['success'] = 'Order successfully placed and email sent.';
+        } else {
+            $response['error'] = 'Order placed but failed to send email.';
+        }
+    } else {
+        $response['error'] = 'Failed to create new order: ' . $orderQuery->error;
+    }
+
+    $orderQuery->close();
+    echo json_encode($response);
+    return;
+}
+
+
+//DELETE ORDER
+if(isset($_GET['action']) && $_GET['action'] === 'deleteorder') {
+    $order_id = mysqli_real_escape_string($conn, $_GET['order_id']);
+
+    $deleteOrderQuery = $conn->prepare("DELETE FROM orders WHERE id = ? AND owner_id = ?");
+    $deleteOrderQuery->bind_param("is", $order_id, $userID);
+
+    $deleteOrderItemsQuery = $conn->prepare("DELETE FROM order_items WHERE order_id = ? AND owner_id = ?");
+    $deleteOrderItemsQuery->bind_param("is", $order_id, $userID);
+    
+    if ($deleteOrderItemsQuery->execute()) {
+        $response['success'] = 'Order items deleted successfully';
+    } else {
+        $response['error'] = 'Failed to delete order items: ' . $deleteOrderItemsQuery->error;
+    }
+
+    if ($deleteOrderQuery->execute()) {
+        $response['success'] = 'Order deleted successfully';
+    } else {
+        $response['error'] = 'Failed to delete order: ' . $deleteOrderQuery->error;
+    }
+
+    echo json_encode($response);
+    return;
+}
 
 //DELETE PROFILE
 if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
@@ -354,7 +583,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
             "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-            "templates", "user_prefs", "user_settings", "branding"
+            "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
         ];
 
         foreach ($tables as $table) {
@@ -582,6 +811,12 @@ if ($_POST['action'] === 'update_user_profile') {
         return;
     }
 
+    if (!preg_match("/^[a-zA-Z\s]+$/", $_POST['user_fname'])) {
+        $response['error'] = 'Full name can only contain letters and spaces';
+        echo json_encode($response);
+        return;
+    }
+
     // Validate email format
     if (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
         echo json_encode(["error" => "Invalid email address"]);
@@ -671,6 +906,7 @@ if ($_POST['action'] === 'update_user_settings') {
     $chem_vs_brand = isset($_POST["chem_vs_brand"]) && $_POST["chem_vs_brand"] === 'true' ? '1' : '0';
     $chkVersion = isset($_POST["chkVersion"]) && $_POST["chkVersion"] === 'true' ? '1' : '0';
     $multi_dim_perc = isset($_POST["multi_dim_perc"]) && $_POST["multi_dim_perc"] === 'true' ? '1' : '0';
+    $allow_incomplete_ingredients = isset($_POST["allow_incomplete_ingredients"]) && $_POST["allow_incomplete_ingredients"] === 'true' ? '1' : '0';
     
     $response = [];
     foreach ($_POST as $key => $value) {
@@ -707,30 +943,80 @@ if ($_POST['action'] === 'update_user_settings') {
 }
 
 //UPDATE API SETTINGS
-if($_POST['manage'] == 'api'){
-	
-	$api = $_POST['api'];
-	$api_key = mysqli_real_escape_string($conn, $_POST['api_key']);
-	if(strlen($api_key) < 8){
-		$response['error'] =  'API key must be at least 8 characters long';	
-		echo json_encode($response);
-		return;
-	}
-	if($_POST["api"] == 'true') {
-		$api = '1';
-	}else{
-		$api = '0';
-	}
-	
-	if(mysqli_query($conn, "UPDATE users SET isAPIActive = '$api', API_key='$api_key' WHERE id = '$userID'")){
-		$response['success'] = 'API settings updated';	
-	}else{
-		$response['error'] = 'An error occured '.mysqli_error($conn);	
-	}
-	echo json_encode($response);
-	return;
+if ($_POST['manage'] === 'api') {
+    $api = $_POST['api'] === 'true' ? '1' : '0';
+    
+    // Check if API_key is empty
+    $stmt = $conn->prepare("SELECT API_key FROM users WHERE id = ?");
+    $stmt->bind_param('s', $userID);
+    $stmt->execute();
+    $stmt->bind_result($apiKey);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (empty($apiKey)) {
+        // Generate a unique 32-character string
+        $newApiKey = bin2hex(random_bytes(16));
+        $stmt = $conn->prepare("UPDATE users SET API_key = ? WHERE id = ?");
+        $stmt->bind_param('ss', $newApiKey, $userID);
+        $stmt->execute();
+        $stmt->close();
+        $apiKey = $newApiKey;
+    }
+
+    $stmt = $conn->prepare("UPDATE users SET isAPIActive = ? WHERE id = ?");
+    $stmt->bind_param('ss', $api, $userID);
+
+    if ($stmt->execute()) {
+        $response['success'] = 'API settings updated';
+        $response['API_key'] = $apiKey;
+    } else {
+        $response['error'] = 'An error occurred: ' . $stmt->error;
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;
 }
 
+//GENERATE API KEY
+if (!empty($_POST['regenerate-api-key']) && $_POST['regenerate-api-key'] === 'true') {
+    do {
+        $newApiKey = bin2hex(random_bytes(16)); // Generates a 32-character random string
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE API_key = ?");
+        
+        if (!$stmt) {
+            error_log("PV error: Failed to prepare statement for uniqueness check - " . $conn->error);
+            echo json_encode(['error' => 'Failed to regenerate API key']);
+            return;
+        }
+
+        $stmt->bind_param('s', $newApiKey);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+    } while ($count > 0); // Regenerate if the key is not unique
+
+    $stmt = $conn->prepare("UPDATE users SET API_key = ? WHERE id = ?");
+    if (!$stmt) {
+        error_log("PV error: Failed to prepare statement for updating API key - " . $conn->error);
+        echo json_encode(['error' => 'Failed to regenerate API key']);
+        return;
+    }
+
+    $stmt->bind_param('ss', $newApiKey, $userID);
+    
+    if ($stmt->execute()) {
+        echo json_encode(['success' => 'API key regenerated successfully', 'API_key' => $newApiKey]);
+    } else {
+        error_log("PV error: Failed to regenerate API key - " . $stmt->error);
+        echo json_encode(['error' => 'Failed to regenerate API key']);
+    }
+
+    $stmt->close();
+    return;
+}
 
 
 //BRANDING
@@ -1340,7 +1626,7 @@ if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST[
 
         $stmtInsert = $conn->prepare("INSERT INTO ingredients ({$columns}, `owner_id`) VALUES ({$placeholders}, ?)");
 
-        $types = str_repeat('s', count($values)) . 'i';
+        $types = str_repeat('s', count($values)) . 's';
         $params = array_merge([$types], $values, [$userID]);
 
         call_user_func_array([$stmtInsert, 'bind_param'], $params);
@@ -2229,24 +2515,41 @@ if($_GET['action'] == 'deleteDocument'){
 }
 
 //GET SUPPLIER PRICE
-if($_POST['ingSupplier'] == 'getPrice'){
-	$ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
-	$ingSupplierID = mysqli_real_escape_string($conn, $_POST['ingSupplierID']);
-	$size = mysqli_real_escape_string($conn, $_POST['size']);
-	$supplier_link = urldecode($_POST['sLink']);
-	
-	$supp_data = mysqli_fetch_array(mysqli_query($conn, "SELECT price_tag_start,price_tag_end,add_costs,price_per_size FROM ingSuppliers WHERE id = '$ingSupplierID' AND owner_id = '$userID'"));
-	
-	if($newPrice = priceScrape($supplier_link,$size,$supp_data['price_tag_start'],$supp_data['price_tag_end'],$supp_data['add_costs'],$supp_data['price_per_size'])){
-		if(mysqli_query($conn, "UPDATE suppliers SET price = '$newPrice' WHERE ingSupplierID = '$ingSupplierID' AND ingID='$ingID' AND owner_id = '$userID'")){
-			$response["success"] = 'Price updated';
-			echo json_encode($response);
-		}
-	}else{
-	 	$response["error"] = '<strong>Error getting the price from the supplier. Previous value has been retained.</strong>';
-		echo json_encode($response);
-	}
-	return;
+if ($_POST['ingSupplier'] == 'getPrice') {
+    $ingID = mysqli_real_escape_string($conn, $_POST['ingID']);
+    $ingSupplierID = mysqli_real_escape_string($conn, $_POST['ingSupplierID']);
+    $size = mysqli_real_escape_string($conn, $_POST['size']);
+    $supplier_link = urldecode($_POST['sLink']);
+
+    $query = "SELECT price_tag_start, price_tag_end, add_costs, price_per_size FROM ingSuppliers WHERE id = ? AND owner_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('is', $ingSupplierID, $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $supp_data = $result->fetch_assoc();
+    $stmt->close();
+
+    if ($supp_data) {
+        $newPrice = priceScrape($supplier_link, $size, $supp_data['price_tag_start'], $supp_data['price_tag_end'], $supp_data['add_costs'], $supp_data['price_per_size']);
+        if ($newPrice !== false) {
+            $updateQuery = "UPDATE suppliers SET price = ? WHERE ingSupplierID = ? AND ingID = ? AND owner_id = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bind_param('diis', $newPrice, $ingSupplierID, $ingID, $userID);
+            if ($updateStmt->execute()) {
+                $response["success"] = 'Price updated, please validate data is correct';
+            } else {
+                $response["error"] = 'Error updating the price in the database.';
+            }
+            $updateStmt->close();
+        } else {
+            $response["error"] = 'Error getting the price from the supplier. Previous value has been retained.';
+        }
+    } else {
+        $response["error"] = 'Supplier data not found.';
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //ADD ING SUPPLIER
@@ -2725,77 +3028,94 @@ if($_GET['supp'] == 'delete' && $_GET['ID']){
 
 //ADD composition
 if($_POST['composition'] == 'add'){
-	$allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
-	$allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
-	$allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);	
-	$minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']),'%');
-	$maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']),'%');
-	$GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
+    $allgName = mysqli_real_escape_string($conn, $_POST['allgName']);
+    $allgCAS = mysqli_real_escape_string($conn, $_POST['allgCAS']);
+    $allgEC = mysqli_real_escape_string($conn, $_POST['allgEC']);
+    $minPerc = rtrim(mysqli_real_escape_string($conn, $_POST['minPerc']), '%');
+    $maxPerc = rtrim(mysqli_real_escape_string($conn, $_POST['maxPerc']), '%');
+    $GHS = rtrim(mysqli_real_escape_string($conn, $_POST['GHS']));
 
-	$ing = base64_decode($_POST['ing']);
-	
-	if($_POST['addToDeclare'] == 'true'){
-		$declare = '1';
-	}else{
-		$declare = '0';
-	}
-	
-	if(empty($allgName)){
-		$response["error"] = 'Name is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($allgCAS)){
-		$response["error"] = 'CAS number is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($minPerc)){
-		$response["error"] = 'Minimum percentage is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(empty($maxPerc)){
-		$response["error"] = 'Max percentage is required';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(!is_numeric($minPerc)){
-		$response["error"] = 'Minimum percentage value needs to be numeric';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(!is_numeric($maxPerc)){
-		$response["error"] = 'Maximum percentage value needs to be numeric';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE name = '$allgName' AND ing = '$ing'  AND owner_id = '$userID'"))){
-		$response["error"] = $allgName.' already exists';
-		echo json_encode($response);
-		return;
-	}
-	
-	if(mysqli_query($conn, "INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing, owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$minPerc','$maxPerc','$GHS','$declare','$ing','$userID')")){
-		$response["success"] = $allgName.' added to the composition';
-	}else{
-		$response["error"] = mysqli_error($conn);
-	}
-	
-	if($_POST['addToIng'] == 'true'){
-		if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$allgName' AND owner_id = '$userID'")))){
-			mysqli_query($conn, "INSERT INTO ingredients (name,cas,einecs,owner_id) VALUES ('$allgName','$allgCAS','$allgEC','$userID')");		
-		}
-	}
-	
-	echo json_encode($response);
-	return;
+    $ing = base64_decode($_POST['ing']);
+
+    $declare = ($_POST['addToDeclare'] == 'true') ? '1' : '0';
+
+    if(empty($allgName)){
+        $response["error"] = 'Name is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($allgCAS)){
+        $response["error"] = 'CAS number is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($minPerc)){
+        $response["error"] = 'Minimum percentage is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(empty($maxPerc)){
+        $response["error"] = 'Max percentage is required';
+        echo json_encode($response);
+        return;
+    }
+
+    if(!is_numeric($minPerc)){
+        $response["error"] = 'Minimum percentage value needs to be numeric';
+        echo json_encode($response);
+        return;
+    }
+
+    if(!is_numeric($maxPerc)){
+        $response["error"] = 'Maximum percentage value needs to be numeric';
+        echo json_encode($response);
+        return;
+    }
+
+    $stmt = $conn->prepare("SELECT name FROM ingredient_compounds WHERE name = ? AND ing = ? AND owner_id = ?");
+    $stmt->bind_param('sss', $allgName, $ing, $userID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if($stmt->num_rows > 0){
+        $response["error"] = $allgName.' already exists';
+        echo json_encode($response);
+        return;
+    }
+    $stmt->close();
+
+    $stmt = $conn->prepare("INSERT INTO ingredient_compounds (name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, ing, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('sssssssss', $allgName, $allgCAS, $allgEC, $minPerc, $maxPerc, $GHS, $declare, $ing, $userID);
+
+    if($stmt->execute()){
+        $response["success"] = $allgName.' added to the composition';
+    } else {
+        $response["error"] = $stmt->error;
+    }
+    $stmt->close();
+
+    if($_POST['addToIng'] == 'true'){
+        $stmt = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
+        $stmt->bind_param('ss', $allgName, $userID);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if($stmt->num_rows == 0){
+            $stmt->close();
+            $stmt = $conn->prepare("INSERT INTO ingredients (name, cas, einecs, owner_id) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param('ssss', $allgName, $allgCAS, $allgEC, $userID);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $stmt->close();
+        }
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //UPDATE composition
@@ -4931,7 +5251,8 @@ if($_GET['restore'] == 'db_bk'){
 			mkdir($tmp_path, 0777, true);
 		}
 		
-		$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
+        $original_filename = basename($_FILES['backupFile']['name']);
+        $target_path = $tmp_path . $fid . '_' . $original_filename;
 
 		if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
 			$gz_tmp = basename($_FILES['backupFile']['name']);
@@ -5044,160 +5365,12 @@ if($_GET['action'] == 'exportIFRA'){
     return;
 }
 
-//EXPORT FORMULAS
-if($_GET['action'] == 'exportFormulas'){
-    if($_GET['fid']){
-        $filter = " WHERE fid ='".$_GET['fid']."' AND owner_id = '$userID'";
-    } else {
-        $filter = " WHERE owner_id = '$userID'";
-    }
-    if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'")))){
-        $msg['error'] = 'No formulas found to export';
-        echo json_encode($msg);
-        return;
-    }
-    $formulas = 0;
-    $ingredients = 0;
-    
-    $qfmd = mysqli_query($conn, "SELECT * FROM formulasMetaData $filter");
-    while($meta = mysqli_fetch_assoc($qfmd)){
-        $r = [
-            'name' => (string)$meta['name'],
-            'product_name' => (string)$meta['product_name'],
-          //  'fid' => (string)$meta['fid'],
-            'profile' => (string)$meta['profile'],
-            'category' => (string)$meta['profile'] ?: 'Default',
-            'gender' => (string)$meta['gender'],
-            'notes' => (string)$meta['notes'] ?: 'None',
-            'created_at' => (string)$meta['created_at'],
-            'isProtected' => (int)$meta['isProtected'] ?: 0,
-            'defView' => (int)$meta['defView'],
-            'catClass' => (string)$meta['catClass'],
-            'revision' => (int)$meta['revision'] ?: 0,
-            'finalType' => (int)$meta['finalType'] ?: 100,
-            'isMade' => (int)$meta['isMade'],
-            'madeOn' => (string)$meta['madeOn'] ?: "0000-00-00 00:00:00",
-            'scheduledOn' => (string)$meta['scheduledOn'],
-            'customer_id' => (int)$meta['customer_id'],
-            'status' => (int)$meta['status'],
-            'toDo' => (int)$meta['toDo'],
-            'rating' => (int)$meta['rating'] ?: 0
-        ];
-        $formulas++;
-        $fm[] = $r;
-    }
-    
-    $qfm = mysqli_query($conn, "SELECT * FROM formulas $filter");
-    while($formula = mysqli_fetch_assoc($qfm)){
-        $f = [
-          //  'fid' => (string)$formula['fid'],
-            'name' => (string)$formula['name'],
-            'ingredient' => (string)$formula['ingredient'],
-            'ingredient_id' => (int)$formula['ingredient_id'] ?: 0,
-            'concentration' => (float)$formula['concentration'] ?: 100,
-            'dilutant' => (string)$formula['dilutant'] ?: 'None',
-            'quantity' => (float)$formula['quantity'],
-            'exclude_from_summary' => (int)$formula['exclude_from_summary'],
-            'exclude_from_calculation' => (int)$formula['exclude_from_calculation'],
-            'notes' => (string)$formula['notes'] ?: 'None',
-            'created_at' => (string)$formula['created_at'],
-            'updated' => (string)$formula['updated']
-        ];
-        $ingredients++;
-        $fd[] = $f;
-    }
-    
-    $vd = [
-        'product' => $product,
-        'version' => $ver,
-        'formulas' => $formulas,
-        'ingredients' => $ingredients,
-        'timestamp' => date('d/m/Y H:i:s')
-    ];
-
-    $result = [
-        'formulasMetaData' => $fm,
-        'formulas' => $fd,
-        'pvMeta' => $vd
-    ];
-
-    if(!$_GET['fid']){
-        $f['name'] = "All_formulas";
-    }
-    
-    header('Content-disposition: attachment; filename='.$f['name'].'.json');
-    header('Content-type: application/json');
-    echo json_encode($result, JSON_PRETTY_PRINT);
-    return;
-}
 
 //IMPORT FORMULAS
 if($_GET['action'] == 'restoreFormulas'){
     $result = [];
-	if (!file_exists($tmp_path)) {
-		mkdir($tmp_path, 0777, true);
-	}
-	
-	if (!is_writable($tmp_path)) {
-		$result['error'] = "Upload directory not writable. Make sure you have write permissions.";
-		echo json_encode($result);
-		return;
-	}
-	
-	$target_path = $tmp_path.basename($_FILES['backupFile']['name']); 
-
-	if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
-    	$data = json_decode(file_get_contents($target_path), true);
-		
-		if(!$data['formulasMetaData']){
-			$result['error'] = "JSON File seems invalid. Please make sure you importing the right file";
-			echo json_encode($result);
-			return;
-		}
-		
-		foreach ($data['formulasMetaData'] as $meta ){				
-			$name = mysqli_real_escape_string($conn, $meta['name']);
-			$product_name = mysqli_real_escape_string($conn, $meta['product_name']);
-			$notes = mysqli_real_escape_string($conn, $meta['notes']);
-			
-			$sql = "INSERT IGNORE INTO formulasMetaData(name,product_name,fid,profile,gender,notes,isProtected,defView,catClass,revision,finalType,isMade,madeOn,scheduledOn,customer_id,status,toDo,rating,owner_id) VALUES('".$name."','".$product_name."','".$meta['fid']."','".$meta['profile']."','".$meta['gender']."','".$notes."','".$meta['isProtected']."','".$meta['defView']."','".$meta['catClass']."','".$meta['revision']."','".$meta['finalType']."','".$meta['isMade']."','".$meta['madeOn']."','".$meta['scheduledOn']."','".$meta['customer_id']."','".$meta['status']."','".$meta['toDo']."','".$meta['rating']."','$userID')";
-			
-			if(mysqli_query($conn,$sql)){
-				mysqli_query($conn,"DELETE FROM formulas WHERE fid = '".$meta['fid']."' AND owner_id = '$userID'");
-			}else{
-				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
-				echo json_encode($result);
-				return;
-			}
-		}
-		
-		foreach ($data['formulas'] as $formula ){	
-	
-			$name = mysqli_real_escape_string($conn, $formula['name']);
-			$notes = mysqli_real_escape_string($conn, $formula['notes']);
-			$ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
-			$exclude_from_summary = $formula['exclude_from_summary'] ?: 0;
-			$exclude_from_calculation = $formula['exclude_from_calculation'] ?: 0;
-
-			$sql = "INSERT INTO formulas(fid,name,ingredient,ingredient_id,concentration,dilutant,quantity,exclude_from_summary,exclude_from_calculation,notes,owner_id) VALUES('".$formula['fid']."','".$name."','".$ingredient."','".$formula['ingredient_id']."','".$formula['concentration']."','".$formula['dilutant']."','".$formula['quantity']."','".$exclude_from_summary."','".$exclude_from_calculation."','".$notes."','$userID')";
-			
-			if(mysqli_query($conn,$sql)){
-				$result['success'] = "Import complete";
-				unlink($target_path);
-			}else{
-				$result['error'] = "There was an error importing your JSON file ".mysqli_error($conn);
-				
-			}
-		}
-		
-	} else {
-		$result['error'] = "There was an error processing backup file $target_path, please try again!";
-		echo json_encode($result);
-
-	}
-	echo json_encode($result);
-	return;
-
+    require_once(__ROOT__.'/core/import_formulas.php');
+    return;
 }
 
 //IMPORT INGREDIENTS
@@ -6858,7 +7031,7 @@ if($_POST['action'] == 'makeFormula' && $_POST['fid'] && $_POST['qr'] && $_POST[
 		if($getStock['stock'] < $q){
 			$w = "<p>Amount exceeds quantity available in stock (".$getStock['stock'].$getStock['mUnit']."). The maximum available will be deducted from stock</p>";
 			
-			$q = $getStock['stock'];
+			$q = $getStock['stock'] ?: 0;
 		}
 		mysqli_query($conn, "UPDATE suppliers SET stock = stock - $q WHERE ingID = '$ingID' AND ingSupplierID = '".$_POST['supplier']."' AND owner_id = '$userID'");
 		$response['success'] .= "<br/><strong>Stock deducted by ".$q.$settings['mUnit']."</strong>";

@@ -13,10 +13,12 @@ if($meta = mysqli_fetch_array(mysqli_query($conn, "SELECT fid,name FROM formulas
 
 	$f_name = $meta['name'];
 	$fid = $meta['fid'];
-	$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '4'"));
 	
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id,name,isProtected,catClass FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 	$img = mysqli_fetch_array(mysqli_query($conn, "SELECT docData FROM documents WHERE ownerID = '$id' AND type = '2' AND owner_id = '$userID'"));
+	
+	$catClass = str_ireplace('cat', '', $meta['catClass']) ?: '4';
+	$cat_details = mysqli_fetch_array(mysqli_query($conn, "SELECT description FROM IFRACategories WHERE name = '$catClass'"));
 	
 	$formula_q = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'");
 	while ($formula = mysqli_fetch_array($formula_q)){
@@ -73,9 +75,11 @@ if(!$fid){
                     </h2>
                     <h5 class="m-1 text-primary">
                       <span>
-                        <a href="#" rel="tip" class="text-secondary-emphasis" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
-                          <?= ucfirst($meta['catClass']) ?>
-                        </a>
+						<span class="badge rounded-pill badge-shared">
+						  <a href="#" rel="tip" class="text-light" data-bs-placement="right" title="<?= $cat_details['description'] ?>">
+							<?= ucfirst($meta['catClass'] ?: 'cat4') ?><i class="fa-solid fa-circle-info mx-2"></i>
+						  </a>
+						</span>
                         <div id="max_usage" class="text-secondary-emphasis"></div>
                       </span>
                     </h5>

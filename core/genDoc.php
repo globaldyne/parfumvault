@@ -8,16 +8,40 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/libs/fpdf.php');
 
-$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
-
-$imageData = base64_decode(explode(',', $branding['brandLogo'])[1]);
-$tempImagePath = $tmp_path.'/temp_logo.png';
-
 if (!file_exists($tmp_path)) {
 	mkdir($tmp_path, 0740, true);
 }
 
-file_put_contents($tempImagePath, $imageData);
+$branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
+if($branding['brandLogo']){
+	$finfo = new finfo(FILEINFO_MIME_TYPE);
+	$imageData = base64_decode(explode(',', $branding['brandLogo'])[1]);
+	$imageType = $finfo->buffer($imageData);
+	$extension = '';
+
+	switch ($imageType) {
+		case 'image/jpeg':
+			$extension = 'jpg';
+			break;
+		case 'image/png':
+			$extension = 'png';
+			break;
+		case 'image/gif':
+			$extension = 'gif';
+			break;
+		default:
+			$tempImagePath =  __ROOT__.'/img/logo.png';
+			break;
+	}
+
+	if ($extension) {
+		$tempImagePath = $tmp_path.'/temp_logo_' . bin2hex(random_bytes(8)) . '.' . $extension;
+		file_put_contents($tempImagePath, $imageData);
+	}
+} else {
+	$tempImagePath =  __ROOT__.'/img/logo.png';
+}
+
 define('__PVLOGO__', $tempImagePath ?:  __ROOT__.'/img/logo.png');
 
 if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
@@ -37,27 +61,27 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 	
 	$g = [
 		'name' => (string)$res['name'],
-		'INCI' => (string)$res['INCI'] ?: 'N/A',
-		'FEMA' => (string)$res['FEMA'] ?: 'N/A',
-		'einecs' => (string)$res['einecs'] ?: 'N/A',
-		'reach' => (string)$res['reach'] ?: 'N/A',
-		'notes' => (string)$res['notes'] ?: 'N/A',
-		'odor' => (string)$res['odor'],
+		'INCI' => (string)$res['INCI'] ?: '-',
+		'FEMA' => (string)$res['FEMA'] ?: '-',
+		'einecs' => (string)$res['einecs'] ?: '-',
+		'reach' => (string)$res['reach'] ?: '-',
+		'notes' => (string)$res['notes'] ?: '-',
+		'odor' => (string)$res['odor'] ?: '-',
 		'physical_state' => $res['physical_state'] === 1 ? 'Liquid' : ($res['physical_state'] === 2 ? 'Solid' : 'Unknown')
 	];
 	
-	define('__INGCAS__', $res['cas'] ?: 'N/A');
+	define('__INGCAS__', $res['cas'] ?: '-');
 	
 	$t = [
-		'tenacity' => (string)$res['tenacity'] ?: 'N/A',
-		'chemical_name' => (string)$res['chemical_name'] ?: 'N/A',
-		'formula' => (string)$res['formula'] ?: 'N/A',
-		'flash_point' => (string)$res['flash_point'] ?: 'N/A',
+		'tenacity' => (string)$res['tenacity'] ?: '-',
+		'chemical_name' => (string)$res['chemical_name'] ?: '-',
+		'formula' => (string)$res['formula'] ?: '-',
+		'flash_point' => (string)$res['flash_point'] ?: '-',
 		'flavor_use' => (int)$res['flavor_use'],
-		'soluble' => (string)$res['soluble'] ?: 'N/A',
-		'logp' => (string)$res['logp'] ?: 'N/A',
-		'appearance' => (string)$res['appearance'] ?: 'N/A',
-		'molecularWeight' => (string)$res['molecularWeight'] ?: 'N/A'
+		'soluble' => (string)$res['soluble'] ?: '-',
+		'logp' => (string)$res['logp'] ?: '-',
+		'appearance' => (string)$res['appearance'] ?: '-',
+		'molecularWeight' => (string)$res['molecularWeight'] ?: '-'
 	];
 	
 	$i = [
@@ -97,10 +121,10 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 		$c = [
 			'ing' => (string)$res['ing'],
 			'name' => (string)$res['name'],
-			'CAS' => (string)$res['cas'] ?: 'N/A',
-			'EINECS' => (string)$res['ec'] ?: 'N/A',
+			'CAS' => (string)$res['cas'] ?: '-',
+			'EINECS' => (string)$res['ec'] ?: '-',
 			'Concentration (Average)' => $res['min_percentage'] + $res['max_percentage'] / 2,
-			'GHS' => (string)$res['GHS'] ?: 'N/A'
+			'GHS' => (string)$res['GHS'] ?: '-'
 		];
 		$cmp[] = $c;
 		$ingredient_compounds_count++;

@@ -5,10 +5,10 @@ logs/
 uploads/
 batches/
 inc/config.php
-*.swp
-t.php
 tests/
 modules/suppliers/pvLibraryDEV.json
 modules/suppliers/pvLibraryDEV.php
 classes/
 integrations/pvscale/
+go.mod
+go.sum

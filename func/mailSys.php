@@ -108,7 +108,7 @@ function notifyAdminForNewUser($userName, $userEmail, $userAction) {
     $mail = str_replace('__USER_ACTION__', $userAction, $mail);
     $mail = str_replace('__BRANDING_LOGO__', $brandinglogo, $mail);
 
-    $adminQuery = mysqli_query($conn, "SELECT email FROM users WHERE role = 1");
+    $adminQuery = mysqli_query($conn, "SELECT email FROM users WHERE role = 1 AND isActive = 1 AND isVerified = 1 AND receiveEmails = 1");
     while ($admin = mysqli_fetch_assoc($adminQuery)) {
         $adminEmail = $admin['email'];
         sendMail($adminEmail, "New user just $userAction", $mail);

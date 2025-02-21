@@ -248,7 +248,9 @@ $(document).ready(function() {
 	<?php if(isset($settings['pv_scale_enabled'])) { ?>
 	$('#tdDataPending tbody').on('click', 'tr', function () {
 		var rowData = tdDataPending.row(this).data();
+		<?php if($settings['pv_scale_enabled']) { ?>
 		rowClickedFunction(rowData);
+		<?php } ?>
 	});
 	<?php } ?>
 
@@ -307,11 +309,54 @@ $(document).ready(function() {
 		
 		return st;
 	};
-	
+	/**
 	function reload_data() {
 		$('#tdDataPending').DataTable().ajax.reload(null, true);
 	};
-	
+	**/
+	function reload_data() {
+		var table = $('#tdDataPending').DataTable();
+		$.ajax({
+			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
+			type: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				var localData = table.ajax.json().data;
+				var reloadNeeded = false;
+				var changeLog = [];
+				for (var i = 0; i < Math.min(localData.length, data.data.length); i++) {
+					if (localData[i].ingredient !== data.data[i].ingredient) {
+						reloadNeeded = true;
+						changeLog.push('Ingredient changed: ' + localData[i].ingredient + ' to ' + data.data[i].ingredient);
+					}
+					if (localData[i].quantity !== data.data[i].quantity) {
+						reloadNeeded = true;
+						changeLog.push('Quantity changed for ' + localData[i].ingredient + ': ' + localData[i].quantity + ' to ' + data.data[i].quantity);
+					}
+					if (localData[i].toAdd !== data.data[i].toAdd) {
+						reloadNeeded = true;
+						changeLog.push('toAdd changed for ' + localData[i].ingredient + ': ' + localData[i].toAdd + ' to ' + data.data[i].toAdd);
+					}
+					if (localData[i].toSkip !== data.data[i].toSkip) {
+						reloadNeeded = true;
+						changeLog.push('toSkip changed for ' + localData[i].ingredient + ': ' + localData[i].toSkip + ' to ' + data.data[i].toSkip);
+					}
+				}
+				if (reloadNeeded) {
+					table.ajax.reload(null, true);
+					console.log('Changes detected, data reloaded');
+				//	console.log('Change log:', changeLog);
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error('Error checking data:', error);
+			}
+		});
+	};
+
+    setInterval(reload_data, 5000); // Check for updates every 5 seconds
+
+
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			"html": true,

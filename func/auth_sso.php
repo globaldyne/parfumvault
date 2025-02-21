@@ -103,7 +103,7 @@ function auth_sso() {
 
         if ($isActive == 0) {
             $response = [];
-            $response['error'] = 'User account is inactive';
+            $response['error'] = 'User account is inactive '.$email;
             $_SESSION['temp_response'] = $response;
             header('Location: /index.php');
             return;
@@ -113,9 +113,11 @@ function auth_sso() {
             $updateQuery = $conn->prepare("UPDATE users SET fullName = ?, password = ?, token = ?, role = ?, isActive = ?, isVerified = ? WHERE email = ? AND provider = ?");
             //$role = 2;
             $updateQuery->bind_param("sssiiisi", $fullName, $hashedPassword, $token, $role, $isActive, $isVerified, $email, $provider);
-            $updateQuery->execute();
-            error_log("User found in auth_kc: " . $email);
-            error_log("Update Query: " . $updateQuery->error);
+            if ($updateQuery->execute()) {
+                error_log("User found in auth_kc: " . $email);
+            } else {
+                error_log("Update Query Error: " . $updateQuery->error);
+            }
 
 
             session_regenerate_id(true); // Prevent session fixation
@@ -124,16 +126,22 @@ function auth_sso() {
             $_SESSION['userID'] = $user['sub'];
             $_SESSION['role'] = 2;
             $_SESSION['user_email'] = $user['email'];
+            logAuditEvent($user['email'], 'login_attempt', 'success');
+
             header('Location: /index.php');
         } else {
             // Insert new user
             error_log("User NOT found in auth_sso: " . $email);
+            $insertQuery = $conn->prepare("INSERT INTO users (id, fullName, email, password, provider, token, role, isActive, isVerified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $role = 2;
+            $isActive = 1;
+            $isVerified = 1;
+            $insertQuery->bind_param("ssssisiis", $userId, $fullName, $email, $hashedPassword, $provider, $token, $role, $isActive, $isVerified);
 
-            $insertQuery = "INSERT INTO users (id, fullName, email, password, provider, token, role, isActive, isVerified) VALUES ('$userId', '$fullName', '$email', '$hashedPassword', $provider, '$token', 2, 1, 1)";
-            if ($conn->query($insertQuery) === TRUE) {
+            if ($insertQuery->execute()) {
                 error_log("New user created successfully: " . $email);
             } else {
-                error_log("Error: " . $insertQuery . " - " . $conn->error);
+                error_log("Error: " . $insertQuery->error);
             }
             // Notify or login as needed
             if($system_settings['EMAIL_isEnabled']){
@@ -155,10 +163,19 @@ function auth_sso() {
             $_SESSION['userID'] = $user['sub'];
             $_SESSION['role'] = 2;
             $_SESSION['user_email'] = $user['email'];
+            logAuditEvent($user['email'], 'login_attempt', 'success');
 
             header('Location: /index.php');
         }
-
+        // Update last_login timestamp
+        try {
+            $update_query = "UPDATE users SET last_login = NOW() WHERE id = '" . $user['sub'] . "'";
+            if (!mysqli_query($conn, $update_query)) {
+                throw new Exception('Failed to update last login timestamp: ' . mysqli_error($conn));
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
         // Close statements
         $checkQuery->close();
         if (isset($updateQuery)) $updateQuery->close();

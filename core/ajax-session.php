@@ -19,6 +19,10 @@ if (getenv('PLATFORM') === "CLOUD") {
 
 $current_time = time();
 $session_start_time = $_SESSION['parfumvault_time'] ?? $current_time;
+if (!is_numeric($session_timeout)) {
+    error_log("Invalid session timeout value: $session_timeout. Using default value of 1800 seconds.");
+    $session_timeout = 1800;
+}
 $time_left = max(0, ($session_start_time + $session_timeout - $current_time) / 60); // Convert to minutes
 
 $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
@@ -41,21 +45,23 @@ if (($current_time - $session_start_time) > $session_timeout) {
 if (!isset($_SESSION['parfumvault']) || $_SESSION['parfumvault'] === false) {
     if (isset($_SESSION['userID'])) {
         $userID = $_SESSION['userID'];
-    }
-    try {
-        if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
-            throw new Exception(mysqli_error($conn));
+    //}
+        try {
+            if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
+                throw new Exception(mysqli_error($conn));
+            }
+        } catch (Exception $e) {
+            error_log("Failed to delete session info: " . $e->getMessage());
         }
-    } catch (Exception $e) {
-        error_log("Failed to delete session info: " . $e->getMessage());
     }
-    echo json_encode([
-        'session_status' => false,
-        'session_timeout' => $session_timeout,
-        'session_time' => $session_start_time,
-        'time_left' => 0
-    ]);
-    session_destroy();
+        echo json_encode([
+            'session_status' => false,
+            'session_timeout' => $session_timeout,
+            'session_time' => $session_start_time,
+            'time_left' => 0
+        ]);
+        session_destroy();
+    //}
 } else {
     $userInfo = mysqli_fetch_array(mysqli_query($conn, "SELECT id, email, isActive FROM users WHERE id = '".$_SESSION['userID']."'"));
     

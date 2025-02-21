@@ -20,6 +20,12 @@ if ($_POST['action'] == 'selfregister') {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
+    if (!preg_match("/^[a-zA-Z\s]+$/", $fullName)) {
+        $response['error'] = 'Full name can only contain letters and spaces';
+        echo json_encode($response);
+        return;
+    }
+    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $response['error'] = 'Invalid email address';
         echo json_encode($response);

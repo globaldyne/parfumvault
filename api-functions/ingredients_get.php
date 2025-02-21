@@ -65,7 +65,8 @@ while ($rx = mysqli_fetch_assoc($result)) {
     $price_per_unit = $gSupQ['price'] / $size;
 
     // Normalize and structure data
-    $rx['id'] = normalize_value($rx['id'], 'int');
+//    $rx['id'] = normalize_value($rx['id'], 'int');
+    unset($rx['id']);
     $rx['INCI'] = normalize_value($rx['INCI']);
     $rx['name'] = normalize_value($rx['name']);
     $rx['type'] = normalize_value($rx['type']);

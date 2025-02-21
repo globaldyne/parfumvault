@@ -12,10 +12,10 @@ require_once(__ROOT__.'/func/php-settings.php');
                 <div class="text-right">
                   <div class="btn-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-                      <div class="dropdown-menu dropdown-menu-right">
-                      <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
-                      <li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
-        <li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=suppliers"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
+                      <div class="dropdown-menu">
+                      	<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSupplier"><i class="fa-solid fa-plus mx-2"></i>Add new</a></li>
+                      	<li><a class="dropdown-item" id="exportCSV" href="#"><i class="fa-solid fa-file-export mx-2"></i>Export to CSV</a></li>
+        				<li><a class="dropdown-item" id="json_export" href="/pages/export.php?format=json&kind=suppliers"><i class="fa-solid fa-file-code mx-2"></i>Export to JSON</a></li>
                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importJSON"><i class="fa-solid fa-file-import mx-2"></i>Import from JSON</a></li>
                       </div>
                     </div>        
@@ -118,7 +118,7 @@ $(document).ready(function() {
 		},
 	}).on('error.dt', function(e, settings, techNote, message) {
 		var m = message.split(' - ');
-		$('#cart_data').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+		$('#tdIngSupData').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 
 

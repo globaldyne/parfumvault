@@ -14,10 +14,11 @@ if(!$_POST['search']){
 }
 
 $s = trim($_POST['search']['term']);
+$s = preg_replace("/[^a-zA-Z0-9\s\-]/", "", $s); // Remove illegal characters
 
 if ($_POST['isDeepQ'] == "true"){
 	$t = "synonyms,ingredients";
-	$filter = "WHERE synonym LIKE '%$s%' AND ing = name GROUP BY name";
+	$filter = "WHERE synonym LIKE '%$s%' AND ing = name AND synonyms.owner_id = '$userID' GROUP BY name";
 
 } else if($_POST['isAbsolute'] == "true"){
 	$t = "ingredients";	
@@ -28,16 +29,44 @@ if ($_POST['isDeepQ'] == "true"){
 	$filter = " WHERE (name LIKE '%$s%' OR cas LIKE '%$s%' OR INCI LIKE '%$s%') ";
 }
 
-$q = mysqli_query($conn, "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND owner_id = '$userID' ORDER BY name ASC");
+try {
+	$query = "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND ingredients.owner_id = ? ORDER BY name ASC";
+	$stmt = $conn->prepare($query);
+	$stmt->bind_param("s", $userID);
+	//error_log("Executing query: " . $query);
+	$stmt->execute();
+	$q = $stmt->get_result();
+	if (!$q) {
+		throw new Exception("Database Query Failed: " . $stmt->error);
+	}
+} catch (Exception $e) {
+	error_log($e->getMessage());
+	error_log("Executing query: " . $query);
+}
 while($res = mysqli_fetch_array($q)){
     $ingredients[] = $res;
 }
 $i = 0;
 foreach ($ingredients as $ingredient) { 
-
-	$supp = getIngSupplier($ingredient['id'],1,$conn);
-	if($supp['price']){
-		
+	if(!$settings['allow_incomplete_ingredients']) {
+		$supp = getIngSupplier($ingredient['id'],1,$conn);
+		if($supp['price']){
+			$r['id'] = (int)$ingredient['id'];
+			$r['name'] = (string)$ingredient['name'];
+			$r['IUPAC'] = (string)$ingredient['INCI']?: '-';
+			$r['cas'] = (string)$ingredient['cas']?: '-';
+			$r['einecs'] = (string)$ingredient['einecs']?: '-';
+			$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
+			$r['description'] = (string)$ingredient['odor'] ?: '-';
+			$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
+			$r['profile'] = (string)$ingredient['profile'] ?: 'Unknown';
+			$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
+			$r['mUnit'] = (string)$supp['mUnit'];
+			
+			$rx[]=$r;
+			$i++;
+		}
+	} else {
 		$r['id'] = (int)$ingredient['id'];
 		$r['name'] = (string)$ingredient['name'];
 		$r['IUPAC'] = (string)$ingredient['INCI']?: '-';
@@ -46,9 +75,9 @@ foreach ($ingredients as $ingredient) {
 		$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
 		$r['description'] = (string)$ingredient['odor'] ?: '-';
 		$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
-		$r['profile'] = (string)$ingredient['profile'] ?: 'Uknwown';
-		$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
-		$r['mUnit'] = (string)$supp['mUnit'];
+		$r['profile'] = (string)$ingredient['profile'] ?: 'Unknown';
+		$r['stock'] = 0; // Default stock value
+		$r['mUnit'] = (string)$settings['mUnit'] ?? 'ml'; // Default measurement unit
 		
 		$rx[]=$r;
 		$i++;
