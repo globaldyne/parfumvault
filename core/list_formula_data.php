@@ -6,7 +6,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/countElement.php');
 
-
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 $order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
@@ -17,43 +16,41 @@ $extra = "ORDER BY $order_by $order";
 $filters = [];
 if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['gender']))) {
     if (!empty($_GET['profile'])) {
-        $filters[] = "profile = '" . mysqli_real_escape_string($conn, $_GET['profile']) . "'";
+        $filters[] = "fm.profile = '" . mysqli_real_escape_string($conn, $_GET['profile']) . "'";
     }
     if (!empty($_GET['gender'])) {
-        $filters[] = "gender = '" . mysqli_real_escape_string($conn, $_GET['gender']) . "'";
+        $filters[] = "fm.gender = '" . mysqli_real_escape_string($conn, $_GET['gender']) . "'";
     }
 }
 
 $s = trim($_POST['search']['value'] ?? '');
 if ($s !== '') {
     $searchTerm = mysqli_real_escape_string($conn, $s);
-    $filters[] = "(name LIKE '%$searchTerm%' OR product_name LIKE '%$searchTerm%' OR notes LIKE '%$searchTerm%') AND owner_id = '$userID'";
+    $filters[] = "(fm.name LIKE '%$searchTerm%' OR fm.product_name LIKE '%$searchTerm%' OR fm.notes LIKE '%$searchTerm%')";
 }
 
-//$f = !empty($filters) ? 'WHERE ' . implode(' AND ', $filters) : " WHERE owner_id = '$userID'";
 $f = !empty($filters) ? 'AND ' . implode(' AND ', $filters) : '';
-//$Query = "
-//    SELECT id, fid, name, product_name, isProtected, profile, gender, created_at, catClass, isMade, madeOn, status, rating, revision, (SELECT updated_at FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1) AS updated_at, 
-//        (SELECT COUNT(id) FROM formulas WHERE fid = formulasMetaData.fid AND owner_id = '$userID') AS ingredients FROM formulasMetaData $f $extra LIMIT $row, $limit";
+
 $Query = "
-        SELECT 
-            fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
-            fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
-            (SELECT updated_at 
-             FROM formulas 
-             WHERE fid = fm.fid AND owner_id = '$userID' 
-             ORDER BY updated_at DESC 
-             LIMIT 1) AS updated_at, 
-            (SELECT COUNT(id) 
-             FROM formulas 
-             WHERE fid = fm.fid AND owner_id = '$userID') AS ingredients,
-            (SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = '$userID' LIMIT 1) AS gid 
-        FROM formulasMetaData fm
-        WHERE (fm.owner_id = '$userID' 
-           OR fm.fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) 
-        $f $extra 
-        LIMIT $row, $limit;
-    ";
+    SELECT 
+        fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
+        fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
+        (SELECT updated_at 
+         FROM formulas 
+         WHERE fid = fm.fid AND owner_id = '$userID' 
+         ORDER BY updated_at DESC 
+         LIMIT 1) AS updated_at, 
+        (SELECT COUNT(id) 
+         FROM formulas 
+         WHERE fid = fm.fid AND owner_id = '$userID') AS ingredients,
+        (SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = '$userID' LIMIT 1) AS gid 
+    FROM formulasMetaData fm
+    LEFT JOIN groups g ON fm.fid = g.fid AND g.user_id = '$userID'
+    WHERE (fm.owner_id = '$userID' 
+       OR fm.fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) 
+    $f $extra 
+    LIMIT $row, $limit;
+";
 $formulas = mysqli_query($conn, $Query);
 
 $formulaData = [];
@@ -86,16 +83,15 @@ foreach ($formulaData as $formula) {
     $rx[] = $r;
 }
 
-$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE owner_id = '$userID'"));
-//$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData $f"));
-$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE (owner_id = '$userID' OR fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) $f"));
+$total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData fm WHERE fm.owner_id = '$userID'"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData fm WHERE (fm.owner_id = '$userID' OR fm.fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) $f"));
 
 $response = [
     "draw" => (int)$_POST['draw'],
     "recordsTotal" => (int)$total['entries'],
     "recordsFiltered" => (int)$filtered['entries'],
     "data" => $rx,
-    "debug" => $Query
+   // "debug" => $Query
 ];
 
 if (empty($rx)) {
@@ -105,5 +101,4 @@ if (empty($rx)) {
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 return;
-
 ?>
