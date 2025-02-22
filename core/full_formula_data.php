@@ -26,25 +26,7 @@ if(!$_REQUEST['id']){
 }
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
-/*
-//PLACE HOLDER FOR GROUPS IMPLEMENTATION
-$query = "
-	SELECT 
-		fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
-		fm.finalType, fm.defView, fm.notes, fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
-		(SELECT updated_at 
-		 FROM formulas 
-		 WHERE fid = fm.fid AND owner_id = ? 
-		 ORDER BY updated_at DESC 
-		 LIMIT 1) AS updated_at, 
-		(SELECT COUNT(id) 
-		 FROM formulas 
-		 WHERE fid = fm.fid AND owner_id = ?) AS ingredients,
-		(SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = ? LIMIT 1) AS gid 
-	FROM formulasMetaData fm
-	WHERE fm.owner_id = ? AND fm.id = ?;
-";
-*/
+
 $query = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name, owner_id FROM formulasMetaData WHERE owner_id = ? AND id = ?";
 
 $stmt = $conn->prepare($query);

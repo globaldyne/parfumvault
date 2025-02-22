@@ -79,7 +79,8 @@ foreach ($formulaData as $formula) {
         'madeOn' => (string)($formula['madeOn'] ?: '-'),
         'status' => (int)($formula['status'] ?: 0),
         'rating' => (int)($formula['rating'] ?: 0),
-        'revision' => (int)($formula['revision'] ?: 0)
+        'revision' => (int)($formula['revision'] ?: 0),
+        'gid' => (int)($formula['gid'] ?: 0)
     ];
     
     $rx[] = $r;
@@ -87,12 +88,12 @@ foreach ($formulaData as $formula) {
 
 $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE owner_id = '$userID'"));
 //$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData $f"));
-//$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE (owner_id = '$userID' OR fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) $f"));
+$filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE (owner_id = '$userID' OR fid IN (SELECT g.fid FROM groups g WHERE g.user_id = '$userID')) $f"));
 
 $response = [
     "draw" => (int)$_POST['draw'],
     "recordsTotal" => (int)$total['entries'],
-    "recordsFiltered" => count($rx),
+    "recordsFiltered" => (int)$filtered['entries'],
     "data" => $rx,
     "debug" => $Query
 ];
