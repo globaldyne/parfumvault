@@ -75,11 +75,11 @@ $query = "
     $extra
     LIMIT $row, $limit
 ";
-error_log("PV Info: ingredients query: $query");
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
     error_log("PV error: Query failed - " . mysqli_error($conn));
+    error_log("PV error: ingredients query: $query");
     exit;
 }
 
