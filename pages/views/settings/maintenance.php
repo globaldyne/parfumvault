@@ -61,7 +61,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
           <div id="backupArea">
               <div class="form-group">
                 <div class="mx-4">
-    				<input type="checkbox" class="form-check-input" id="column-statistics" checked>
+    				<input type="checkbox" class="form-check-input" id="column-statistics">
    					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
   				</div>
               </div>
@@ -71,7 +71,7 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
           </div>
       </div>
 	  <div class="modal-footer">
-        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
+        <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Close">
         <button name="btnBackup" class="btn btn-primary" id="btnBackup">Backup</button>
       </div>
   </div>
@@ -142,9 +142,9 @@ $(document).ready(function () {
     });
   });
 
-  $(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip();
-  });
+  
+  $('[data-bs-toggle="tooltip"]').tooltip();
+
 
   $('#bk_modal_open').click(function() {
     $('#restore_db').modal('hide');
@@ -156,47 +156,36 @@ $(document).ready(function () {
     $("#btnCloseBK").prop("disabled", true);
     $('#btnBackup').prepend('<span class="spinner-border spinner-border-sm mx-2" id="bk_span" aria-hidden="true"></span>');
     $.ajax({
-      url: '/core/core.php',
-      data: {
-        do: 'backupDB',
-        column_statistics: $('#column-statistics').prop("checked")
-      },
-      cache: false,
-      xhr: function () {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState == 2) {
-            if (xhr.status == 200) {
-              xhr.responseType = "blob";
-            } else {
-              xhr.responseType = "text";
-            }
-          }
-        };
-        return xhr;
-      },
-      success: function (data) {
-        $('span[id^="bk_span"]').remove();
-        $("#btnBackup").prop("disabled", false);
-        $("#btnCloseBK").prop("disabled", false);
-        var blob = new Blob([data], { type: "application/octetstream" });
-        
-        var url = window.URL || window.webkitURL;
-        link = url.createObjectURL(blob);
-        var a = $("<a />");
-        a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
-        a.attr("href", link);
-        $("body").append(a);
-        a[0].click();
-        $("body").remove(a);
-      },
-      error: function (request, status, error) {
-        $('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: '+request.status+'</div>');
-        $('span[id^="bk_span"]').remove();
-        $("#btnBackup").prop("disabled", false);
-        $("#btnCloseBK").prop("disabled", false);
-      },
-        
+        url: '/core/core.php',
+        data: {
+            do: 'backupDB',
+            column_statistics: $('#column-statistics').prop("checked")
+        },
+        cache: false,
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (data, status, xhr) {
+            $('span[id^="bk_span"]').remove();
+            $("#btnBackup").prop("disabled", false);
+            $("#btnCloseBK").prop("disabled", false);
+
+            var blob = new Blob([data], { type: "application/gzip" });
+            var url = window.URL.createObjectURL(blob);
+            var a = $("<a />");
+            a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
+            a.attr("href", url);
+            $("body").append(a);
+            a[0].click();
+            $("body").remove(a);
+            $('#backup_db').modal('hide');
+        },
+        error: function (request, status, error) {
+            $('#DBMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + '</div>');
+            $('span[id^="bk_span"]').remove();
+            $("#btnBackup").prop("disabled", false);
+            $("#btnCloseBK").prop("disabled", false);
+        }
     });
   });
 });
