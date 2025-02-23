@@ -107,11 +107,11 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
                     <li>Backup file must match your current PV version<strong> (<?=$ver?>)</strong>, if not downgrade or upgrade accordingly before restoring a backup</li>
                     <li>You current database will be wiped-out so if it contains any data you wanna keep, please take a <a href="#" data-bs-toggle="modal" data-bs-target="#backup_db" id="bk_modal_open" class="text-primary">backup</a> first</li>
                   </ul>
-    		</div>
+    		      </div>
           </div>
         </div>
       </div>
-	  <div class="modal-footer">
+	    <div class="modal-footer">
         <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseBK" value="Cancel">
         <input type="submit" name="btnRestore" class="btn btn-primary" id="btnRestore" value="Restore">
       </div>
