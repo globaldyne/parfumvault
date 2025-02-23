@@ -5220,28 +5220,84 @@ if (isset($_GET['do']) && $_GET['do'] === 'db_update') {
 
 
 //DB BACKUP
-if($_GET['do'] == 'backupDB'){
-	if($role === (int)1) {
-		if( getenv('DB_BACKUP_PARAMETERS') ){
-			$bkparams = getenv('DB_BACKUP_PARAMETERS');
-		}
-		
-		if($_GET['column_statistics'] === 'true'){
-			$bkparams = '--column-statistics=1';
-		}
-		
-		$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
-		
-		header( 'Content-Type: application/x-gzip' );
-		header( 'Content-Disposition: attachment; filename="' .$file. '"' );
-		$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
-		passthru($cmd);
-	}	else {
-		echo json_encode(['error' => 'Not authorised']);
-		error_log("PV Error: Not authorised: $role");
-	}
-	return;
+if ($_GET['do'] == 'backupDB') {
+    if ($role === (int)1) {
+        $bkparams = '';
+
+        if (getenv('DB_BACKUP_PARAMETERS')) {
+            $bkparams = getenv('DB_BACKUP_PARAMETERS');
+        }
+
+        if (isset($_GET['column_statistics']) && $_GET['column_statistics'] === 'true') {
+            $bkparams .= ' --column-statistics=1';
+        }
+
+        // Generate a temporary file with a random name
+        $tmpFile = tempnam(sys_get_temp_dir(), 'backup_') . '.sql';
+        $compressedFile = $tmpFile . '.gz';
+
+        $cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname > $tmpFile";
+        error_log("PV Backup: $cmd");
+
+        exec($cmd, $output, $result_code);
+
+        if ($result_code !== 0) {
+            error_log("PV Backup Error: Command failed with code $result_code");
+            echo json_encode(['error' => 'Backup failed. Please check the server logs for more details.']);
+            unlink($tmpFile); // Clean up the temporary file
+            return;
+        }
+
+        // Compress the temporary file
+        $cmd = "gzip --best $tmpFile 2>&1";
+        exec($cmd, $output, $result_code);
+        error_log("PV Backup gzip output: " . implode("\n", $output));
+
+        if ($result_code !== 0 || !file_exists($compressedFile)) {
+            error_log("PV Backup Error: Compression failed with code $result_code");
+            echo json_encode(['error' => 'Compression failed. Please check the server logs for more details.']);
+            unlink($tmpFile); // Clean up the temporary file
+            return;
+        }
+        error_log("PV Backup compressed file: $compressedFile");
+
+        // Pass the compressed file to download
+        $file = 'backup_' . date("d-m-Y") . '.sql.gz';
+
+        // Ensure no output before headers
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: application/gzip');
+        header('Content-Disposition: attachment; filename="' . $file . '"');
+        header('Content-Length: ' . filesize($compressedFile));
+        header('Content-Encoding: none');
+        header('Connection: close');
+
+        // Stream file in chunks
+        $fp = fopen($compressedFile, 'rb');
+        if ($fp) {
+            while (!feof($fp)) {
+                echo fread($fp, 8192);
+                flush();
+            }
+            fclose($fp);
+        } else {
+            error_log("PV Backup Error: Unable to open compressed file for reading.");
+            echo json_encode(['error' => 'Download failed.']);
+        }
+
+        // Clean up the temporary files
+        unlink($compressedFile);
+        exit;
+    } else {
+        echo json_encode(['error' => 'Not authorised']);
+        error_log("PV Error: Not authorised: $role");
+    }
+    return;
 }
+
 
 //DB RESTORE
 if($_GET['restore'] == 'db_bk'){
@@ -5250,7 +5306,7 @@ if($_GET['restore'] == 'db_bk'){
 		if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0777, true);
 		}
-		
+		$result = [];
         $original_filename = basename($_FILES['backupFile']['name']);
         $target_path = $tmp_path . $fid . '_' . $original_filename;
 

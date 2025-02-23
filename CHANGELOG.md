@@ -2,6 +2,7 @@
 ### Version 12.7
 - Improved security for fetching ingredient providers
 - FPDF lib update to 1.86
+- Fix backup process failing in some cases with invalid data
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
