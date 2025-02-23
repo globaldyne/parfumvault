@@ -5237,7 +5237,7 @@ if ($_GET['do'] == 'backupDB') {
         $compressedFile = $tmpFile . '.gz';
 
         $cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname > $tmpFile";
-        error_log("PV Backup: $cmd");
+        //error_log("PV Backup: $cmd");
 
         exec($cmd, $output, $result_code);
 
@@ -5251,7 +5251,7 @@ if ($_GET['do'] == 'backupDB') {
         // Compress the temporary file
         $cmd = "gzip --best $tmpFile 2>&1";
         exec($cmd, $output, $result_code);
-        error_log("PV Backup gzip output: " . implode("\n", $output));
+        //error_log("PV Backup gzip output: " . implode("\n", $output));
 
         if ($result_code !== 0 || !file_exists($compressedFile)) {
             error_log("PV Backup Error: Compression failed with code $result_code");
@@ -5259,7 +5259,7 @@ if ($_GET['do'] == 'backupDB') {
             unlink($tmpFile); // Clean up the temporary file
             return;
         }
-        error_log("PV Backup compressed file: $compressedFile");
+       // error_log("PV Backup generated file: $compressedFile");
 
         // Pass the compressed file to download
         $file = 'backup_' . date("d-m-Y") . '.sql.gz';
