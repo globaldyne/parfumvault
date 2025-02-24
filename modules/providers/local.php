@@ -13,7 +13,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getDocument.php');
 
-$defCatClass = $settings['defCatClass'];
+$defCatClass = $settings['defCatClass'] ?: 'cat4';
 
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;

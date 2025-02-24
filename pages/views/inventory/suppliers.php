@@ -497,64 +497,70 @@ $(document).ready(function() {
 	
 	
 	$('#btnAddSupplier').on('click', function () {
-		$.ajax({ 
-			url: '/core/core.php', 
-			type: 'POST',
-			data: {
-				supp: 'add',
-				name: $("#add_supplier #name").val(),
-				address: $("#add_supplier #address").val(),
-				po: $("#add_supplier #po").val(),
-				country: $("#add_supplier #country").val(),
-				telephone: $("#add_supplier #telephone").val(),
-				url: $("#add_supplier #url").val(),
-				email: $("#add_supplier #email").val(),
-				platform: $("#add_supplier #platform").val(),
-				price_tag_start: $("#add_supplier #price_tag_start").val(),
-				price_tag_end: $("#add_supplier #price_tag_end").val(),
-				add_costs: $("#add_supplier #add_costs").val(),
-				description: $("#add_supplier #description").val(),
-				min_ml: $("#add_supplier #min_ml").val(),
-				min_gr: $("#add_supplier #min_gr").val()
-			},
-			dataType: 'json',
-			success: function (data) {
-				if(data.success){
-					$('#inf').html(data);
-					$("#add_supplier #name").val('');
-					$("#add_supplier #description").val('');
-					$("#add_supplier #platform").val('');
-					$("#add_supplier #price_tag_start").val('');
-					$("#add_supplier #price_tag_end").val('');
-					$("#add_supplier #add_costs").val('');
-					$("#add_supplier #min_ml").val('');
-					$("#add_supplier #min_gr").val('');
-					$("#add_supplier #address").val('');
-					$("#add_supplier #po").val('');
-					$("#add_supplier #country").val('');
-					$("#add_supplier #telephone").val('');
-					$("#add_supplier #url").val('');
-					$("#add_supplier #email").val('');
-					
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-					reload_data();
-				}else if(data.error){
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				}
-				$('#inf').html(msg);
-			},
-			error: function (xhr, status, error) {
-				$('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
-			}
-	  });
-	});
+        // Validate form fields
+        var isValid = true;
+        $('#add_supplier input[required]').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            $('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please fill in all required fields.</div>');
+            return;
+        }
+
+        $.ajax({ 
+            url: '/core/core.php', 
+            type: 'POST',
+            data: {
+                action: 'addsupplier',
+                name: $("#add_supplier #name").val(),
+                address: $("#add_supplier #address").val(),
+                po: $("#add_supplier #po").val(),
+                country: $("#add_supplier #country").val(),
+                telephone: $("#add_supplier #telephone").val(),
+                website: $("#add_supplier #website").val(),
+                email: $("#add_supplier #email").val(),
+                platform: $("#add_supplier #platform").val(),
+                price_tag_start: $("#add_supplier #price_tag_start").val(),
+                price_tag_end: $("#add_supplier #price_tag_end").val(),
+                add_costs: $("#add_supplier #add_costs").val(),
+                description: $("#add_supplier #description").val(),
+                min_ml: $("#add_supplier #min_ml").val(),
+                min_gr: $("#add_supplier #min_gr").val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.success){
+					$('#inf').html('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>');
+                    // Reset form fields
+                    $('#add_supplier input').val('');
+                    $('#add_supplier select').val('');
+                    reload_data();
+                } else if(data.error){
+                    $('#inf').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+                }
+            },
+            error: function (xhr, status, error) {
+                $('#inf').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+            }
+        });
+    });
+
+    function reload_data() {
+        $('#tdIngSupData').DataTable().ajax.reload(null, true);
+    }
 	
 	$('#btnEditSupplier').on('click', function () {
 		$.ajax({ 
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				supp: 'edit',
+				action: 'editsupplier',
 				id: $("#id").val(),
 				name: $("#name").val(),
 				address: $("#address").val(),
@@ -567,10 +573,10 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){			
-					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+					msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
 					reload_data();
 				}else if(data.error){
-					msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+					msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 				}
 				$('#editSup').html(msg);
 			},
@@ -614,7 +620,6 @@ $(document).ready(function() {
 				$(".modal-body", this).html(data);
 		});
 	});
-	
 });
 </script>
 
@@ -650,33 +655,33 @@ $(document).ready(function() {
             <input type="hidden" name="id" id="id" />
             <input type="hidden" name="name" id="name" />
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="address">Address</label>
-                <input class="form-control" name="address" type="text" id="address" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="address" type="text" id="address" placeholder="Address" />
+                <label for="address" class="form-label mx-2">Address</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="po">Postal Code</label>
-                <input class="form-control" name="po" type="text" id="po" />
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="country">Country</label>
-                <input class="form-control" name="country" type="text" id="country" />
-              </div>
-              <div class="form-group col-md-6">
-                <label for="telephone">Telephone</label>
-                <input class="form-control" name="telephone" type="text" id="telephone" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="po" type="text" id="po" placeholder="Postal Code" />
+                <label for="po" class="form-label mx-2">Postal Code</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="url">Website</label>
-                <input class="form-control" name="url" type="text" id="url" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="country" type="text" id="country" placeholder="Country" />
+                <label for="country" class="form-label mx-2">Country</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="email">Email</label>
-                <input class="form-control" name="email" type="text" id="email" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="telephone" type="text" id="telephone" placeholder="Telephone" />
+                <label for="telephone" class="form-label mx-2">Telephone</label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="url" type="text" id="url" placeholder="Website" />
+                <label for="url" class="form-label mx-2">Website</label>
+              </div>
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="email" type="text" id="email" placeholder="Email" />
+                <label for="email" class="form-label mx-2">Email</label>
               </div>
             </div>
           </div>
@@ -745,86 +750,86 @@ $(document).ready(function() {
         <div class="container-fluid">
           <div class="col-sm-12">
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="name">Name</label>
-                <input class="form-control" name="name" type="text" id="name" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="name" type="text" id="name" placeholder="Name" required />
+                <label for="name" class="form-label mx-2">Name</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="address">Address</label>
-                <input class="form-control" name="address" type="text" id="address" />
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="po">Postal Code</label>
-                <input class="form-control" name="po" type="text" id="po" />
-              </div>
-              <div class="form-group col-md-6">
-                <label for="country">Country</label>
-                <input class="form-control" name="country" type="text" id="country" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="address" type="text" id="address" placeholder="Address" required />
+                <label for="address" class="form-label mx-2">Address</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="telephone">Telephone</label>
-                <input class="form-control" name="telephone" type="text" id="telephone" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="po" type="text" id="po" placeholder="Postal Code" required />
+                <label for="po" class="form-label mx-2">Postal Code</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="website">Website</label>
-                <input class="form-control" name="website" type="text" id="website" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="country" type="text" id="country" placeholder="Country" required />
+                <label for="country" class="form-label mx-2">Country</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="email">Email</label>
-                <input class="form-control" name="email" type="text" id="email" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="telephone" type="text" id="telephone" placeholder="Telephone" required />
+                <label for="telephone" class="form-label mx-2">Telephone</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="platform">Platform</label>
-                <select class="form-control" name="platform" id="platform">
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="website" type="text" id="website" placeholder="Website" required />
+                <label for="website" class="form-label mx-2">Website</label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="email" type="email" id="email" placeholder="Email" required />
+                <label for="email" class="form-label mx-2">Email</label>
+              </div>
+              <div class="form-floating col-md-6">
+                <select class="form-control" name="platform" id="platform" aria-label="Platform" required>
                   <option value="woocommerce">Woocommerce</option>
                   <option value="shopify">Shopify</option>
                   <option value="other">Other/Custom</option>
                 </select>
+                <label for="platform" class="form-label mx-2">Platform</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="price_tag_start">Price Start Tag</label>
-                <input class="form-control" name="price_tag_start" type="text" id="price_tag_start" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="price_tag_start" type="text" id="price_tag_start" placeholder="Price Start Tag" />
+                <label for="price_tag_start" class="form-label mx-2">Price Start Tag</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="price_tag_end">Price End Tag</label>
-                <input class="form-control" name="price_tag_end" type="text" id="price_tag_end" />
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="add_costs">Additional Costs</label>
-                <input class="form-control" name="add_costs" type="text" id="add_costs" />
-              </div>
-              <div class="form-group col-md-6">
-                <label for="min_ml">Minimum ml Quantity</label>
-                <input class="form-control" name="min_ml" type="text" id="min_ml" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="price_tag_end" type="text" id="price_tag_end" placeholder="Price End Tag" />
+                <label for="price_tag_end" class="form-label mx-2">Price End Tag</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group col-md-6">
-                <label for="min_gr">Minimum Grams Quantity</label>
-                <input class="form-control" name="min_gr" type="text" id="min_gr" />
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="add_costs" type="text" id="add_costs" placeholder="Additional Costs" />
+                <label for="add_costs" class="form-label mx-2">Additional Costs</label>
               </div>
-              <div class="form-group col-md-6">
-                <label for="price_per_size">Price to be Calculated Per</label>
-                <select class="form-control" name="price_per_size" id="price_per_size">
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="min_ml" type="text" id="min_ml" placeholder="Minimum Quantity (ml)" required />
+                <label for="min_ml" class="form-label mx-2">Minimum Quantity (ml)</label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="form-floating col-md-6">
+                <input class="form-control" name="min_gr" type="text" id="min_gr" placeholder="Minimum Quantity (grams)" required />
+                <label for="min_gr" class="form-label mx-2">Minimum Quantity (grams)</label>
+              </div>
+              <div class="form-floating col-md-6">
+                <select class="form-control" name="price_per_size" id="price_per_size" aria-label="Price to be Calculated Per">
                   <option value="0">Product</option>
                   <option value="1">Volume</option>
                 </select>
+                <label for="price_per_size" class="form-label mx-2">Price to be Calculated Per</label>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="form-group">
-                <label for="description">Description</label>
-                <input class="form-control" name="description" type="text" id="description" />
+              <div class="form-floating">
+                <input class="form-control" name="description" type="text" id="description" placeholder="Description" />
+                <label for="description" class="form-label mx-2">Description</label>
               </div>
             </div>
           </div>

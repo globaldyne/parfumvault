@@ -2940,32 +2940,47 @@ if($_GET['kind'] == 'suppliers' && $_GET['action'] == 'supplier_update'){
 	return;	
 }
 
-if($_POST['supp'] == 'edit'){
-	$id = $_POST['id'];
+if ($_POST['action'] == 'editsupplier') {
+    $id = $_POST['id'];
 
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$address = mysqli_real_escape_string($conn, $_POST['address']);
-	$po = mysqli_real_escape_string($conn, $_POST['po']);
-	$country = mysqli_real_escape_string($conn, $_POST['country']);
-	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
-	$url = mysqli_real_escape_string($conn, $_POST['url']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	
-	
-	if(mysqli_query($conn, "UPDATE ingSuppliers SET address = '$address', po='$po', country='$country', telephone='$telephone', url='$url', email='$email' WHERE id = '$id' AND owner_id = '$userID'")){
-		$response["success"] = 'Supplier '.$name.' updated';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
+    // Validate required fields
+    $requiredFields = ['name', 'address', 'po', 'country', 'telephone', 'url', 'email'];
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            $response["error"] = ucfirst($field) . ' is required';
+            echo json_encode($response);
+            return;
+        }
+    }
+
+    // Sanitize inputs
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $po = mysqli_real_escape_string($conn, $_POST['po']);
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+    $url = mysqli_real_escape_string($conn, $_POST['url']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+    // Use prepared statement to update supplier
+    $stmt = $conn->prepare("UPDATE ingSuppliers SET address = ?, po = ?, country = ?, telephone = ?, url = ?, email = ? WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('ssssssis', $address, $po, $country, $telephone, $url, $email, $id, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Supplier ' . $name . ' updated';
+    } else {
+        $response["error"] = 'Something went wrong: ' . $stmt->error;
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;
 }
 
 
-if($_POST['supp'] == 'add'){
+if($_POST['action'] == 'addsupplier'){
 	if(!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])){
-		$response["error"] = 'Only numeric values allowed in ml and grams fields!';
+		$response["error"] = 'Only numeric values allowed in ml and grams fields';
 		echo json_encode($response);
 		return;
 	}

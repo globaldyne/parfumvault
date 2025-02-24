@@ -3,6 +3,8 @@
 - Improved security for fetching ingredient providers
 - FPDF lib update to 1.86
 - Fix backup process failing in some cases with invalid data
+- Add supplier form improvements
+- Add default IFRA cat for ingredients
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
