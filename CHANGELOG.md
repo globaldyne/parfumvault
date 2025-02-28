@@ -5,7 +5,8 @@
 - Fix backup process failing in some cases with invalid data
 - Add supplier form improvements
 - Add default IFRA cat for ingredients
-- Dropping public formula view summary 
+- Dropping public formula view summary
+- Adding backend support for AromaTrack app
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
