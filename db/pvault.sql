@@ -273,6 +273,7 @@ CREATE TABLE `ingSuppliers` (
   `address` varchar(255) DEFAULT NULL,
   `po` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
+  `currency` VARCHAR(255) NULL DEFAULT NULL,
   `telephone` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,

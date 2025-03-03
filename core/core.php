@@ -2940,11 +2940,12 @@ if($_GET['kind'] == 'suppliers' && $_GET['action'] == 'supplier_update'){
 	return;	
 }
 
+//EDIT SUPPLIER
 if ($_POST['action'] == 'editsupplier') {
     $id = $_POST['id'];
 
     // Validate required fields
-    $requiredFields = ['name', 'address', 'po', 'country', 'telephone', 'url', 'email'];
+    $requiredFields = ['name', 'address', 'po', 'country', 'currency', 'telephone', 'url', 'email'];
     foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             $response["error"] = ucfirst($field) . ' is required';
@@ -2958,13 +2959,14 @@ if ($_POST['action'] == 'editsupplier') {
     $address = mysqli_real_escape_string($conn, $_POST['address']);
     $po = mysqli_real_escape_string($conn, $_POST['po']);
     $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
     $telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
     $url = mysqli_real_escape_string($conn, $_POST['url']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
 
     // Use prepared statement to update supplier
-    $stmt = $conn->prepare("UPDATE ingSuppliers SET address = ?, po = ?, country = ?, telephone = ?, url = ?, email = ? WHERE id = ? AND owner_id = ?");
-    $stmt->bind_param('ssssssis', $address, $po, $country, $telephone, $url, $email, $id, $userID);
+    $stmt = $conn->prepare("UPDATE ingSuppliers SET address = ?, po = ?, country = ?, currency = ?, telephone = ?, url = ?, email = ? WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('sssssssis', $address, $po, $country, $currency, $telephone, $url, $email, $id, $userID);
 
     if ($stmt->execute()) {
         $response["success"] = 'Supplier ' . $name . ' updated';
@@ -2977,56 +2979,61 @@ if ($_POST['action'] == 'editsupplier') {
     return;
 }
 
+//ADD SUPPLIER
+if ($_POST['action'] == 'addsupplier') {
+    // Validate numeric fields
+    if (!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])) {
+        $response["error"] = 'Only numeric values allowed in ml and grams fields';
+        echo json_encode($response);
+        return;
+    }
 
-if($_POST['action'] == 'addsupplier'){
-	if(!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])){
-		$response["error"] = 'Only numeric values allowed in ml and grams fields';
-		echo json_encode($response);
-		return;
-	}
-	$description = mysqli_real_escape_string($conn, $_POST['description']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$address = mysqli_real_escape_string($conn, $_POST['address']);
-	$po = mysqli_real_escape_string($conn, $_POST['po']);
-	$country = mysqli_real_escape_string($conn, $_POST['country']);
-	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
-	$url = mysqli_real_escape_string($conn, $_POST['url']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	$platform = mysqli_real_escape_string($conn, $_POST['platform']);
-	$price_tag_start = htmlentities($_POST['price_tag_start']);
-	$price_tag_end = htmlentities($_POST['price_tag_end']);
-	$add_costs = is_numeric($_POST['add_costs']);
-	$min_ml = mysqli_real_escape_string($conn, $_POST['min_ml']);
-	$min_gr = mysqli_real_escape_string($conn, $_POST['min_gr']);
+    // Sanitize inputs
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $po = mysqli_real_escape_string($conn, $_POST['po']);
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+    $url = mysqli_real_escape_string($conn, $_POST['url']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $platform = mysqli_real_escape_string($conn, $_POST['platform']);
+    $price_tag_start = htmlentities($_POST['price_tag_start']);
+    $price_tag_end = htmlentities($_POST['price_tag_end']);
+    $add_costs = is_numeric($_POST['add_costs']) ? $_POST['add_costs'] : 0;
+    $min_ml = mysqli_real_escape_string($conn, $_POST['min_ml']) ?: 0;
+    $min_gr = mysqli_real_escape_string($conn, $_POST['min_gr']) ?: 0;
 
-	if(empty($min_ml)){
-		$min_ml = 0;
-	}
-	if(empty($min_gr)){
-		$min_gr = 0;
-	}		 
-	
-	if(empty($name)){
-		$response["error"] = 'Supplier name required';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$name' AND owner_id = '$userID'"))){
-		$response["error"] = $name.' supplier name already exists';
-		echo json_encode($response);
-		return;
-	}
+    // Validate required fields
+    if (empty($name)) {
+        $response["error"] = 'Supplier name required';
+        echo json_encode($response);
+        return;
+    }
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr,owner_id) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr','$userID')")){
-		$response["success"] = 'Supplier '.$name.' added';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
+    // Check for duplicate supplier name
+    $query = "SELECT name FROM ingSuppliers WHERE name = '$name' AND owner_id = '$userID'";
+    if (mysqli_num_rows(mysqli_query($conn, $query))) {
+        $response["error"] = $name . ' supplier name already exists';
+        echo json_encode($response);
+        return;
+    }
+
+    // Insert new supplier
+    $query = "INSERT INTO ingSuppliers (name, address, po, country, currency, telephone, url, email, platform, price_tag_start, price_tag_end, add_costs, notes, min_ml, min_gr, owner_id) 
+              VALUES ('$name', '$address', '$po', '$country', '$currency', '$telephone', '$url', '$email', '$platform', '$price_tag_start', '$price_tag_end', '$add_costs', '$description', '$min_ml', '$min_gr', '$userID')";
+    if (mysqli_query($conn, $query)) {
+        $response["success"] = 'Supplier ' . $name . ' added';
+    } else {
+        $response["error"] = 'Something went wrong: ' . mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    return;
 }
 
+//DELETE ING SUPPLIER
 if($_GET['supp'] == 'delete' && $_GET['ID']){
 	$ID = mysqli_real_escape_string($conn, $_GET['ID']);
 	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID' AND owner_id = '$userID'"));

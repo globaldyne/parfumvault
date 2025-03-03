@@ -28,7 +28,7 @@ function normalize_value($value, $type = 'string', $default = '-') {
 }
 
 // Fetch ingredients data
-$sql = "SELECT id, INCI, name, cas, odor, physical_state FROM ingredients WHERE owner_id = '$userID'";
+$sql = "SELECT id, INCI, name, cas, odor, physical_state, updated_at, created_at FROM ingredients WHERE owner_id = '$userID'";
 $result = mysqli_query($conn, $sql);
 
 $r = [];
@@ -48,23 +48,29 @@ while ($rx = mysqli_fetch_assoc($result)) {
     // Normalize and structure data
     unset($rx['id']);
     $rx['aromaTrackID'] = normalize_value($rx['aromaTrackID']);
-    $rx['INCI'] = normalize_value($rx['INCI']);
+    $rx['inci'] = normalize_value($rx['INCI']);
     $rx['name'] = normalize_value($rx['name']);
     $rx['cas'] = normalize_value($rx['cas']) ;
 	$rx['appearance'] = normalize_value($rx['appearance']);
 	$rx['notes'] = normalize_value($rx['notes']);
     $rx['price'] = normalize_value($price_per_unit, 'float', 0.0);
     $rx['stock'] = normalize_value($gSupQ['stock'], 'float', 0.0);
+    $rx['updated_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['updated_at'])));
+    $rx['created_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['created_at'])));
+
     $rx['supplier'] = [
         'name' => normalize_value($gSupN['name']),
         'address' => normalize_value($gSupN['address']),
         'po' => normalize_value($gSupN['po']),
         'country' => normalize_value($gSupN['country']),
+        'currency' => normalize_value($gSupN['currency']),
         'telephone' => normalize_value($gSupN['telephone']),
         'url' => normalize_value($gSupN['url']),
         'email' => normalize_value($gSupN['email']),
         'notes' => normalize_value($gSupN['notes']),
         'add_costs' => normalize_value($gSupN['add_costs']),
+        'updated_at' => normalize_value(date(DATE_ISO8601, strtotime($gSupN['updated_at']))),
+        'created_at' => normalize_value($gSupN['created_at'] ? date(DATE_ISO8601, strtotime($gSupN['created_at'])) : null),
     ];
 
 

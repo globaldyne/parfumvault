@@ -8,6 +8,10 @@
 - Dropping public formula view summary
 - Adding backend support for AromaTrack app
 
+- Currencies json has been moved under db/
+- Added currency support for suppliers
+
+
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
 - Monitored user changes in the admin dashboard
