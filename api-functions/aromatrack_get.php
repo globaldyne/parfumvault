@@ -34,7 +34,7 @@ $result = mysqli_query($conn, $sql);
 $r = [];
 while ($rx = mysqli_fetch_assoc($result)) {
     // Fetch supplier data
-    $supplier_query = "SELECT ingSupplierID, price, size, stock FROM suppliers WHERE ingID = '{$rx['id']}' AND preferred = 1 AND owner_id = '$userID'";
+    $supplier_query = "SELECT ingSupplierID, price, size, stock, mUnit, status FROM suppliers WHERE ingID = '{$rx['id']}' AND preferred = 1 AND owner_id = '$userID'";
     $gSupQ = fetch_assoc($conn, $supplier_query);
 
     // Fetch supplier name
@@ -55,6 +55,8 @@ while ($rx = mysqli_fetch_assoc($result)) {
 	$rx['notes'] = normalize_value($rx['notes']);
     $rx['price'] = normalize_value($price_per_unit, 'float', 0.0);
     $rx['stock'] = normalize_value($gSupQ['stock'], 'float', 0.0);
+    $rx['mUnit'] = normalize_value($gSupQ['mUnit']);
+    $rx['avilability'] = (int)normalize_value($gSupQ['status']) ?: 0;
     $rx['updated_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['updated_at'])));
     $rx['created_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['created_at'])));
 
