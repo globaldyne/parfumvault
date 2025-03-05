@@ -13,10 +13,7 @@ require_once(__ROOT__.'/func/rgbToHex.php');
 if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] != 1) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
-        'draw' => intval($_REQUEST['draw'] ?? 0),
-        'recordsTotal' => 0,
-        'recordsFiltered' => 0,
-        'data' => [],
+        'status' => 'error',
         'error' => 'API is administratively disabled'
     ]);
     return;
