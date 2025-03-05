@@ -7,7 +7,8 @@
 - Add default IFRA cat for ingredients
 - Dropping public formula view summary
 - Adding backend support for AromaTrack app
-
+- Error page update
+- Logout better error handling
 - Currencies json has been moved under db/
 - Added currency support for suppliers
 
