@@ -71,8 +71,8 @@ while ($rx = mysqli_fetch_assoc($result)) {
         'email' => normalize_value($gSupN['email']),
         'notes' => normalize_value($gSupN['notes']),
         'add_costs' => normalize_value($gSupN['add_costs']),
-        'updated_at' => normalize_value(date(DATE_ISO8601, strtotime($gSupN['updated_at']))),
-        'created_at' => normalize_value($gSupN['created_at'] ? date(DATE_ISO8601, strtotime($gSupN['created_at'])) : null),
+        'updated_at' => normalize_value($gSupN['updated_at'] ? date(DATE_ISO8601, strtotime($gSupN['updated_at'])) : date(DATE_ISO8601)),
+        'created_at' => normalize_value($gSupN['created_at'] ? date(DATE_ISO8601, strtotime($gSupN['created_at'])) : date(DATE_ISO8601)),
     ];
 
 
