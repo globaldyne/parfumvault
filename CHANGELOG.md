@@ -11,6 +11,7 @@
 - Logout better error handling
 - Currencies json has been moved under db/
 - Added currency support for suppliers
+- Added API enable/disable option for system settings
 
 
 ### Version 12.6

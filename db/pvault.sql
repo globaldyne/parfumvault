@@ -969,8 +969,8 @@ INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `descriptio
 ('EMAIL_from_display_name', 'Perfumers Vault', 'From display name', 'text', 'A user-friendly name for the \'From\' address (optional).'),
 ('EMAIL_smtp_user', '', 'Username', 'text', 'Optional field, use only if your email server requires authentication'),
 ('EMAIL_smtp_pass', '', 'Password', 'password', 'Optional field, use only if your email server requires authentication'),
-('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it');
-
+('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it'),
+('API_enabled', '0', 'API access', 'checkbox', 'Enable or disable API access globally');
 
 CREATE TABLE `user_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,
