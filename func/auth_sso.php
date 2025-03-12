@@ -133,7 +133,11 @@ function auth_sso() {
             // Insert new user
             if($system_settings['USER_selfRegister'] != '1') {
                 error_log("Error in auth_kc: user registration is disabled");
-                echo json_encode(['auth' => ['error' => true, 'msg' => 'User registration is disable']]);
+                $response = [];
+                $response['error'] = 'User registration is disabled';
+                $_SESSION['temp_response'] = $response;
+                header('Location: /index.php');
+
                 return;
             }
 
