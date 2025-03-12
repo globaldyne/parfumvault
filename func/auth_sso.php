@@ -131,6 +131,12 @@ function auth_sso() {
             header('Location: /index.php');
         } else {
             // Insert new user
+            if($system_settings['USER_selfRegister'] != '1') {
+                error_log("Error in auth_kc: user registration is disabled");
+                echo json_encode(['auth' => ['error' => true, 'msg' => 'User registration is disable']]);
+                return;
+            }
+
             error_log("User NOT found in auth_sso: " . $email);
             $insertQuery = $conn->prepare("INSERT INTO users (id, fullName, email, password, provider, token, role, isActive, isVerified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $role = 2;
