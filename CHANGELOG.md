@@ -13,6 +13,7 @@
 - Added currency support for suppliers
 - Added API enable/disable option for system settings
 - Fix session handler timestamp compare
+- Mariadb Server updated to version 11
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
