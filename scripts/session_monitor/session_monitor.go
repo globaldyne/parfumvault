@@ -14,15 +14,17 @@ import (
 )
 
 const (
-	envDBHost      = "DB_HOST"
-	envDBUsername  = "DB_USER"
-	envDBPassword  = "DB_PASS"
-	envDBName      = "DB_NAME"
-	envTimeout     = "SESSION_TIMEOUT"
-	defaultDBHost  = "127.0.0.1"
-	defaultTimeout = "1800"
-	checkInterval  = 60      // Check every 60 seconds
-	version        = "1.0.0" // Version of the session monitoring daemon
+	envDBHost           = "DB_HOST"
+	envDBUsername       = "DB_USER"
+	envDBPassword       = "DB_PASS"
+	envDBName           = "DB_NAME"
+	envTimeout          = "SESSION_TIMEOUT"
+	envInactiveDays     = "INACTIVE_DAYS"
+	defaultDBHost       = "127.0.0.1"
+	defaultTimeout      = "1800"
+	defaultInactiveDays = 30
+	checkInterval       = 60      // Check every 60 seconds
+	version             = "1.0.0" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -123,9 +125,16 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	}
 }
 
-// cleanupInactiveUsers deletes users who haven't logged in for the past 30 days
+// cleanupInactiveUsers deletes users who haven't logged in for the past N days
 func cleanupInactiveUsers(db *sql.DB) {
-	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
+	inactiveDaysStr := getEnv(envInactiveDays, strconv.Itoa(defaultInactiveDays))
+	inactiveDays, err := strconv.Atoi(inactiveDaysStr)
+	if err != nil {
+		error_log(fmt.Sprintf("Invalid INACTIVE_DAYS value, using default: %d", defaultInactiveDays))
+		inactiveDays = defaultInactiveDays
+	}
+
+	thirtyDaysAgo := time.Now().Add(-time.Duration(inactiveDays) * 24 * time.Hour).Unix()
 
 	query := "SELECT id FROM users WHERE last_login < FROM_UNIXTIME(?) AND role = 2"
 	rows, err := db.Query(query, thirtyDaysAgo)
