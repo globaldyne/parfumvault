@@ -127,7 +127,7 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 func cleanupInactiveUsers(db *sql.DB) {
 	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
 
-	query := "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_login) < ? AND role = 2"
+	query := "SELECT id FROM users WHERE last_login < FROM_UNIXTIME(?) AND role = 2"
 	rows, err := db.Query(query, thirtyDaysAgo)
 	if err != nil {
 		error_log(fmt.Sprintf("Error querying inactive users: %v", err))

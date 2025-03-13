@@ -12,7 +12,7 @@
 - Currencies json has been moved under db/
 - Added currency support for suppliers
 - Added API enable/disable option for system settings
-
+- Fix session handler timestamp compare
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
