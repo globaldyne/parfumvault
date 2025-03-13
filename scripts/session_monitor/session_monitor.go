@@ -24,7 +24,7 @@ const (
 	defaultTimeout      = "1800"
 	defaultInactiveDays = 30
 	checkInterval       = 60      // Check every 60 seconds
-	version             = "1.0.0" // Version of the session monitoring daemon
+	version             = "1.0.1" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -205,6 +205,7 @@ func main() {
 	dbpass := os.Getenv(envDBPassword)
 	dbname := os.Getenv(envDBName)
 	sessionTimeoutStr := getEnv(envTimeout, defaultTimeout)
+	inactiveDaysStr := getEnv(envInactiveDays, strconv.Itoa(defaultInactiveDays))
 
 	if dbuser == "" || dbpass == "" || dbname == "" {
 		error_log("Missing required environment variables: DB_USER, DB_PASS, DB_NAME")
@@ -230,6 +231,7 @@ func main() {
 	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
 
 	log.Printf("Session monitoring daemon (version %s) started...", version)
+	log.Printf("Inactive users will be removed after %s days", inactiveDaysStr)
 
 	// Daemon loop
 	for {
