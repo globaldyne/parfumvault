@@ -80,7 +80,7 @@ or via docker compose
 	      MYSQL_DATABASE: pvault
 	      MYSQL_USER: pvault
 	      MYSQL_PASSWORD: pvault
-		  MARIADB_AUTO_UPGRADE: true
+	      MARIADB_AUTO_UPGRADE: true
 	    expose:
 	      - 3306
 	  pvault:
