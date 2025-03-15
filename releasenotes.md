@@ -1,7 +1,5 @@
 Whats New in v12.7
 --------------------------
-### Release Notes  
-
 - Enhanced security measures for retrieving ingredient providers.  
 - Updated **FPDF** library to version **1.86**.  
 - Fixed an issue where the backup process could fail due to invalid data.  
