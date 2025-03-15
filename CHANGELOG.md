@@ -57,6 +57,7 @@
 - Updated wording when no formulas are available
 - Fixed duplicate table ID for supply orders
 - Prevented re-ordering if no items are available
+- Fix incorrect percentage calculation for formulas
 
 ### Version 12.5
 - Code clean-up
