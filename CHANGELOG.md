@@ -58,6 +58,7 @@
 - Fixed duplicate table ID for supply orders
 - Prevented re-ordering if no items are available
 - Fix incorrect percentage calculation for formulas
+- Fix google backups page not loading if invalid date set
 
 ### Version 12.5
 - Code clean-up
