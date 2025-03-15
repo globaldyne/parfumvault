@@ -14,6 +14,8 @@
 - Added API enable/disable option for system settings
 - Fix session handler timestamp compare
 - Mariadb Server updated to version 11
+- Fix incorrect percentage calculation for formulas
+- Fix google backups page not loading if invalid date set
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
@@ -57,8 +59,6 @@
 - Updated wording when no formulas are available
 - Fixed duplicate table ID for supply orders
 - Prevented re-ordering if no items are available
-- Fix incorrect percentage calculation for formulas
-- Fix google backups page not loading if invalid date set
 
 ### Version 12.5
 - Code clean-up
