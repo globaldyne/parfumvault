@@ -131,7 +131,7 @@ if(isset($_GET['stats_only'])){
 	$response['stats']['formula_name'] = $formulaName;
 	$response['stats']['formula_description'] = $formulaDescription;
 	$response['stats']['data'] = $stats;
-	$response['stats']['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
+	$response['stats']['total_quantity_raw'] = $mg['total_mg'];
 
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
