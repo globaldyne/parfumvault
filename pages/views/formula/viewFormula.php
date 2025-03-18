@@ -275,7 +275,7 @@ $(document).ready(function() {
             		}).length;
 
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' Notes (' + groupCount + ')</div></td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' notes (' + groupCount + ')</div></td></tr>'
                     );
                     last = group;
                 }
@@ -283,8 +283,8 @@ $(document).ready(function() {
 			extrasShow();
 	   }
 	}).on('error.dt', function(e, settings, techNote, message) {
-            var m = message.split(' - ');
-            $('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+        var m = message.split(' - ');
+    	$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
     });
 	
 	formula_table.on('click', '.expandAccord', function (e) {

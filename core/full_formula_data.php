@@ -102,7 +102,18 @@ if($_POST['solvents_only'] === 'true'){
 if($_POST['search']){
 	$q = "AND ingredient LIKE '%".$_POST['search']."%'";
 }
-	
+
+$defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
+
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q  AND owner_id = '$userID' ORDER BY ingredient ASC");
+while ($formula = mysqli_fetch_array($formula_q)){
+	$form[] = $formula;
+	if ( $formula['exclude_from_calculation'] != 1 ){
+		$mg['total_mg'] += $formula['quantity'];
+	}
+}
+
+
 if(isset($_GET['stats_only'])){
 
 	$formulaName = (string) $meta['name'];
@@ -120,21 +131,13 @@ if(isset($_GET['stats_only'])){
 	$response['stats']['formula_name'] = $formulaName;
 	$response['stats']['formula_description'] = $formulaDescription;
 	$response['stats']['data'] = $stats;
-	
+	$response['stats']['total_quantity'] =  ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']);
+
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
 
-$defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
-
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q  AND owner_id = '$userID' ORDER BY ingredient ASC");
-while ($formula = mysqli_fetch_array($formula_q)){
-	    $form[] = $formula;
-		if ( $formula['exclude_from_calculation'] != 1 ){
-			$mg['total_mg'] += $formula['quantity'];
-		}
-}
 
 foreach ($form as $formula){
 	
