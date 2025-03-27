@@ -5123,7 +5123,7 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 	}else if($req->error){
 		$response['error'] = $req->error;
 	}else{
-		$response['error'] = "Uknown error";
+		$response['error'] = "Unknown error";
 	}
 	echo json_encode($response);
 	return;
