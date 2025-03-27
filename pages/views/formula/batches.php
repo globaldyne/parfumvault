@@ -65,7 +65,7 @@ $(document).ready(function() {
 		   	columns: [
 				{ data : 'id', title: 'Batch ID', render: batchID },
 				{ data : 'product_name', title: 'Product Name' },
-				{ data : 'created', title: 'Created' },
+				{ data : 'created_at', title: 'Created' },
 				{ data : 'pdf', title: '', render: actions}
 			],
 			order: [[ 0, 'asc' ]],
