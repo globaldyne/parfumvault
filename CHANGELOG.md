@@ -16,6 +16,8 @@
 - Mariadb Server updated to version 11
 - Fix incorrect percentage calculation for formulas
 - Fix google backups page not loading if invalid date set
+- Added user data export as sql
+- Fixed incorrect created field for batch history
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
