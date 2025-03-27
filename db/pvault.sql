@@ -298,7 +298,7 @@ CREATE TABLE `ingTypes` (
 INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (1, 'AC'),
 (2, 'EO'),
-(3, 'Other/Uknown'),
+(3, 'Other/Unknown'),
 (4, 'Custom Blend'),
 (5, 'Carrier'),
 (6, 'Solvent'),
