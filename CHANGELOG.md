@@ -18,6 +18,7 @@
 - Fix google backups page not loading if invalid date set
 - Added user data export as sql
 - Fixed incorrect created field for batch history
+- Added functionality to embed ingredient's sub ingredients into the formula
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard

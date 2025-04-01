@@ -147,7 +147,7 @@ if($role === 1) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $updateQuery .= ", password = ?";
         }
-        $updateQuery .= " WHERE id = ?";
+        $updateQuery .= " WHERE id = ?"; // Ensure this line is properly formatted and does not contain stray characters
 
         //$user_id = $ownerResult->fetch_assoc()['id'];
 
@@ -1573,6 +1573,100 @@ if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fi
     return;
 
 }
+
+// EMBED INGREDIENT
+if ($_POST['action'] === 'embedIng') {
+    $fid = $conn->real_escape_string($_POST['fid']);
+    $ingID = $conn->real_escape_string($_POST['ingID']);
+    $ingName = $conn->real_escape_string($_POST['ingName']);
+
+    // Fetch sub-ingredients of the selected ingredient
+    error_log("PV error: Fetching sub-ingredients for '$ingName' under user '$userID'");
+    
+    $subIngQuery = $conn->prepare("SELECT name, min_percentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+    $subIngQuery->bind_param("ss", $ingName, $userID);
+    $subIngQuery->execute();
+    $subIngResult = $subIngQuery->get_result();
+
+    // Fetch the formula details
+    $formulaQuery = $conn->prepare("SELECT name FROM formulasMetaData WHERE fid = ? AND owner_id = ?");
+    $formulaQuery->bind_param("ss", $fid, $userID);
+    $formulaQuery->execute();
+    $formulaResult = $formulaQuery->get_result();
+    $formulaData = $formulaResult->fetch_assoc();
+    $formulaQuery->close();
+
+    if (!$formulaData) {
+        error_log("PV error: Formula with fid '$fid' not found for user '$userID'");
+        echo json_encode(['error' => 'Formula not found.']);
+        return;
+    }
+
+    if ($subIngResult->num_rows > 0) {
+        while ($row = $subIngResult->fetch_assoc()) {
+            $subIngName = $row['name'];
+            $quantity = $row['min_percentage'];
+
+            error_log("PV error: Checking ingredient ID for '$subIngName' under user '$userID'");
+
+            $subIngIDQuery = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
+            $subIngIDQuery->bind_param("ss", $subIngName, $userID);
+            $subIngIDQuery->execute();
+            $subIngIDResult = $subIngIDQuery->get_result();
+            $subIngIDData = $subIngIDResult->fetch_assoc();
+            $subIngIDQuery->close();
+
+            if (!$subIngIDData) {
+                error_log("PV error: Ingredient '$subIngName' not found in database for user '$userID'");
+                continue; // Skip this ingredient if not found
+            }
+
+            $subIngID = $subIngIDData['id'];
+
+            // **Check if ingredient already exists in the user's formula**
+            $checkQuery = $conn->prepare("SELECT 1 FROM formulas WHERE fid = ? AND ingredient_id = ? AND owner_id = ?");
+            $checkQuery->bind_param("sss", $fid, $subIngID, $userID);
+            $checkQuery->execute();
+            $checkResult = $checkQuery->get_result();
+            $ingredientExists = $checkResult->num_rows > 0;
+            $checkQuery->close();
+
+            if ($ingredientExists) {
+                error_log("PV error: Ingredient '$subIngName' already exists in formula '$fid' for user '$userID' - Skipping insert");
+                continue; // **Skip inserting duplicate ingredient**
+            }
+
+            error_log("PV error: Inserting ingredient: fid='$fid', formula='{$formulaData['name']}', ingredient='$subIngName', ingredient_id='$subIngID', quantity='$quantity', owner_id='$userID'");
+
+            // Insert new ingredient only if it does not exist
+            $insertQuery = $conn->prepare(
+                "INSERT INTO formulas (fid, name, ingredient, ingredient_id, quantity, owner_id)
+                 VALUES (?, ?, ?, ?, ?, ?)"
+            ); 
+            $insertQuery->bind_param("sssids", $fid, $formulaData['name'], $subIngName, $subIngID, $quantity, $userID);
+            $insertQuery->execute();
+            $insertQuery->close();
+        }
+
+        // DELETE Statement
+        error_log("PV error: Deleting id='$ingID' from formulas for fid='$fid' and user '$userID'");
+        $deleteQuery = $conn->prepare("DELETE FROM formulas WHERE fid = ? AND id = ? AND owner_id = ?");
+        $deleteQuery->bind_param("sss", $fid, $ingID, $userID);
+        $deleteQuery->execute();
+        $deleteQuery->close();
+
+        echo json_encode(['success' => 'Ingredient embedded successfully.']);
+    } else {
+        error_log("PV error: No sub-ingredients found for '$ingName' under user '$userID'");
+        echo json_encode(['error' => 'No sub-ingredients found for the selected ingredient.']);
+    }
+
+    $subIngQuery->close();
+    return;
+}
+
+
+
 
 //PVLibrary Single Import						
 if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST['kind'] === 'ingredient' && !empty($_POST['ing_id'])) {
