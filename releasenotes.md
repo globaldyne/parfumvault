@@ -15,5 +15,8 @@ Whats New in v12.7
 - Fixed session handler timestamp comparison issue.  
 - Upgraded **MariaDB Server** to version **11**.  
 - Fixed incorrect percentage calculations in formulas.  
-- Resolved an issue preventing the **Google backups** page from loading when an invalid date was set.  
+- Resolved an issue preventing the **Google backups** page from loading when an invalid date was set. 
+- Added functionality to embed ingredient's sub ingredients into the formula
+- Force ingredient size to return 10 (ml) by default if size not set in suppliers before version 12.7
+- Prevent setting size to 0 in ingredient supplier 
 - This release may include additional changes; for full details, please refer to the CHANGELOG
