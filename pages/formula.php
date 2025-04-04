@@ -235,14 +235,8 @@ if(!$fid){
             <div class="card-body">
                 <div id="fetch_summary"><div class="loader"></div></div>
                 <?php if($legend){ ?>
-                <div id="share">
-                  <p><a href="#" data-bs-toggle="modal" data-bs-target="#conf_view">Configure view</a></p>
-                  <p>To include this page in your web site, copy this line and paste it into your html code:</p>
-                <p>
-                <pre>&lt;iframe src=&quot;<?=$settings['pv_host']?>/pages/viewSummary.php?id=<?=$fid?>&amp;embed=1&quot; title=&quot;<?=$f_name?>&quot;&gt;&lt;/iframe&gt;</pre></p>
-                    <p>For documentation and parameterisation please refer to: <a href="https://www.perfumersvault.com/knowledge-base/share-formula-notes/" target="_blank">https://www.perfumersvault.com/knowledge-base/share-formula-notes/</a></p>
-                </div>
-                <?php } ?>
+                    <p><a href="#" data-bs-toggle="modal" data-bs-target="#conf_view">Configure view</a></p>
+				<?php } ?>
             </div>            
         </div>
     

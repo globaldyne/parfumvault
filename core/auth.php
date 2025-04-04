@@ -17,6 +17,12 @@ require_once(__ROOT__.'/func/audit.php');
 //SSO AUTHENTICATION
 if ($_REQUEST['action'] === 'auth_sso') {
     // Include the OIDC library
+    if(!$system_settings['SSO_status']){
+        $response['auth']['error'] = true;
+        $response['auth']['msg'] = 'SSO authentication is disabled';
+        echo json_encode($response);
+        return;
+    }
     error_log("OIDC SSO authentication started");
     require_once(__ROOT__ . '/func/auth_sso.php');
     auth_sso();

@@ -26,25 +26,7 @@ if(!$_REQUEST['id']){
 }
 $id = mysqli_real_escape_string($conn, $_REQUEST['id']);
 
-/*
-//PLACE HOLDER FOR GROUPS IMPLEMENTATION
-$query = "
-	SELECT 
-		fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
-		fm.finalType, fm.defView, fm.notes, fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
-		(SELECT updated_at 
-		 FROM formulas 
-		 WHERE fid = fm.fid AND owner_id = ? 
-		 ORDER BY updated_at DESC 
-		 LIMIT 1) AS updated_at, 
-		(SELECT COUNT(id) 
-		 FROM formulas 
-		 WHERE fid = fm.fid AND owner_id = ?) AS ingredients,
-		(SELECT g.id FROM groups g WHERE g.fid = fm.fid AND g.user_id = ? LIMIT 1) AS gid 
-	FROM formulasMetaData fm
-	WHERE fm.owner_id = ? AND fm.id = ?;
-";
-*/
+
 $query = "SELECT name, fid, catClass, finalType, defView, isProtected, notes, product_name, owner_id FROM formulasMetaData WHERE owner_id = ? AND id = ?";
 
 $stmt = $conn->prepare($query);
@@ -120,7 +102,18 @@ if($_POST['solvents_only'] === 'true'){
 if($_POST['search']){
 	$q = "AND ingredient LIKE '%".$_POST['search']."%'";
 }
-	
+
+$defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
+
+$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q  AND owner_id = '$userID' ORDER BY ingredient ASC");
+while ($formula = mysqli_fetch_array($formula_q)){
+	$form[] = $formula;
+	if ( $formula['exclude_from_calculation'] != 1 ){
+		$mg['total_mg'] += $formula['quantity'];
+	}
+}
+
+
 if(isset($_GET['stats_only'])){
 
 	$formulaName = (string) $meta['name'];
@@ -138,21 +131,13 @@ if(isset($_GET['stats_only'])){
 	$response['stats']['formula_name'] = $formulaName;
 	$response['stats']['formula_description'] = $formulaDescription;
 	$response['stats']['data'] = $stats;
-	
+	$response['stats']['total_quantity_raw'] = $mg['total_mg'];
+
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode($response);
 	return;
 }
 
-$defCatClass = $meta['catClass'] ?: $settings['defCatClass'];
-
-$formula_q = mysqli_query($conn, "SELECT id,ingredient,concentration,quantity,dilutant,notes,exclude_from_calculation FROM formulas WHERE fid = '".$meta['fid']."' $q  AND owner_id = '$userID' ORDER BY ingredient ASC");
-while ($formula = mysqli_fetch_array($formula_q)){
-	    $form[] = $formula;
-		if ( $formula['exclude_from_calculation'] != 1 ){
-			$mg['total_mg'] += $formula['quantity'];
-		}
-}
 
 foreach ($form as $formula){
 	
@@ -215,8 +200,7 @@ foreach ($form as $formula){
 		$r['quantity'] = number_format((float)$formula['quantity'], $settings['qStep'],'.', '') ?: 0;
     	$r['concentration'] = number_format($conc, $settings['qStep']) ?: 0.000;
     	$r['final_concentration'] = number_format((float)$conc_final, $settings['qStep']) ?: 0;
-		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']) ?: 0;
-
+		$r['cost'] = (float)calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size'] ?: 10) ?: 0;
 	}
 
 	$u = searchIFRA($ing_q['cas'],$formula['ingredient'],null,$defCatClass);
@@ -294,7 +278,7 @@ foreach ($form as $formula){
 	$response['data'][] = $r;
 	
 	$conc_f[] = $conc;
-	$total_cost[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size']);
+	$total_cost[] = calcCosts(getPrefSupplier($ing_q['id'],$conn)['price'],$formula['quantity'], $formula['concentration'], getPrefSupplier($ing_q['id'],$conn)['size'] ?: 10);
 
 }
 

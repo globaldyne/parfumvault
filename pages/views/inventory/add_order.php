@@ -30,7 +30,7 @@ $res_ingSupplier = $stmt->get_result();
             <select class="form-select" name="currency" id="currency">
                 <option value="">Choose currency</option>
                 <?php
-                $json = file_get_contents(__ROOT__ . '/inc/currencies.json');
+                $json = file_get_contents(__ROOT__ . '/db/currencies.json');
                 $currencies = json_decode($json, true);
                 foreach ($currencies as $code => $details) {
                     $symbol = $details['symbol'];

@@ -448,10 +448,21 @@ $(document).ready(function() {
 			}
 		},
 		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. ' + error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
 			$('.toast').toast('show');
 		},
+		validate: function (value) {
+			if ($.trim(value) === '') {
+				return 'This field is required';
+			}
+			if (!$.isNumeric(value)) {
+				return 'Numbers only';
+			}
+			if (parseFloat(value) <= 0) {
+				return 'Value must be greater than 0';
+			}
+		}
 	});
 		
 	$('#tdIngSup').editable({

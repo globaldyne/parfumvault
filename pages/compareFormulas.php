@@ -8,13 +8,13 @@
         </div>
         <div class="card-body">
           <?php 
-            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'"))== 0){
-              echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
+            if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE owner_id = '$userID'")))){
+              echo '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=listFormulas">create</a> at least one formula first.</div>';
               return;
             }
             
-            if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE (type = 'Carrier' OR type = 'Solvent')  AND owner_id = '$userID' "))== 0){
-              echo '<div class="alert alert-info"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
+            if(empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE (type = 'Carrier' OR type = 'Solvent')  AND owner_id = '$userID' ")))){
+              echo '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You need to <a href="/?do=ingredients">add</a> at least one solvent or carrier first.</div>';
               return;
             }
           ?>
@@ -47,7 +47,7 @@
             </div>
             <div class="mb-3 row">
               <div class="col-sm-1">
-                <button type="submit" class="btn btn-primary" id="btnCMP">Compare</button>
+                <button type="button" class="btn btn-primary" id="btnCMP">Compare</button>
               </div>
             </div>
           </div>
@@ -60,24 +60,34 @@
 
 <script>
 $(document).ready(function() {
+    $('#btnCMP').click(function() {
+        var formulaA = $("#formula_a").val();
+        var formulaB = $("#formula_b").val();
 
-	$('#btnCMP').click(function() {
-		$.ajax({ 
-			url: '/pages/views/formula/cmp_formulas_data.php', 
-			type: 'POST',
-			data: {
-				id_a: $("#formula_a").val(),
+        if (!formulaA || !formulaB) {
+            alert("Please select both formulas to compare.");
+            return;
+        }
+
+        $('#cmp_results').html('<div class="alert alert-info"><i class="fa fa-spinner fa-spin mx-2"></i>Comparing formulas, please wait...</div>');
+
+        $.ajax({ 
+            url: '/pages/views/formula/cmp_formulas_data.php', 
+            type: 'POST',
+            data: {
+                id_a: formulaA,
                 name_a: $("#formula_a option:selected").text(),
-				id_b: $("#formula_b").val(),
+                id_b: formulaB,
                 name_b: $("#formula_b option:selected").text(),
-			},
-			dataType: 'html',
-			success: function (data) {
-				$('#cmp_results').html(data);
-			}
-		  });
-	});
-	
+            },
+            dataType: 'html',
+            success: function (data) {
+                $('#cmp_results').html(data);
+            },
+            error: function (xhr, status, error) {
+                $('#cmp_results').html('<div class="alert alert-danger"><i class="fa fa-exclamation-circle mx-2"></i>Error comparing formulas: ' + error + '</div>');
+            }
+        });
+    });
 });
-
 </script>

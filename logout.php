@@ -8,21 +8,29 @@ if (session_status() === PHP_SESSION_NONE) {
 if (getenv('PLATFORM') === "CLOUD") {
     $session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
     $dbhost = getenv('DB_HOST');
-	$dbuser = getenv('DB_USER');
-	$dbpass = getenv('DB_PASS');
-	$dbname = getenv('DB_NAME');
+    $dbuser = getenv('DB_USER');
+    $dbpass = getenv('DB_PASS');
+    $dbname = getenv('DB_NAME');
 } else {
     require_once(__ROOT__.'/inc/config.php');
 }
 $userID = $_SESSION['userID'];
 error_log("User $userID logged out");
-$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+
 try {
+    $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+    if (!$conn) {
+        throw new Exception("Failed to connect to database: " . mysqli_connect_error());
+    }
+
     if (!mysqli_query($conn, "DELETE FROM session_info WHERE owner_id = '$userID'")) {
         throw new Exception("Failed to delete session info for user $userID: " . mysqli_error($conn));
     }
 } catch (Exception $e) {
     error_log($e->getMessage());
+    $error_msg = $e->getMessage();
+    require_once(__ROOT__.'/pages/error.php');
+    exit();
 }
 
 session_unset();

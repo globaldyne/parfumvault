@@ -67,6 +67,125 @@ if($role === 1){
     }
 }
 
+//EXPORT USER DATA
+if ($_GET['kind'] === 'user-data') {
+    if ($role === 1 && isset($_GET['id']) && !empty($_GET['id'])) {
+        $userID = mysqli_real_escape_string($conn, $_GET['id']);
+    }
+
+    error_log("PV error: Export initiated for userID: $userID");
+
+    $format = $_GET['format'] ?? 'sql';
+
+    // Allowed tables for export
+    $allowedTables = [
+        'IFRALibrary', 'bottles', 'branding', 'cart', 'customers', 
+        'documents', 'formulaCategories', 'formula_history', 'formulas', 'formulasMetaData', 
+        'formulasRevisions', 'formulasTags', 'groups', 'ingCategory', 'ingReplacements', 
+        'ingSafetyInfo', 'ingSuppliers', 'ingredient_compounds', 
+        'ingredient_safety_data', 'ingredients', 'inventory_accessories', 'inventory_compounds', 
+        'makeFormula', 'order_items', 'orders', 'perfumeTypes', 'sdsSettings', 'sds_data', 
+        'suppliers', 'synonyms', 'templates', 'user_prefs', 'user_settings'
+    ];
+
+    $result = [];
+
+    foreach ($allowedTables as $table) {
+        $columnsQuery = "SHOW COLUMNS FROM `$table`";
+        $columnsRes = mysqli_query($conn, $columnsQuery);
+        if (!$columnsRes) {
+            error_log("PV error: Failed to get columns for $table. MySQL error: " . mysqli_error($conn));
+            continue;
+        }
+
+        $columns = [];
+        $doubleColumns = [];
+
+        while ($col = mysqli_fetch_assoc($columnsRes)) {
+            $colName = $col['Field'];
+            $colType = strtolower($col['Type']);
+
+            if ($colName !== 'id') {
+                $columns[] = "`$colName`";
+                if (strpos($colType, 'double') !== false || strpos($colType, 'float') !== false || strpos($colType, 'decimal') !== false) {
+                    $doubleColumns[] = $colName;
+                }
+            }
+        }
+
+        if (empty($columns)) {
+            error_log("PV error: No valid columns found for $table.");
+            continue;
+        }
+
+        $columnsList = implode(", ", $columns);
+        $query = "SELECT $columnsList FROM `$table` WHERE owner_id = '$userID'";
+        error_log("PV error: Running query: $query");
+
+        $res = mysqli_query($conn, $query);
+        if (!$res) {
+            error_log("PV error: Failed to fetch data from $table. MySQL error: " . mysqli_error($conn));
+            continue;
+        }
+
+        if (mysqli_num_rows($res) === 0) {
+            error_log("PV error: No data found in $table for userID: $userID");
+            continue;
+        }
+
+        while ($row = mysqli_fetch_assoc($res)) {
+            foreach ($doubleColumns as $colName) {
+                if (!is_numeric($row[$colName])) {
+                    error_log("PV error: Invalid DOUBLE value in $table.$colName, setting to 0.");
+                    $row[$colName] = 0;
+                }
+            }
+            $result[$table][] = $row;
+        }
+    }
+
+    if ($format === 'json') {
+        header('Content-Disposition: attachment; filename=user_data.json');
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    } elseif ($format === 'sql') {
+        $gzipFile = tempnam(sys_get_temp_dir(), 'export_') . '.gz';
+        $gz = gzopen($gzipFile, 'w9'); // Gzip with max compression
+
+        gzwrite($gz, "-- SQL Export\n\n");
+
+        foreach ($result as $table => $rows) {
+            if (empty($rows)) continue;
+
+            $columnNames = implode(", ", array_keys($rows[0]));
+
+            gzwrite($gz, "INSERT INTO `$table` ($columnNames) VALUES\n");
+            $values = [];
+            foreach ($rows as $row) {
+                $escapedValues = array_map(function ($value) use ($conn) {
+                    if (is_null($value)) return 'NULL';
+                    if (is_numeric($value) && floatval($value) == $value) return $value;
+                    return "'" . mysqli_real_escape_string($conn, $value) . "'";
+                }, $row);
+                $values[] = '(' . implode(', ', $escapedValues) . ')';
+            }
+            gzwrite($gz, implode(",\n", $values) . ";\n\n");
+        }
+
+        gzclose($gz);
+
+        header('Content-Disposition: attachment; filename=user_data.sql.gz');
+        header('Content-Type: application/gzip');
+        header('Content-Length: ' . filesize($gzipFile));
+        readfile($gzipFile);
+        unlink($gzipFile); // Delete temp file after download
+    }
+
+    return;
+}
+
+
+
 //EXPORT FORMULAS JSON
 if($_GET['action'] == 'exportFormulas'){
     $filter = " WHERE fm.owner_id = '$userID'";

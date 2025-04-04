@@ -40,7 +40,11 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                         <a href="#" id="mainTitle">Formulas</a>
                     </h2>
                 </div>
-
+                <?php
+				if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
+					echo '<div class="mt-3 row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients available yet. Please click <a href="/?do=ingredients">here</a> to add some ingredients first.</strong></div></div>';
+				} else {
+                ?>
                 <div class="pv_menu_formulas">
                     <div class="text-right">
                         <div class="btn-group">
@@ -95,12 +99,6 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                         </div>
                     </div>
                 </div>
-
-                <?php
-				if (empty(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE owner_id = '$userID'")))) {
-					echo '<div class="row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No ingredients yet, click <a href="/?do=ingredients">here</a> to create a new one</strong></div></div>';
-				} else {
-                ?>
                 <div id="listFormulas">
                     <ul>
                         <li class="tabs">

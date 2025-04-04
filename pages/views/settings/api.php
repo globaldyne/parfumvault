@@ -7,7 +7,7 @@ require_once(__ROOT__.'/inc/settings.php');
 
 ?>
 
-<h5>API can be used to access PV Pro from other apps like PV Mobile APP</h5>
+<h5>Use the API to integrate PV with other applications such as PV Mobile and AromaTrack.</h5>
 <hr />
 
 <div class="row mb-3">

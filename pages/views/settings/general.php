@@ -26,7 +26,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <div class="mb-3 col-md-6 form-floating">
                 <select name="currency" id="currency" class="form-select">
                     <?php
-                    $json = file_get_contents(__ROOT__.'/inc/currencies.json');
+                    $json = file_get_contents(__ROOT__.'/db/currencies.json');
                     $currencies = json_decode($json, true);
                     foreach ($currencies as $code => $details) {
                         $symbol = $details['symbol'];

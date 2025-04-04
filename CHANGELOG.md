@@ -1,4 +1,27 @@
 # CHANGELOG
+### Version 12.7
+- Improved security for fetching ingredient providers
+- FPDF lib update to 1.86
+- Fix backup process failing in some cases with invalid data
+- Add supplier form improvements
+- Add default IFRA cat for ingredients
+- Dropping public formula view summary
+- Adding backend support for AromaTrack app
+- Error page update
+- Logout better error handling
+- Currencies json has been moved under db/
+- Added currency support for suppliers
+- Added API enable/disable option for system settings
+- Fix session handler timestamp compare
+- Mariadb Server updated to version 11
+- Fix incorrect percentage calculation for formulas
+- Fix google backups page not loading if invalid date set
+- Added user data export as sql
+- Fixed incorrect created field for batch history
+- Added functionality to embed ingredient's sub ingredients into the formula
+- Force ingredient size to return 10 (ml) by default if size not set in suppliers before version 12.7
+- Prevent setting size to 0 in ingredient supplier
+
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
 - Monitored user changes in the admin dashboard

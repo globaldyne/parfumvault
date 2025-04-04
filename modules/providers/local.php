@@ -13,7 +13,7 @@ require_once(__ROOT__.'/func/getIngSupplier.php');
 require_once(__ROOT__.'/func/searchIFRA.php');
 require_once(__ROOT__.'/func/getDocument.php');
 
-$defCatClass = $settings['defCatClass'];
+$defCatClass = $settings['defCatClass'] ?: 'cat4';
 
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
@@ -75,11 +75,11 @@ $query = "
     $extra
     LIMIT $row, $limit
 ";
-error_log("PV Info: ingredients query: $query");
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
     error_log("PV error: Query failed - " . mysqli_error($conn));
+    error_log("PV error: ingredients query: $query");
     exit;
 }
 

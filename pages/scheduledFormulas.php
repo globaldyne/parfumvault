@@ -183,7 +183,7 @@ $(document).ready(function() {
 		data = '<div class="dropdown">' +
 			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
 				'<ul class="dropdown-menu dropdown-menu-right">';
-		data += '<li><a class="dropdown-item link-danger" href="#" id="pend_remove" rel="tip" title="Delete '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Delete</a></li>';
+		data += '<li><a class="dropdown-item link-danger" href="#" id="pend_remove" rel="tip" title="Remove '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Remove</a></li>';
 		data += '</ul></div>';
 		return data;  
 	};

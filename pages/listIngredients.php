@@ -49,7 +49,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
    				<span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
-                <?php foreach (loadModules('suppliers') as $provider){ ?>
+                <?php foreach (loadModules('providers') as $provider){ ?>
                 <li>
                     <a href="#" class="supplier dropdown-item" data-provider="<?=$provider['fileName']?>">
                         <span class="<?=$provider['icon']?>"></span>

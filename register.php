@@ -109,67 +109,71 @@ $(document).ready(function() {
         
         if (name === '') {
             $('#register_name').focus();
-            $('#msg').html('<div class="alert alert-danger">Please enter your full name.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please enter your full name.</div>');
+            return;
+        }
+        if (name.length < 8) {
+            $('#register_name').focus();
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Your full name must be at least 8 characters long.</div>');
             return;
         }
         if (email === '') {
             $('#register_email').focus();
-            $('#msg').html('<div class="alert alert-danger">Please enter your email address.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please enter your email address.</div>');
             return;
         }
         if (!validateEmail(email)) {
             $('#register_email').focus();
-            $('#msg').html('<div class="alert alert-danger">Please enter a valid email address.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please enter a valid email address.</div>');
             return;
         }
         if (password === '') {
             $('#register_pass').focus();
-            $('#msg').html('<div class="alert alert-danger">Please enter your password.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please enter your password.</div>');
             return;
         }
         if (confirmPassword === '') {
             $('#register_confirm_pass').focus();
-            $('#msg').html('<div class="alert alert-danger">Please confirm your password.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Please confirm your password.</div>');
             return;
         }
         if (password !== confirmPassword) {
             $('#register_confirm_pass').focus();
-            $('#msg').html('<div class="alert alert-danger">Passwords do not match.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Passwords do not match.</div>');
             return;
         }
         if (!termsChecked) {
             $('#terms_checkbox').focus();
-            $('#msg').html('<div class="alert alert-danger">You must agree to the terms and conditions.</div>');
+            $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>You must agree to the terms and conditions.</div>');
             return;
         }
 
-    $.ajax({ 
-        url: '/core/configureSystem.php', 
-        type: 'POST',
-        data: {
-            action: 'selfregister',
-            fullName: name,
-            email: email,
-            password: password,
-        },
-        dataType: 'json',
-        success: function (data) {
-            if (data.success) { 
-                window.location = '/';
-            } 
-            if (data.error) {
-                var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+        $.ajax({ 
+            url: '/core/configureSystem.php', 
+            type: 'POST',
+            data: {
+                action: 'selfregister',
+                fullName: name,
+                email: email,
+                password: password,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) { 
+                    window.location = '/';
+                } 
+                if (data.error) {
+                    var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>';
+                    $('#msg').html(msg);
+                }
+                $('#register_btn').prop('disabled', false);
+            },
+            error: function (xhr, status, error) {
+                var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + error + '</div>';
                 $('#msg').html(msg);
+                $('#register_btn').prop('disabled', false);
             }
-            $('#register_btn').prop('disabled', false);
-        },
-        error: function (xhr, status, error) {
-            var msg = '<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + error + '</div>';
-            $('#msg').html(msg);
-            $('#register_btn').prop('disabled', false);
-        }
-    });
-        
+        });
     });
 
     function validateEmail(email) {

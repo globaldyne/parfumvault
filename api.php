@@ -13,10 +13,7 @@ require_once(__ROOT__.'/func/rgbToHex.php');
 if (!isset($system_settings['API_enabled']) || $system_settings['API_enabled'] != 1) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
-        'draw' => intval($_REQUEST['draw'] ?? 0),
-        'recordsTotal' => 0,
-        'recordsFiltered' => 0,
-        'data' => [],
+        'status' => 'error',
         'error' => 'API is administratively disabled'
     ]);
     return;
@@ -90,8 +87,8 @@ if ($key && $do === 'auth') {
 }
 
 $validEndpoints = [
-    'upload' => ['formula', 'ingredients'],
-    'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents', 'ifra'],
+    'upload' => ['formula', 'ingredients', 'aromatrack'],
+    'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents', 'ifra', 'aromatrack'],
     'manage' => ['makeformula']
 ];
 
@@ -100,7 +97,7 @@ function getValidEndpoints($endpoints) {
     $formatted = [];
     foreach ($endpoints as $do => $types) {
         foreach ($types as $type) {
-            $formatted[] = ['method' => 'POST','do' => $do, 'type' => $type];
+            $formatted[] = ['method' => 'POST', 'do' => $do, 'type' => $type];
         }
     }
     return $formatted;
@@ -116,6 +113,10 @@ switch ($do) {
         } elseif ($type === 'ingredients') {
             validateKeyAndExecute($conn, $key, function () {
                 require_once(__ROOT__ . '/api-functions/ingredients_upload.php');
+            });
+        } elseif ($type === 'aromatrack') {
+            validateKeyAndExecute($conn, $key, function () {
+                require_once(__ROOT__ . '/api-functions/aromatrack_upload.php');
             });
         } else {
             header('Content-Type: application/json; charset=utf-8');
@@ -134,7 +135,8 @@ switch ($do) {
             'categories' => '/api-functions/categories_get.php',
             'suppliers' => '/api-functions/suppliers_get.php',
             'documents' => '/api-functions/documents_get.php',
-            'ifra' => '/api-functions/ifra_get.php'
+            'ifra' => '/api-functions/ifra_get.php',
+            'aromatrack' => '/api-functions/aromatrack_get.php'
         ];
         if (isset($apiFileMap[$type])) {
             validateKeyAndExecute($conn, $key, function () use ($type, $apiFileMap) {

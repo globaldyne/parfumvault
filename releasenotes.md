@@ -1,19 +1,22 @@
-Whats New in v12.6
+Whats New in v12.7
 --------------------------
-- Introduced order tracking in the inventory section
-- Added an option to bypass strict ingredient checks
-- Fixed PV Library ingredient import issues for some users
-- Added a column to indicate if users are online
-- Notify only active admin accounts about new or deleted users
-- Added a daemon for session and user clean-up
-- Improved price scraper functionality
-- Fixed issues with synonym search
-- Enhanced API security
-- Implemented a unique auto-generated 32-bit key for API access
-- Improved formula creation process
-- Added metadata counts (formulas, ingredients, etc.) for users in the admin dashboard
-- Improved upload size validation function
-- Made API test URL non-clickable when the API key is hidden
-- Added a button to copy the API key
-- Fixed IFRA category descriptions not displaying correctly in formulas
+- Enhanced security measures for retrieving ingredient providers.  
+- Updated **FPDF** library to version **1.86**.  
+- Fixed an issue where the backup process could fail due to invalid data.  
+- Improved supplier form functionality.  
+- Added a default **IFRA category** for ingredients.  
+- Removed the public formula view summary.  
+- Implemented backend support for the **AromaTrack** app.  
+- Updated the error page for a better user experience.  
+- Improved error handling for logout failures.  
+- Moved **currencies.json** under the `db/` directory.  
+- Added currency support for suppliers.  
+- Introduced an **API enable/disable** option in system settings.  
+- Fixed session handler timestamp comparison issue.  
+- Upgraded **MariaDB Server** to version **11**.  
+- Fixed incorrect percentage calculations in formulas.  
+- Resolved an issue preventing the **Google backups** page from loading when an invalid date was set. 
+- Added functionality to embed ingredient's sub ingredients into the formula
+- Force ingredient size to return 10 (ml) by default if size not set in suppliers before version 12.7
+- Prevent setting size to 0 in ingredient supplier 
 - This release may include additional changes; for full details, please refer to the CHANGELOG
