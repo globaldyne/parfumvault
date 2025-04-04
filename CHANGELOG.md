@@ -19,6 +19,8 @@
 - Added user data export as sql
 - Fixed incorrect created field for batch history
 - Added functionality to embed ingredient's sub ingredients into the formula
+- Force ingredient size to return 10 (ml) by default if size not set in suppliers before version 12.7
+- Prevent setting size to 0 in ingredient supplier
 
 ### Version 12.6
 - Added metadata count (formulas, ingredients, etc.) for users in the admin dashboard
