@@ -14,14 +14,17 @@ import (
 )
 
 const (
-	envDBHost      = "DB_HOST"
-	envDBUsername  = "DB_USER"
-	envDBPassword  = "DB_PASS"
-	envDBName      = "DB_NAME"
-	envTimeout     = "SESSION_TIMEOUT"
-	defaultDBHost  = "127.0.0.1"
-	defaultTimeout = "1800"
-	checkInterval  = 60 // Check every 60 seconds
+	envDBHost           = "DB_HOST"
+	envDBUsername       = "DB_USER"
+	envDBPassword       = "DB_PASS"
+	envDBName           = "DB_NAME"
+	envTimeout          = "SESSION_TIMEOUT"
+	envInactiveDays     = "INACTIVE_DAYS"
+	defaultDBHost       = "127.0.0.1"
+	defaultTimeout      = "1800"
+	defaultInactiveDays = 30
+	checkInterval       = 60      // Check every 60 seconds
+	version             = "1.0.1" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -122,11 +125,18 @@ func cleanupUnverifiedUsers(db *sql.DB) {
 	}
 }
 
-// cleanupInactiveUsers deletes users who haven't logged in for the past 30 days
+// cleanupInactiveUsers deletes users who haven't logged in for the past N days
 func cleanupInactiveUsers(db *sql.DB) {
-	thirtyDaysAgo := time.Now().Add(-30 * 24 * time.Hour).Unix()
+	inactiveDaysStr := getEnv(envInactiveDays, strconv.Itoa(defaultInactiveDays))
+	inactiveDays, err := strconv.Atoi(inactiveDaysStr)
+	if err != nil {
+		error_log(fmt.Sprintf("Invalid INACTIVE_DAYS value, using default: %d", defaultInactiveDays))
+		inactiveDays = defaultInactiveDays
+	}
 
-	query := "SELECT id FROM users WHERE UNIX_TIMESTAMP(last_login) < ? AND role = 2"
+	thirtyDaysAgo := time.Now().Add(-time.Duration(inactiveDays) * 24 * time.Hour).Unix()
+
+	query := "SELECT id FROM users WHERE last_login < FROM_UNIXTIME(?) AND role = 2"
 	rows, err := db.Query(query, thirtyDaysAgo)
 	if err != nil {
 		error_log(fmt.Sprintf("Error querying inactive users: %v", err))
@@ -150,7 +160,17 @@ func cleanupInactiveUsers(db *sql.DB) {
 
 	deleteQuery := "DELETE FROM users WHERE id = ?"
 	auditQuery := "INSERT INTO audit_log (email, ip, browser, timestamp, action, result) VALUES (?, ?, ?, ?, ?, ?)"
+	tables := []string{
+		"batchIDHistory", "bottles", "cart", "customers", "documents",
+		"formulaCategories", "formulas", "formulasMetaData", "formulasRevisions", "formulasTags",
+		"formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
+		"ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
+		"inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
+		"templates", "user_prefs", "user_settings", "branding", "orders", "order_items",
+	}
+
 	for _, userID := range inactiveUsers {
+		// Delete from users table
 		_, err := db.Exec(deleteQuery, userID)
 		if err != nil {
 			error_log(fmt.Sprintf("Error deleting inactive user %s: %v", userID, err))
@@ -164,6 +184,17 @@ func cleanupInactiveUsers(db *sql.DB) {
 			if auditErr != nil {
 				error_log(fmt.Sprintf("Error logging audit for user %s: %v", userID, auditErr))
 			}
+
+			// Delete from other tables
+			for _, table := range tables {
+				deleteTableQuery := fmt.Sprintf("DELETE FROM %s WHERE owner_id = ?", table)
+				_, err := db.Exec(deleteTableQuery, userID)
+				if err != nil {
+					error_log(fmt.Sprintf("Error deleting from table %s for user %s: %v", table, userID, err))
+				} else {
+					log.Printf("Deleted records from table %s for user %s", table, userID)
+				}
+			}
 		}
 	}
 }
@@ -174,6 +205,7 @@ func main() {
 	dbpass := os.Getenv(envDBPassword)
 	dbname := os.Getenv(envDBName)
 	sessionTimeoutStr := getEnv(envTimeout, defaultTimeout)
+	inactiveDaysStr := getEnv(envInactiveDays, strconv.Itoa(defaultInactiveDays))
 
 	if dbuser == "" || dbpass == "" || dbname == "" {
 		error_log("Missing required environment variables: DB_USER, DB_PASS, DB_NAME")
@@ -198,7 +230,8 @@ func main() {
 	stopChan := make(chan os.Signal, 1)
 	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
 
-	log.Println("Session monitoring daemon started...")
+	log.Printf("Session monitoring daemon (version %s) started...", version)
+	log.Printf("Inactive users will be removed after %s days", inactiveDaysStr)
 
 	// Daemon loop
 	for {

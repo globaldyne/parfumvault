@@ -9,7 +9,6 @@ if ($_POST['action'] == 'selfregister') {
     require_once(__ROOT__.'/func/mailSys.php');
     require_once(__ROOT__.'/func/validateInput.php');
 
-
     if ($system_settings['USER_selfRegister'] == '0') {
         $response['error'] = 'Self registration is disabled';
         echo json_encode($response);
@@ -19,6 +18,13 @@ if ($_POST['action'] == 'selfregister') {
     $fullName = mysqli_real_escape_string($conn, $_POST['fullName']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
+
+    // Validate full name length
+    if (strlen($fullName) < 8) {
+        $response['error'] = 'Full name must be at least 8 characters long';
+        echo json_encode($response);
+        return;
+    }
 
     if (!preg_match("/^[a-zA-Z\s]+$/", $fullName)) {
         $response['error'] = 'Full name can only contain letters and spaces';
@@ -97,7 +103,7 @@ if ($_POST['action'] == 'register') {
     }
 
     // Validate full name length
-    if (strlen($_POST['fullName']) < 5) {
+    if (strlen($_POST['fullName']) < 8) {
         $response['error'] = "Full name must be at least 8 characters long!";
         echo json_encode($response);
         return;
@@ -224,6 +230,4 @@ if ($_POST['action'] == 'resetPassword') {
     echo json_encode($response);
     return;
 }
-
-
 ?>

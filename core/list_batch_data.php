@@ -40,7 +40,7 @@ while ($res = mysqli_fetch_assoc($result)) {
         'product_name' => $res['product_name'] ?: '-',
         'pdf' => (string)$res['pdf'],
         'state' => (int)$state,
-        'created' => (string)$res['created']
+        'created_at' => (string)$res['created_at']
     ];
 }
 

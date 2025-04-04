@@ -250,6 +250,7 @@ CREATE TABLE `ingredients` (
   `physical_state` INT NULL DEFAULT '1',
   `cid` INT NULL,
   `shelf_life` INT NOT NULL DEFAULT '0',
+  `aromaTrackID` VARCHAR(255) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `owner_id` VARCHAR(255) NOT NULL
@@ -272,6 +273,7 @@ CREATE TABLE `ingSuppliers` (
   `address` varchar(255) DEFAULT NULL,
   `po` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
+  `currency` VARCHAR(255) NULL DEFAULT NULL,
   `telephone` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -296,7 +298,7 @@ CREATE TABLE `ingTypes` (
 INSERT INTO `ingTypes` (`id`, `name`) VALUES
 (1, 'AC'),
 (2, 'EO'),
-(3, 'Other/Uknown'),
+(3, 'Other/Unknown'),
 (4, 'Custom Blend'),
 (5, 'Carrier'),
 (6, 'Solvent'),
@@ -967,8 +969,8 @@ INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `descriptio
 ('EMAIL_from_display_name', 'Perfumers Vault', 'From display name', 'text', 'A user-friendly name for the \'From\' address (optional).'),
 ('EMAIL_smtp_user', '', 'Username', 'text', 'Optional field, use only if your email server requires authentication'),
 ('EMAIL_smtp_pass', '', 'Password', 'password', 'Optional field, use only if your email server requires authentication'),
-('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it');
-
+('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it'),
+('API_enabled', '0', 'API access', 'checkbox', 'Enable or disable API access globally');
 
 CREATE TABLE `user_settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT ,

@@ -147,7 +147,7 @@ if($role === 1) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $updateQuery .= ", password = ?";
         }
-        $updateQuery .= " WHERE id = ?";
+        $updateQuery .= " WHERE id = ?"; // Ensure this line is properly formatted and does not contain stray characters
 
         //$user_id = $ownerResult->fetch_assoc()['id'];
 
@@ -1574,6 +1574,100 @@ if($_POST['merge'] && $_POST['ingSrcID'] &&  $_POST['ingSrcName']  && $_POST['fi
 
 }
 
+// EMBED INGREDIENT
+if ($_POST['action'] === 'embedIng') {
+    $fid = $conn->real_escape_string($_POST['fid']);
+    $ingID = $conn->real_escape_string($_POST['ingID']);
+    $ingName = $conn->real_escape_string($_POST['ingName']);
+
+    // Fetch sub-ingredients of the selected ingredient
+    error_log("PV error: Fetching sub-ingredients for '$ingName' under user '$userID'");
+    
+    $subIngQuery = $conn->prepare("SELECT name, min_percentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+    $subIngQuery->bind_param("ss", $ingName, $userID);
+    $subIngQuery->execute();
+    $subIngResult = $subIngQuery->get_result();
+
+    // Fetch the formula details
+    $formulaQuery = $conn->prepare("SELECT name FROM formulasMetaData WHERE fid = ? AND owner_id = ?");
+    $formulaQuery->bind_param("ss", $fid, $userID);
+    $formulaQuery->execute();
+    $formulaResult = $formulaQuery->get_result();
+    $formulaData = $formulaResult->fetch_assoc();
+    $formulaQuery->close();
+
+    if (!$formulaData) {
+        error_log("PV error: Formula with fid '$fid' not found for user '$userID'");
+        echo json_encode(['error' => 'Formula not found.']);
+        return;
+    }
+
+    if ($subIngResult->num_rows > 0) {
+        while ($row = $subIngResult->fetch_assoc()) {
+            $subIngName = $row['name'];
+            $quantity = $row['min_percentage'];
+
+            error_log("PV error: Checking ingredient ID for '$subIngName' under user '$userID'");
+
+            $subIngIDQuery = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
+            $subIngIDQuery->bind_param("ss", $subIngName, $userID);
+            $subIngIDQuery->execute();
+            $subIngIDResult = $subIngIDQuery->get_result();
+            $subIngIDData = $subIngIDResult->fetch_assoc();
+            $subIngIDQuery->close();
+
+            if (!$subIngIDData) {
+                error_log("PV error: Ingredient '$subIngName' not found in database for user '$userID'");
+                continue; // Skip this ingredient if not found
+            }
+
+            $subIngID = $subIngIDData['id'];
+
+            // **Check if ingredient already exists in the user's formula**
+            $checkQuery = $conn->prepare("SELECT 1 FROM formulas WHERE fid = ? AND ingredient_id = ? AND owner_id = ?");
+            $checkQuery->bind_param("sss", $fid, $subIngID, $userID);
+            $checkQuery->execute();
+            $checkResult = $checkQuery->get_result();
+            $ingredientExists = $checkResult->num_rows > 0;
+            $checkQuery->close();
+
+            if ($ingredientExists) {
+                error_log("PV error: Ingredient '$subIngName' already exists in formula '$fid' for user '$userID' - Skipping insert");
+                continue; // **Skip inserting duplicate ingredient**
+            }
+
+            error_log("PV error: Inserting ingredient: fid='$fid', formula='{$formulaData['name']}', ingredient='$subIngName', ingredient_id='$subIngID', quantity='$quantity', owner_id='$userID'");
+
+            // Insert new ingredient only if it does not exist
+            $insertQuery = $conn->prepare(
+                "INSERT INTO formulas (fid, name, ingredient, ingredient_id, quantity, owner_id)
+                 VALUES (?, ?, ?, ?, ?, ?)"
+            ); 
+            $insertQuery->bind_param("sssids", $fid, $formulaData['name'], $subIngName, $subIngID, $quantity, $userID);
+            $insertQuery->execute();
+            $insertQuery->close();
+        }
+
+        // DELETE Statement
+        error_log("PV error: Deleting id='$ingID' from formulas for fid='$fid' and user '$userID'");
+        $deleteQuery = $conn->prepare("DELETE FROM formulas WHERE fid = ? AND id = ? AND owner_id = ?");
+        $deleteQuery->bind_param("sss", $fid, $ingID, $userID);
+        $deleteQuery->execute();
+        $deleteQuery->close();
+
+        echo json_encode(['success' => 'Ingredient embedded successfully.']);
+    } else {
+        error_log("PV error: No sub-ingredients found for '$ingName' under user '$userID'");
+        echo json_encode(['error' => 'No sub-ingredients found for the selected ingredient.']);
+    }
+
+    $subIngQuery->close();
+    return;
+}
+
+
+
+
 //PVLibrary Single Import						
 if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST['kind'] === 'ingredient' && !empty($_POST['ing_id'])) {
     // Sanitize input
@@ -2940,78 +3034,100 @@ if($_GET['kind'] == 'suppliers' && $_GET['action'] == 'supplier_update'){
 	return;	
 }
 
-if($_POST['supp'] == 'edit'){
-	$id = $_POST['id'];
+//EDIT SUPPLIER
+if ($_POST['action'] == 'editsupplier') {
+    $id = $_POST['id'];
 
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$address = mysqli_real_escape_string($conn, $_POST['address']);
-	$po = mysqli_real_escape_string($conn, $_POST['po']);
-	$country = mysqli_real_escape_string($conn, $_POST['country']);
-	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
-	$url = mysqli_real_escape_string($conn, $_POST['url']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	
-	
-	if(mysqli_query($conn, "UPDATE ingSuppliers SET address = '$address', po='$po', country='$country', telephone='$telephone', url='$url', email='$email' WHERE id = '$id' AND owner_id = '$userID'")){
-		$response["success"] = 'Supplier '.$name.' updated';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
+    // Validate required fields
+    $requiredFields = ['name', 'address', 'po', 'country', 'currency', 'telephone', 'url', 'email'];
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            $response["error"] = ucfirst($field) . ' is required';
+            echo json_encode($response);
+            return;
+        }
+    }
+
+    // Sanitize inputs
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $po = mysqli_real_escape_string($conn, $_POST['po']);
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+    $url = mysqli_real_escape_string($conn, $_POST['url']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+    // Use prepared statement to update supplier
+    $stmt = $conn->prepare("UPDATE ingSuppliers SET address = ?, po = ?, country = ?, currency = ?, telephone = ?, url = ?, email = ? WHERE id = ? AND owner_id = ?");
+    $stmt->bind_param('sssssssis', $address, $po, $country, $currency, $telephone, $url, $email, $id, $userID);
+
+    if ($stmt->execute()) {
+        $response["success"] = 'Supplier ' . $name . ' updated';
+    } else {
+        $response["error"] = 'Something went wrong: ' . $stmt->error;
+    }
+
+    $stmt->close();
+    echo json_encode($response);
+    return;
 }
 
+//ADD SUPPLIER
+if ($_POST['action'] == 'addsupplier') {
+    // Validate numeric fields
+    if (!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])) {
+        $response["error"] = 'Only numeric values allowed in ml and grams fields';
+        echo json_encode($response);
+        return;
+    }
 
-if($_POST['supp'] == 'add'){
-	if(!is_numeric($_POST['min_ml']) || !is_numeric($_POST['min_gr'])){
-		$response["error"] = 'Only numeric values allowed in ml and grams fields!';
-		echo json_encode($response);
-		return;
-	}
-	$description = mysqli_real_escape_string($conn, $_POST['description']);
-	$name = mysqli_real_escape_string($conn, $_POST['name']);
-	$address = mysqli_real_escape_string($conn, $_POST['address']);
-	$po = mysqli_real_escape_string($conn, $_POST['po']);
-	$country = mysqli_real_escape_string($conn, $_POST['country']);
-	$telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
-	$url = mysqli_real_escape_string($conn, $_POST['url']);
-	$email = mysqli_real_escape_string($conn, $_POST['email']);
-	$platform = mysqli_real_escape_string($conn, $_POST['platform']);
-	$price_tag_start = htmlentities($_POST['price_tag_start']);
-	$price_tag_end = htmlentities($_POST['price_tag_end']);
-	$add_costs = is_numeric($_POST['add_costs']);
-	$min_ml = mysqli_real_escape_string($conn, $_POST['min_ml']);
-	$min_gr = mysqli_real_escape_string($conn, $_POST['min_gr']);
+    // Sanitize inputs
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $po = mysqli_real_escape_string($conn, $_POST['po']);
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $telephone = mysqli_real_escape_string($conn, $_POST['telephone']);
+    $url = mysqli_real_escape_string($conn, $_POST['url']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $platform = mysqli_real_escape_string($conn, $_POST['platform']);
+    $price_tag_start = htmlentities($_POST['price_tag_start']);
+    $price_tag_end = htmlentities($_POST['price_tag_end']);
+    $add_costs = is_numeric($_POST['add_costs']) ? $_POST['add_costs'] : 0;
+    $min_ml = mysqli_real_escape_string($conn, $_POST['min_ml']) ?: 0;
+    $min_gr = mysqli_real_escape_string($conn, $_POST['min_gr']) ?: 0;
 
-	if(empty($min_ml)){
-		$min_ml = 0;
-	}
-	if(empty($min_gr)){
-		$min_gr = 0;
-	}		 
-	
-	if(empty($name)){
-		$response["error"] = 'Supplier name required';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE name = '$name' AND owner_id = '$userID'"))){
-		$response["error"] = $name.' supplier name already exists';
-		echo json_encode($response);
-		return;
-	}
+    // Validate required fields
+    if (empty($name)) {
+        $response["error"] = 'Supplier name required';
+        echo json_encode($response);
+        return;
+    }
 
-	if(mysqli_query($conn, "INSERT INTO ingSuppliers (name,address,po,country,telephone,url,email,platform,price_tag_start,price_tag_end,add_costs,notes,min_ml,min_gr,owner_id) VALUES ('$name','$address','$po','$country','$telephone','$url','$email','$platform','$price_tag_start','$price_tag_end','$add_costs','$description','$min_ml','$min_gr','$userID')")){
-		$response["success"] = 'Supplier '.$name.' added';
-		echo json_encode($response);
-	}else{
-		$response["error"] = 'Something went wrong: '.mysqli_error($conn);
-		echo json_encode($response);
-	}
-	return;
+    // Check for duplicate supplier name
+    $query = "SELECT name FROM ingSuppliers WHERE name = '$name' AND owner_id = '$userID'";
+    if (mysqli_num_rows(mysqli_query($conn, $query))) {
+        $response["error"] = $name . ' supplier name already exists';
+        echo json_encode($response);
+        return;
+    }
+
+    // Insert new supplier
+    $query = "INSERT INTO ingSuppliers (name, address, po, country, currency, telephone, url, email, platform, price_tag_start, price_tag_end, add_costs, notes, min_ml, min_gr, owner_id) 
+              VALUES ('$name', '$address', '$po', '$country', '$currency', '$telephone', '$url', '$email', '$platform', '$price_tag_start', '$price_tag_end', '$add_costs', '$description', '$min_ml', '$min_gr', '$userID')";
+    if (mysqli_query($conn, $query)) {
+        $response["success"] = 'Supplier ' . $name . ' added';
+    } else {
+        $response["error"] = 'Something went wrong: ' . mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    return;
 }
 
+//DELETE ING SUPPLIER
 if($_GET['supp'] == 'delete' && $_GET['ID']){
 	$ID = mysqli_real_escape_string($conn, $_GET['ID']);
 	$supplier = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '$ID' AND owner_id = '$userID'"));
@@ -5101,7 +5217,7 @@ if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
 	}else if($req->error){
 		$response['error'] = $req->error;
 	}else{
-		$response['error'] = "Uknown error";
+		$response['error'] = "Unknown error";
 	}
 	echo json_encode($response);
 	return;
@@ -5220,28 +5336,81 @@ if (isset($_GET['do']) && $_GET['do'] === 'db_update') {
 
 
 //DB BACKUP
-if($_GET['do'] == 'backupDB'){
-	if($role === (int)1) {
-		if( getenv('DB_BACKUP_PARAMETERS') ){
-			$bkparams = getenv('DB_BACKUP_PARAMETERS');
-		}
-		
-		if($_GET['column_statistics'] === 'true'){
-			$bkparams = '--column-statistics=1';
-		}
-		
-		$file = 'backup_'.$ver.'_'.date("d-m-Y").'.sql.gz';
-		
-		header( 'Content-Type: application/x-gzip' );
-		header( 'Content-Disposition: attachment; filename="' .$file. '"' );
-		$cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname | gzip --best";
-		passthru($cmd);
-	}	else {
-		echo json_encode(['error' => 'Not authorised']);
-		error_log("PV Error: Not authorised: $role");
-	}
-	return;
+if ($_GET['do'] == 'backupDB') {
+    if ($role === (int)1) {
+        $bkparams = '';
+
+        if (getenv('DB_BACKUP_PARAMETERS')) {
+            $bkparams = getenv('DB_BACKUP_PARAMETERS');
+        }
+
+        if (isset($_GET['column_statistics']) && $_GET['column_statistics'] === 'true') {
+            $bkparams .= ' --column-statistics=1';
+        }
+
+        // Generate a temporary file with a random name
+        $tmpFile = tempnam(sys_get_temp_dir(), 'backup_') . '.sql';
+        $compressedFile = $tmpFile . '.gz';
+
+        $cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname > $tmpFile";
+
+        exec($cmd, $output, $result_code);
+
+        if ($result_code !== 0) {
+            error_log("PV Backup Error: Command failed with code $result_code");
+            echo json_encode(['error' => 'Backup failed. Please check the server logs for more details.']);
+            unlink($tmpFile); // Clean up the temporary file
+            return;
+        }
+
+        // Compress the temporary file
+        $cmd = "gzip --best $tmpFile 2>&1";
+        exec($cmd, $output, $result_code);
+
+        if ($result_code !== 0 || !file_exists($compressedFile)) {
+            error_log("PV Backup Error: Compression failed with code $result_code");
+            echo json_encode(['error' => 'Compression failed. Please check the server logs for more details.']);
+            unlink($tmpFile); // Clean up the temporary file
+            return;
+        }
+
+        // Pass the compressed file to download
+        $file = 'backup_' . date("d-m-Y") . '.sql.gz';
+
+        // Ensure no output before headers
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: application/gzip');
+        header('Content-Disposition: attachment; filename="' . $file . '"');
+        header('Content-Length: ' . filesize($compressedFile));
+        header('Content-Encoding: none');
+        header('Connection: close');
+
+        // Stream file in chunks
+        $fp = fopen($compressedFile, 'rb');
+        if ($fp) {
+            while (!feof($fp)) {
+                echo fread($fp, 8192);
+                flush();
+            }
+            fclose($fp);
+        } else {
+            error_log("PV Backup Error: Unable to open compressed file for reading.");
+            echo json_encode(['error' => 'Download failed.']);
+        }
+
+        // Clean up the temporary files
+        unlink($compressedFile);
+        exit;
+    } else {
+        echo json_encode(['error' => 'Not authorised']);
+        error_log("PV Error: Not authorised: $role");
+    }
+    return;
 }
+
 
 //DB RESTORE
 if($_GET['restore'] == 'db_bk'){
@@ -5250,7 +5419,7 @@ if($_GET['restore'] == 'db_bk'){
 		if (!file_exists($tmp_path)) {
 			mkdir($tmp_path, 0777, true);
 		}
-		
+		$result = [];
         $original_filename = basename($_FILES['backupFile']['name']);
         $target_path = $tmp_path . $fid . '_' . $original_filename;
 

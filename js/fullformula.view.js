@@ -460,6 +460,48 @@ $("#formula").on("click", ".open-merge-dialog", function () {
 	});
 });
 
+//Embed ingredient
+$('#formula').on('click', '.open-embed-dialog', function () {
+    const ingID = $(this).data('id');
+    const ingName = $(this).data('name');
+
+    $('#embedIng #ingSrcID').val(ingID);
+    $('#embedIng #ingEmbName').text(ingName);
+    $('#embedIng').modal('show');
+});
+
+$('#embedIng').on('click', '[id*=embedConfirm]', function () {
+	const ingID = $('#embedIng #ingSrcID').val();
+	const ingName = $('#embedIng #ingEmbName').text();
+
+	$.ajax({
+      	url: '/core/core.php',
+      	type: 'POST',
+      	data: {
+        	action: 'embedIng',
+        	fid: myFID,
+        	ingID: ingID,
+			ingName: ingName
+      	},
+      	dataType: 'json',
+      	success: function (data) {
+        	if (data.success) {
+          		$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+          		$('.toast-header').removeClass().addClass('toast-header alert-success');
+          		reload_formula_data();
+          		$('#embedIng').modal('hide');
+        	} else {
+          		$('#msgEmbed').html('<div class="alert alert-danger"><strong>' + data.error + '</strong></div>');
+        	}
+      	},
+      	error: function (xhr, status, error) {
+        	$('#msgEmbed').html('<div class="alert alert-danger"><strong>An error occurred: ' + error + '</strong></div>');
+      	},
+    });
+});
+
+
+//Update quantity
 $('#manage-quantity').on('click', '[id*=quantityConfirm]', function () {
 	$.ajax({ 
 		url: '/core/core.php', 

@@ -275,7 +275,7 @@ $(document).ready(function() {
             		}).length;
 
                     $(rows).eq( i ).before(
-                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' Notes (' + groupCount + ')</div></td></tr>'
+                        '<tr class="group noexport"><td colspan="' + rows.columns()[0].length +'"><div class="' + group + '_notes">' + group + ' notes (' + groupCount + ')</div></td></tr>'
                     );
                     last = group;
                 }
@@ -283,8 +283,8 @@ $(document).ready(function() {
 			extrasShow();
 	   }
 	}).on('error.dt', function(e, settings, techNote, message) {
-            var m = message.split(' - ');
-            $('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
+        var m = message.split(' - ');
+    	$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
     });
 	
 	formula_table.on('click', '.expandAccord', function (e) {
@@ -686,17 +686,17 @@ $(document).ready(function() {
 		<?php if($meta['isProtected'] == FALSE){?>
 		if(row.exclude_from_calculation == 0){
 			var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Exclude '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="1" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye-slash mx-2"></i>Exlude</i></li>';
-			
 		}else if(row.exclude_from_calculation == 1){
 			var ex = '<li><i class="dropdown-item pv_point_gen" rel="tip" id="exIng" title="Include '+ row.ingredient.name +'" data-name="'+ row.ingredient.name +'" data-status="0" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-eye mx-2"></i>Include</i></li>';
+		}		
+		data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>';
+		data += '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredient</i></li>';
+		
+		if(row.ingredient.containsOthers.total){
+			data += '<li><i data-bs-toggle="modal" data-bs-target="#embedIng" rel="tip" title="Embed '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-embed-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-layer-group mx-2"></i>Embed ingredient</i></li>';
 		}
-		
-		data += ex + '<li><i data-bs-toggle="modal" data-bs-target="#replaceIng" class="dropdown-item pv_point_gen open-replace-dialog text-info-emphasis" rel="tip" title="Replace '+ row.ingredient.name +'"  data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-cas="'+row.ingredient.cas+'" data-desc="'+row.ingredient.desc+'"><i class="pv_pont_gen fas fa-exchange-alt text-info-emphasis mx-2"></i>Replace ingredient</i></li>'
-		
-		+ '<li><i data-bs-toggle="modal" data-bs-target="#mrgIng" rel="tip" title="Merge '+ row.ingredient.name +'" class="dropdown-item pv_point_gen open-merge-dialog text-warning-emphasis" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'"><i class="pv_point_gen fas fa-object-group alert-warning mx-2"></i>Merge ingredients</i></li>'
-		
-		+'<div class="dropdown-divider"></div>'
-		+ '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><i rel="tip" title="Remove '+ row.ingredient.name +'" class="dropdown-item text-danger pv_point_gen" id="rmIng" data-name="'+ row.ingredient.name +'" data-id="'+ row.formula_ingredient_id +'" data-ingredient-id="'+row.ingredient.id+'"><i class="pv_point_gen fas fa-trash mx-2 text-danger"></i>Delete</i></li>';
 		<?php } ?>
 		data += '</ul></div>';
 	
@@ -1105,6 +1105,7 @@ function reload_formula_data() {
 </div>
 
 
+<!--Merge ingredients-->
 <div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" aria-labelledby="mrgIngLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -1134,7 +1135,7 @@ function reload_formula_data() {
   </div>
 </div>
 
-
+<!--Replace ingredients-->
 <div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -1172,6 +1173,36 @@ function reload_formula_data() {
       </div>
     </div>
   </div>
+</div>
+
+<!--Embed ingredients-->
+<div class="modal fade" id="embedIng" data-bs-backdrop="static" tabindex="-1" aria-labelledby="embedIngLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="embedIngLabel">Embed <span id="ingEmbName" class="fw-bold"></span> into formula</h5>
+			</div>
+			<div class="modal-body">
+				<div id="msgEmbed"></div>
+				<input type="hidden" name="ingSrcID" id="ingSrcID" />
+				
+				<div class="alert alert-warning">
+					Sub ingredients will be merged into the formula. The following will method will be used:
+					<ul>
+						<li>The minimum percentage from each sub-ingredient will be added to the formula.</li>
+						<li>Materials not found in the database will be ignored during the embedding process.</li>
+						<li>The original ingredient will be removed from the formula after embedding.</li>
+					</ul>
+				</div>
+					 
+				<div class="dropdown-divider"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" class="btn btn-primary" id="embedConfirm">Embed</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--IMPORT JSON MODAL-->

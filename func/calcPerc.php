@@ -18,7 +18,7 @@ function calcPerc($id, $profile, $percent, $conn){
             JOIN ingredients i ON f.ingredient = i.name 
             WHERE f.fid = ? AND f.owner_id = ? AND i.owner_id = ?
         ");
-        $stmt->bind_param("iss", $fid, $userID, $userID);
+        $stmt->bind_param("sss", $fid, $userID, $userID);
         $stmt->execute();
         $formula_q = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         $stmt->close();

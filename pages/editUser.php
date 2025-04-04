@@ -62,6 +62,12 @@ $doc = mysqli_fetch_array(mysqli_query($conn,"SELECT docData AS avatar FROM docu
 	</div>
 </div>
 <div class="col-12 text-end mt-3">
+	<a href="#" id="export-my-data" class="text-primary">Export my data</a>
+	<div id="export-loading" class="text-center mt-2" style="display: none;">
+		<i class="fa fa-spinner fa-spin"></i> Exporting data, please wait...
+	</div>	
+</div>
+<div class="col-12 text-end mt-3">
 	<a href="#" id="delete-profile" class="text-danger">Delete my profile</a>
 </div>
 
@@ -106,11 +112,7 @@ $(document).ready(function () {
 			}
 		});
 	});
-});
-</script>
 
-<script>
-$(document).ready(function () {
 	$("#password").val('');
     $(".toggle-password").click(function () {
         var passwordInput = $($(this).siblings(".password-input"));
@@ -182,5 +184,38 @@ $(document).ready(function () {
 			}
 		  });
 	});
+
+	$('#export-my-data').click(function (e) {
+        e.preventDefault();
+
+        // Show the loading icon
+        $('#export-loading').show();
+
+        // Start the export process
+        $.ajax({
+            url: '/pages/export.php',
+            type: 'GET',
+            data: { kind: 'user-data' },
+            xhrFields: {
+                responseType: 'blob' // Handle binary data for file download
+            },
+            success: function (data, status, xhr) {
+                // Create a download link for the exported file
+                const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = xhr.getResponseHeader('Content-Disposition').split('filename=')[1];
+                link.click();
+
+                // Hide the loading icon
+                $('#export-loading').hide();
+            },
+            error: function (xhr, status, error) {
+                // Hide the loading icon and show an error message
+                $('#export-loading').hide();
+                alert('An error occurred while exporting data. Please try again.');
+            }
+        });
+    });
 });
 </script>
