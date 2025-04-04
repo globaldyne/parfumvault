@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 12.8
+
 ### Version 12.7
 - Improved security for fetching ingredient providers
 - FPDF lib update to 1.86
