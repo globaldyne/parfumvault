@@ -10,6 +10,7 @@ if ($role !== 1){
   return;
 }
 
+$schedule_time = isset($integrations_settings['googlebackups_schedule']) && is_numeric($integrations_settings['googlebackups_schedule']) ? date('H:i', $integrations_settings['googlebackups_schedule']) : '00:00';
 
 ?>
 <div class="card-body">
@@ -46,8 +47,8 @@ if ($role !== 1){
             </div>
 
             <div class="mb-3">
-              <label for="googlebackups_schedule" class="form-label">Scheduled Time</label>
-              <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule" value="<?= date('H:i', $integrations_settings['googlebackups_schedule']) ?>">
+                <label for="googlebackups_schedule" class="form-label">Scheduled Time</label>
+                <input name="googlebackups_schedule" type="time" class="form-control" id="googlebackups_schedule" value="<?= $schedule_time ?>">
             </div>
             <div class="mb-3">
                 <label for="googlebackups_prefix" class="form-label">Prefix

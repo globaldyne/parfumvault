@@ -1,7 +1,7 @@
 <?php
 if (!defined("pvault_panel")){ die("Not Found");}
 ?>
-<html lang="en" data-bs-theme="<?=$settings['bs_theme'] ?: 'light';?>">
+<html lang="en">
 <head>
 
   <meta charset="utf-8">
@@ -24,7 +24,7 @@ if (!defined("pvault_panel")){ die("Not Found");}
             <div class="error mx-auto" data-text="Error">Error...</div>
             <div class="alert alert-danger"><i class="fa-solid fa-bug mx-2"></i><?php echo $error_msg;?></div>
             <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
-            <a href="/"><i class="fa-solid fa-arrow-left-long mx-2"></i>Back to Dashboard</a>
+            <a href="/"><i class="fa-solid fa-arrow-left-long mx-2"></i>Try again...</a>
         </div>
     </div>
 </div>

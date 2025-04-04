@@ -35,6 +35,7 @@ foreach ($rs as $rq) {
         'address' => (string)($rq['address'] ?: '-'),
         'po' => (string)($rq['po'] ?: '-'),
         'country' => (string)$rq['country'],
+        'currency' => (string)$rq['currency'],
         'telephone' => (string)($rq['telephone'] ?: '-'),
         'url' => (string)($rq['url'] ?: '-'),
         'email' => (string)($rq['email'] ?: '-'),

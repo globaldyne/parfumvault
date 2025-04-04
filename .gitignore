@@ -6,8 +6,8 @@ uploads/
 batches/
 inc/config.php
 tests/
-modules/suppliers/pvLibraryDEV.json
-modules/suppliers/pvLibraryDEV.php
+pvLibraryDEV.json
+pvLibraryDEV.php
 classes/
 integrations/pvscale/
 go.mod

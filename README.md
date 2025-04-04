@@ -70,7 +70,7 @@ or via docker compose
 	---
 	services:
 	  pvdb:
-	    image: mariadb:10.5
+	    image: mariadb:11-ubi9
 	    command: '--default-authentication-plugin=mysql_native_password --innodb-flush-method=fsync'
 	    volumes:
 	      - db_data:/var/lib/mysql
@@ -80,6 +80,7 @@ or via docker compose
 	      MYSQL_DATABASE: pvault
 	      MYSQL_USER: pvault
 	      MYSQL_PASSWORD: pvault
+	      MARIADB_AUTO_UPGRADE: true
 	    expose:
 	      - 3306
 	  pvault:

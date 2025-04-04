@@ -76,20 +76,23 @@ foreach ($data['ingredients'] as $ingredient) {
     $cid = (int)($ingredient['cid'] ?? null);
     $shelf_life = (int)($ingredient['shelf_life'] ?? 0);
 
+    //AromaTrack
+    $aromaTrackID = (string)($ingredient['aromaTrackID'] ?? null);
+
     // Create SQL query for inserting data
     $query = "INSERT INTO ingredients 
         (name, INCI, type, strength, category, purity, cas, einecs, FEMA, reach, tenacity, chemical_name, 
         formula, flash_point, appearance, rdi, notes, profile, solvent, odor, allergen, flavor_use, soluble, 
         logp, cat1, cat2, cat3, cat4, cat5A, cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, 
         cat10B, cat11A, cat11B, cat12, impact_top, impact_heart, impact_base, created_at, updated_at, owner_id, 
-        usage_type, noUsageLimit, byPassIFRA, isPrivate, molecularWeight, physical_state, cid, shelf_life)
+        usage_type, noUsageLimit, byPassIFRA, isPrivate, molecularWeight, physical_state, cid, shelf_life, aromaTrackID)
         VALUES 
         ('$name', '$INCI', '$type', '$strength', $category, '$purity', '$cas', '$einecs', '$FEMA', '$reach', 
         '$tenacity', '$chemical_name', '$formula', '$flash_point', '$appearance', $rdi, '$notes', '$profile', 
         '$solvent', '$odor', $allergen, $flavor_use, '$soluble', '$logp', $cat1, $cat2, $cat3, $cat4, $cat5A, 
         $cat5B, $cat5C, $cat5D, $cat6, $cat7A, $cat7B, $cat8, $cat9, $cat10A, $cat10B, $cat11A, $cat11B, 
         $cat12, '$impact_top', '$impact_heart', '$impact_base', NOW(), NOW(), '$userID', '$usage_type', 
-        $noUsageLimit, $byPassIFRA, $isPrivate, '$molecularWeight', $physical_state, $cid, $shelf_life)";
+        $noUsageLimit, $byPassIFRA, $isPrivate, '$molecularWeight', $physical_state, $cid, $shelf_life, '$aromaTrackID')";
     
     // Execute the SQL query
     if (!mysqli_query($conn, $query)) {
