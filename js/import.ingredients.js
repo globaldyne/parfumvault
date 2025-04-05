@@ -97,6 +97,7 @@ $('#btnRestoreIngredients').click(function (event) {
                 $("#btnRestoreIngredients").hide();
                 $("#backupArea").hide();
                 $('#tdDataIng').DataTable().ajax.reload(null, false);
+                $("#btnRestoreIngredientsCloseBK").prop("disabled", false);
             } else if (data.warning) {
                 msg = `<div class="alert alert-warning"><i class="fa-solid fa-exclamation-circle mx-2"></i><strong>Import complete with warnings</strong> <br/>${data.warning}</div>`;
             } else if (data.error) {

@@ -204,9 +204,9 @@ function processIngredientCompounds($compounds) {
             return mysqli_real_escape_string($conn, $value);
         }, $cmp);
 
-        $query_check = "SELECT COUNT(*) FROM `ingredient_compounds` WHERE `name` = '{$cmp['name']}' AND `owner_id` = '$userID'";
+        $query_check = "SELECT COUNT(*) FROM `ingredient_compounds` WHERE `name` = '{$cmp['name']}' AND `ing` = '{$cmp['ing']}' AND `owner_id` = '$userID'";
         $exists = mysqli_fetch_row(mysqli_query($conn, $query_check))[0];
-
+      //  error_log("PV: Checking for existing compound: $query_check, exists: $exists");
         if ($exists == 0) {
             $query = "INSERT INTO `ingredient_compounds` (ing, name, cas, ec, min_percentage, max_percentage, GHS, toDeclare, created_at, owner_id) 
                       VALUES ('{$cmp['ing']}', '{$cmp['name']}', '{$cmp['cas']}', '{$cmp['ec']}', '{$cmp['min_percentage']}', '{$cmp['max_percentage']}', '{$cmp['GHS']}', '{$cmp['toDeclare']}', CURRENT_TIMESTAMP(), '$userID')";
