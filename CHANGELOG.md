@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.8
+- Fix ingredient import compounds failing to import
 
 ### Version 12.7
 - Improved security for fetching ingredient providers
