@@ -20,7 +20,7 @@ ARG gid=100001
 
 RUN microdnf -y install epel-release && \
 	microdnf -y update && \
-	microdnf -y module enable nginx:1.26 php:8.3 && \
+	microdnf -y module enable nginx:1.26 php:8.4 && \
 	microdnf --setopt=tsflags=nodocs -y install \
 	  php \
 	  php-mysqlnd \
