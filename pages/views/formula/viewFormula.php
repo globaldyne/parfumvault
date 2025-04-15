@@ -1136,43 +1136,45 @@ function reload_formula_data() {
 </div>
 
 <!--Replace ingredients-->
-<div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="replaceIng" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Replace <div id="ingRepName"></div></h5>
-      </div>
-      <div class="modal-body">
-      	<div id="msgRepl"></div>
-        <input type="hidden" name="ingRepID" id="ingRepID" />
-        <input type="hidden" name="ingRepName" id="ingRepName" />
-      	<div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>Replace <div id="ingRepName"></div> with another ingredient, quantity and dilution values will not be affected.</div>
-        Replace <div id="ingRepName"></div> with: 
-        <select name="repIngNameDest" id="repIngNameDest" class="repIngNameDest pv-form-control"></select>
-        <p>
-        <div class="dropdown-divider"></div>
-        
-        <div id="repGrid" class="card card-inverse card-reping">
-         <div class="row mt-3">
-            <div class="col-sm">
-              <div id="ingSrcInfo"></div>
-            </div>
-            <div class="col-1 row justify-content-center align-self-center">
-              <i class="fa-solid fa-right-long fa-2xl"></i>
-            </div>
-            <div class="col-sm">
-              <div id="ingTargInfo"></div>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <input type="submit" name="button" class="btn btn-primary" id="replaceConfirm" value="Replace ingredient">
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="replaceIng" data-bs-backdrop="static" tabindex="-1" aria-labelledby="replaceIngLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="replaceIngLabel">Replace <span id="ingRepName" class="fw-bold"></span></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="msgRepl"></div>
+				<input type="hidden" name="ingRepID" id="ingRepID" />
+				<input type="hidden" name="ingRepName" id="ingRepNameHidden" />
+				<div class="alert alert-info">
+					<i class="fa-solid fa-circle-info mx-2"></i>Replace <span id="ingRepName" class="fw-bold"></span> with another ingredient. Quantity and dilution values will not be affected.
+				</div>
+				<div class="mb-3">
+					<label for="repIngNameDest" class="form-label">Replace <span id="ingRepName" class="fw-bold"></span> with:</label>
+					<select name="repIngNameDest" id="repIngNameDest" class="form-select"></select>
+				</div>
+				<div class="dropdown-divider"></div>
+				<div id="repGrid" class="card card-inverse card-reping">
+					<div class="row mt-3">
+						<div class="col-sm">
+							<div id="ingSrcInfo"></div>
+						</div>
+						<div class="col-1 row justify-content-center align-self-center">
+							<i class="fa-solid fa-right-long fa-2xl"></i>
+						</div>
+						<div class="col-sm">
+							<div id="ingTargInfo"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" class="btn btn-primary" id="replaceConfirm">Replace ingredient</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--Embed ingredients-->
