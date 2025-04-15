@@ -407,11 +407,16 @@
   .select2-container--classic .select2-selection--single .select2-selection__rendered {
     color: #444;
     line-height: 28px; }
+    
   .select2-container--classic .select2-selection--single .select2-selection__clear {
     cursor: pointer;
     float: right;
     font-weight: bold;
-    margin-right: 10px; }
+    margin-right: 10px;
+    background-color: var(--bs-body-color);
+
+  }
+
   .select2-container--classic .select2-selection--single .select2-selection__placeholder {
     color: #999; }
   .select2-container--classic .select2-selection--single .select2-selection__arrow {
