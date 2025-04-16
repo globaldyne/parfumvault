@@ -42,7 +42,7 @@ $fid = $meta['fid'];
            <li class="dropdown-header">Export</li> 
            <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
            <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-pdf mx-2"></i>Export as PDF</a></li>
-           <li><a class="dropdown-item" href="/core/core.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
+           <li><a class="dropdown-item" href="/pages/export.php?action=exportFormulas&fid=<?=$meta['fid']?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
            <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print Formula</a></li>
            <div class="dropdown-divider"></div>
            <li class="dropdown-header">Scale Formula</li> 
@@ -1058,7 +1058,7 @@ function reload_formula_data() {
   </div>
 </div>
 
-
+<!--Manage quantity-->
 <div class="modal fade" id="manage-quantity" data-bs-backdrop="static" tabindex="-1" aria-labelledby="manageQuantityLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -1067,26 +1067,22 @@ function reload_formula_data() {
       </div>
       <div class="modal-body">
         <div id="msgQuantity"></div>
-        
         <input type="hidden" name="ingQuantityID" id="ingQuantityID" />
         <input type="hidden" name="ingQuantityName" id="ingQuantityNameHidden" />
         <input type="hidden" name="ingQuantity" id="ingQuantityHidden" />
         <input type="hidden" name="mainingid" id="mainingid" />
         <input type="hidden" name="curQuantity" id="curQuantity" />
-        
         <div class="mb-3">
-          	<label for="ingQuantity" class="form-label">Quantity in <?= $settings['mUnit'] ?></label>
+			<label for="ingQuantity" class="form-label fw-bold">Quantity in <?= $settings['mUnit'] ?></label>
            	<div class="input-group">
           		<input name="ingQuantity" type="text" class="form-control" id="ingQuantity">
           		<span class="input-group-text" id="quantity-addon"><?=$settings['mUnit']?></span>
 			</div>
         </div>
-
         <div class="form-check mb-3">
           <input type="checkbox" class="form-check-input" name="reCalc" id="reCalc" value="1" data-val="1">
           <label class="form-check-label" for="reCalc">Adjust solvent</label>
         </div>
-
         <div id="slvMeta" class="mb-3">
           <label for="formulaSolvents" class="form-label">Select Solvent</label>
           <select name="formulaSolvents" id="formulaSolvents" class="form-select"></select>
@@ -1094,7 +1090,6 @@ function reload_formula_data() {
             For example, if you add 1 more <?= $settings['mUnit'] ?> to the current ingredient, the selected solvent's quantity will be deducted by 1<?= $settings['mUnit'] ?> equally.
           </div>
         </div>
-        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1107,32 +1102,31 @@ function reload_formula_data() {
 
 <!--Merge ingredients-->
 <div class="modal fade" id="mrgIng" data-bs-backdrop="static" tabindex="-1" aria-labelledby="mrgIngLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="mrgIngLabel">Merge ingredients</h5>
-      </div>
-      <div class="modal-body">
-        <div id="msgMerge"></div>
-        <input type="hidden" name="ingSrcID" id="ingSrcID" />
-        <input type="hidden" name="ingSrcName" id="ingSrcName" />
-        
-        <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
-        </div>
-        
-        <div class="mb-3">
-          Merge <span id="srcIng"></span> with: 
-          <select name="mrgIngName" id="mrgIngName" class="form-select"></select>
-        </div>
-        
-        <div class="dropdown-divider"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="mergeConfirm">Merge ingredients</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="mrgIngLabel">Merge ingredients</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="msgMerge"></div>
+				<input type="hidden" name="ingSrcID" id="ingSrcID" />
+				<input type="hidden" name="ingSrcName" id="ingSrcName" />
+				<div class="alert alert-info">
+					<i class="fa-solid fa-circle-info mx-2"></i>You can merge <span id="srcIng"></span>'s quantity with another material in the formula. Use this method if the materials are similar. Please note, this action cannot be reverted, and the quantity will be added to the target ingredient's quantity.
+				</div>
+				<div class="mb-3">
+					<label for="mrgIngName" class="form-label">Merge <span id="srcIng"></span> with:</label>
+					<select name="mrgIngName" id="mrgIngName" class="form-select"></select>
+				</div>
+				<div class="dropdown-divider"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" class="btn btn-primary" id="mergeConfirm">Merge ingredients</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--Replace ingredients-->
