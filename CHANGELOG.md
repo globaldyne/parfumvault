@@ -3,6 +3,7 @@
 - Added links for PV apps
 - Fix ingredient import compounds failing to import
 - Fix AromaTrack app api
+- Fix JSON export from within the formula page
 
 ### Version 12.7
 - Improved security for fetching ingredient providers
