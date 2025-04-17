@@ -1530,9 +1530,10 @@ th.dt-center, td.dt-center {
 }
 
 .pvScale-data-footer {
-	position: -webkit-sticky; 
 	position: sticky; 
-	bottom: 0; 
+	bottom: 0;
+  background-color: var(--bs-primary-text-emphasis) !important;
+  color: var(--bs-light) !important;
 }
 
 .highlight {
