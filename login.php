@@ -337,7 +337,6 @@ if(isset($_SESSION['parfumvault'])){
           </div>
           <?php } ?>
           <?php if ($system_settings['USER_selfRegister'] == '1') { ?>
-          <hr />
           <div class="text-center">
               <a class="small" href="/register.php">Create an Account!</a>
           </div>
@@ -345,13 +344,31 @@ if(isset($_SESSION['parfumvault'])){
 				 }
 			 } 
     
-			?>
-        <hr />
-        <div class="copyright text-center my-auto">
-            <label class="small">Version: <?php echo $ver; ?> |<a
-                    href="https://www.perfumersvault.com/" class="mx-1"
-                    target="_blank"><?php echo $product; ?></a></label>
+		?>
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <hr/>
+                <strong><a href="https://www.perfumersvault.com" target="_blank"><?php echo $product; ?></a></strong>
+                <div id="footer_release" class="pv_point_gen"> Version: <strong><?php echo $ver ."  ". $commit; ?></strong></div>
+                <div><a href="https://discord.gg/WxNE8kR8ug" target="_blank"><strong>Discord Server</strong></a></div>
+                <div class="mt-2" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+                    <div style="text-align: center;">
+                        <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank">
+                        <img src="/img/appstore/get_pv.png" alt="App Store" style="width: 150px;">
+                        </a>
+                        <div class="mt-1">Get the Perfumers Vault app</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <a href="https://apps.apple.com/us/app/aromatrack/id6742348411" target="_blank">
+                        <img src="/img/appstore/get_aroma_track.png" alt="App Store" style="width: 150px;">
+                        </a>
+                        <div class="mt-1">Get the AromaTrack app</div>
+                    </div>
+                </div>
+                <div class="mt-2">Copyright &copy; 2017-<?php echo date('Y'); ?></div>
+            </div>
         </div>
+
         <?php if ($system_settings['USER_selfRegister'] == '1' && !empty($system_settings['USER_privacy_url'])) { ?>
         <div class="text-center">
             <a class="small"

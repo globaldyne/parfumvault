@@ -36,7 +36,7 @@ while ($rx = mysqli_fetch_assoc($result)) {
     // Fetch supplier data
     $supplier_query = "SELECT ingSupplierID, price, size, stock, mUnit, status FROM suppliers WHERE ingID = '{$rx['id']}' AND preferred = 1 AND owner_id = '$userID'";
     $gSupQ = fetch_assoc($conn, $supplier_query);
-
+    error_log('PV API AROMATRACK QUERY: '.$supplier_query);
     // Fetch supplier name
     $supplier_name_query = "SELECT * FROM ingSuppliers WHERE id = '{$gSupQ['ingSupplierID']}' AND owner_id = '$userID'";
     $gSupN = fetch_assoc($conn, $supplier_name_query);
@@ -56,7 +56,7 @@ while ($rx = mysqli_fetch_assoc($result)) {
     $rx['price'] = normalize_value($price_per_unit, 'float', 0.0);
     $rx['stock'] = normalize_value($gSupQ['stock'], 'float', 0.0);
     $rx['mUnit'] = normalize_value($gSupQ['mUnit']);
-    $rx['avilability'] = (int)normalize_value($gSupQ['status']) ?: 0;
+    $rx['availability'] = (int)normalize_value($gSupQ['status']) ?: 0;
     $rx['updated_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['updated_at'])));
     $rx['created_at'] = normalize_value(date(DATE_ISO8601, strtotime($rx['created_at'])));
 
@@ -75,12 +75,12 @@ while ($rx = mysqli_fetch_assoc($result)) {
         'created_at' => normalize_value($gSupN['created_at'] ? date(DATE_ISO8601, strtotime($gSupN['created_at'])) : date(DATE_ISO8601)),
     ];
 
-
     $r[] = $rx;
 }
 
 // Output JSON response
 $response = [
+    "status" => "success",
     "ingredients" => $r,
 ];
 echo json_encode($response, JSON_PRETTY_PRINT);
