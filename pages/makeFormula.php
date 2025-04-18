@@ -134,13 +134,12 @@ if($formula_not_found){
    </div>
     
 <script>
-	$(document).ready(function() {
 
-	var myFNAME = "<?=$meta['name']?>";
-	var fid = "<?=$fid?>";
-	var repName;
-	var repID;
-
+var myFNAME = "<?=$meta['name']?>";
+var fid = "<?=$fid?>";
+var repName;
+var repID;
+$(document).ready(function() {
 	
 	$('#updateStock').click(function(){
 		if($(this).is(':checked')){
