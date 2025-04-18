@@ -1,4 +1,13 @@
 # CHANGELOG
+### Version 12.8
+- Added links for PV apps
+- Fix ingredient import compounds failing to import
+- Fix AromaTrack app api
+- Fix JSON export from within the formula page
+- Minor cosmetic changes
+- Remove user session on logout even if the session delete query fails
+- Backwards compatibility db schema fix
+
 ### Version 12.7
 - Improved security for fetching ingredient providers
 - FPDF lib update to 1.86

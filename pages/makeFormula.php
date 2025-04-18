@@ -127,18 +127,18 @@ if($formula_not_found){
         </div>
       </div>
       
-     <footer class="pvScale-data-footer mx-2 bg-dark p-5 text-dark-emphasis bg-dark-subtle border border-dark-subtle rounded-3" id="pvScale-data-footer">
-        <h3 class="text-dark" id="scale-reading"></h3> 
+     <footer class="pvScale-data-footer mx-2 mb-4 p-5 border border-dark-subtle rounded-3" id="pvScale-data-footer">
+        <h3 id="scale-reading"></h3> 
     </footer>
     
    </div>
     
 <script>
+
 var myFNAME = "<?=$meta['name']?>";
 var fid = "<?=$fid?>";
 var repName;
 var repID;
-
 $(document).ready(function() {
 	
 	$('#updateStock').click(function(){
@@ -245,12 +245,11 @@ $(document).ready(function() {
 	$('#tdDataPending').on('mouseleave', '.pv-zoom', function() {
 		$(this).removeClass('pv-transition');
 	});
-	<?php if(isset($settings['pv_scale_enabled'])) { ?>
+
+	<?php if($settings['pv_scale_enabled'] == '1') { ?>
 	$('#tdDataPending tbody').on('click', 'tr', function () {
 		var rowData = tdDataPending.row(this).data();
-		<?php if($settings['pv_scale_enabled']) { ?>
 		rowClickedFunction(rowData);
-		<?php } ?>
 	});
 	<?php } ?>
 
@@ -369,13 +368,14 @@ $(document).ready(function() {
 			showCloseBtn: true,
 		});
 	};
-	<?php if($settings['pv_scale_enabled']) { ?>
+	<?php if($settings['pv_scale_enabled'] == '1') { ?>
 		var pvScaleHost = "<?php echo $settings['pv_scale_host']?: '0.0.0.0'; ?>";	
-		var ws = new WebSocket("ws://" + pvScaleHost + ":81");
+		var wsProtocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var ws = new WebSocket(wsProtocol + pvScaleHost + ":81");
 		$('#scale-reading').addClass("spinner-border spinner-border-sm");
 		
 		$.ajax({
-			url: '/pages/views/pvscale/manage.php',
+			url: '/integrations/pvscale/manage.php',
 			type: 'POST',
 			data: {
 				ping: 1,
@@ -384,7 +384,7 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function(data) {
 				if (data.success === true) {
-					ws.onmessage = function(r) {			
+					ws.onmessage = function(r) {
 						$('#scale-reading').removeClass("spinner-border spinner-border-sm");
 	
 						console.log("Received reading: " + r.data);
@@ -414,13 +414,13 @@ $(document).ready(function() {
 		function pollReloadSignal() {
 			setInterval(function() {
 				$.ajax({
-					url: '/pages/views/pvscale/manage.php?action=check_reload_signal',
+					url: '/integrations/pvscale/manage.php?action=check_reload_signal',
 					type: 'GET',
 					success: function(response) {
 						if (response === 'reload') {
 							reload_data();
 							$.ajax({
-								url: '/pages/views/pvscale/manage.php?action=update_reload_signal',
+								url: '/integrations/pvscale/manage.php?action=update_reload_signal',
 								type: 'GET'
 							});
 						}
@@ -438,7 +438,7 @@ $(document).ready(function() {
 		function rowClickedFunction(data) {
 			$.ajax({
 				type: 'POST',
-				url: "/pages/views/pvscale/manage.php?action=send2PVScale",
+				url: "/integrations/pvscale/manage.php?action=send2PVScale",
 				data: JSON.stringify({
 					"formulas": [
 						{

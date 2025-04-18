@@ -594,22 +594,24 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 });
 
 
-$('.export_as').click(function() {	
-  var format = $(this).attr('data-format');
-  $("#formula").tableHTMLExport({
-	type: format,
-	filename: myFNAME + "." + format,
-	separator: ',',
-  	newline: '\r\n',
-  	trimContent: true,
-  	quoteFields: true,
-	ignoreColumns: '.noexport',
-  	ignoreRows: '.noexport',
-	htmlContent: false,
-	orientation: 'l',
-	subtitle: 'Created with Perfumer\'s Vault Pro',
-	maintitle: myFNAME,
-  });
+$('.export_as').click(function() {
+	const format = $(this).data('format');
+	const options = {
+		type: format,
+		filename: `${myFNAME}.${format}`,
+		separator: ',',
+		newline: '\r\n',
+		trimContent: true,
+		quoteFields: true,
+		ignoreColumns: '.noexport',
+		ignoreRows: '.noexport',
+		htmlContent: false,
+		orientation: 'l',
+		subtitle: "Created with Perfumer's Vault Pro",
+		maintitle: myFNAME,
+	};
+
+	$("#formula").tableHTMLExport(options);
 });
 
 $("#slvMeta, #slvMetaAdd").hide();
@@ -682,38 +684,34 @@ $('.table').on('hide.bs.dropdown', function () {
 });
 
 
-function update_bar(){
-     $.getJSON("/core/full_formula_data.php?id="+myID+"&stats_only=1", function (json) {
-		
-		$('#formula_name').html(json.stats.formula_name || "Unnamed");
-		$('#formula_desc').html(json.stats.formula_description);
+function update_bar() {
+	$.getJSON(`/core/full_formula_data.php?id=${myID}&stats_only=1`, function (json) {
+		const stats = json.stats || {};
+		const data = stats.data || {};
 
-		if (json.stats.data) {
+		$('#formula_name').html(stats.formula_name || "Unnamed");
+		$('#formula_desc').html(stats.formula_description || "");
+
+		if (data) {
 			$('#progress-area').show();
-	
-			var top = Math.round(json.stats.data.top.current);
-			var top_max = Math.round(json.stats.data.top.max);
-	
-			var heart = Math.round(json.stats.data.heart.current);
-			var heart_max = Math.round(json.stats.data.heart.max);
-	
-			var base = Math.round(json.stats.data.base.current);
-			var base_max = Math.round(json.stats.data.base.max);
-	
-			$('#top_bar').attr('aria-valuenow', top).css('width', top + '%').attr('aria-valuemax', top_max);
-			$('#heart_bar').attr('aria-valuenow', heart).css('width', heart + '%').attr('aria-valuemax', heart_max);
-			$('#base_bar').attr('aria-valuenow', base).css('width', base + '%').attr('aria-valuemax', base_max);
-	
-			$('#top_label').html(top + "% Top Notes");
-			$('#heart_label').html(heart + "% Heart Notes");
-			$('#base_label').html(base + "% Base Notes");
-			
 
+			const updateProgressBar = (barId, labelId, value, max, labelText) => {
+				const percentage = Math.round(value);
+				const maxValue = Math.round(max);
+				$(`#${barId}`)
+					.attr('aria-valuenow', percentage)
+					.css('width', `${percentage}%`)
+					.attr('aria-valuemax', maxValue);
+				$(`#${labelId}`).html(`${percentage}% ${labelText}`);
+			};
+
+			updateProgressBar('top_bar', 'top_label', data.top.current, data.top.max, "Top Notes");
+			updateProgressBar('heart_bar', 'heart_label', data.heart.current, data.heart.max, "Heart Notes");
+			updateProgressBar('base_bar', 'base_label', data.base.current, data.base.max, "Base Notes");
 		} else {
 			$('#progress-area').hide();
 		}
-		
-	}); 
-};
+	});
+}
 
 update_bar();

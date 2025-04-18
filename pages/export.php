@@ -863,7 +863,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'single-ingredient' && isset
 
     while ($row = mysqli_fetch_assoc($compoundResult)) {
         $compositions[] = [
-            'id'            => (int)$row['id'],
+            //'id'            => (int)$row['id'],
             'ing'           => (string)$row['ing'],
             'name'          => (string)$row['name'],
             'cas'           => (string)($row['cas'] ?: '-'),
