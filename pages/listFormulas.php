@@ -331,10 +331,10 @@ $(document).ready(function() {
 		}
 		
 		try {
-		  const [year, month, day, hour, minute, second] = data.split(/[- :]/).map(Number);
-		  const dateObject = new Date(year, month - 1, day, hour, minute, second);
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
 	
-		  return `${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`;
+		  return dateObject.toLocaleDateString();
 		} catch (error) {
 		  console.error("Date parsing error:", error);
 		  return data; // Return original data if parsing fails
@@ -344,7 +344,6 @@ $(document).ready(function() {
 	  return data;
 	}
 
-	
 	function fActions(data, type, row, meta){
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
