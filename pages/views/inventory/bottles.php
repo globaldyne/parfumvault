@@ -33,8 +33,6 @@ while ($suppliers = mysqli_fetch_array($sup)){
                 <th>Price</th>
                 <th>Supplier</th>
                 <th>Pieces</th>
-                <th>Created</th>
-                <th>Updated</th>
                 <th></th>
               </tr>
             </thead>
@@ -189,7 +187,7 @@ $(document).ready(function() {
 	var tdDataBottles = $('#tdDataBottles').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
-			{ orderable: false, targets: [7] },
+			{ orderable: false, targets: [5] },
 		],
 		dom: 'lrftip',
 		buttons: [{
@@ -228,8 +226,6 @@ $(document).ready(function() {
 			{ data : 'price', title: 'Price (<?php echo $settings['currency'];?>)' },
 			{ data : 'supplier', title: 'Supplier' },
 			{ data : 'pieces', title: 'Pieces in stock' },
-			{ data : 'created_at', title: 'Created' },
-			{ data : 'updated_at', title: 'Updated' },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],
@@ -276,8 +272,6 @@ $(document).ready(function() {
 			row.child(format(row.data())).show();
 		}
 	});
-
-
 
 	function format ( d ) {
 		details = '<img src="'+d.photo+'" class="img_ifra"/><br><hr/>'+

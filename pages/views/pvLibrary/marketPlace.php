@@ -153,7 +153,7 @@ $(document).ready(function() {
 			{ data: null, title: 'Status', render: status },
 			{ data: 'author', title: 'Author', render: author },
 			{ data: 'cost', title: 'License', render: cost },
-			{ data: 'created_at', title: 'Published' },
+			{ data: 'created_at', title: 'Published', render: formatDate },
 			{ data: null, title: '', render: actions },
 		],
 		processing: true,
@@ -210,6 +210,26 @@ $(document).ready(function() {
 		});
 	});
 
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
+	
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
+		}
+	  }
+	
+	  return data;
+	}
+	
 	function format(d) {
 		var details = '<strong>Description:</strong><br><span class="formula_details">' + d.notes +
 			'</span><br><strong>Published:</strong><br><span class="formula_details">' + d.created_at +

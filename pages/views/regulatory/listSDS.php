@@ -77,8 +77,8 @@ $(document).ready(function() {
 		loadingRecords: '&nbsp;',
 		processing: 'Please Wait...',
 		zeroRecords: 'Nothing found',
-		emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No documents found</strong></div></div>',
-
+		zeroRecords: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>Nothing found</strong></div></div>',
+		emptyTable: '<div class="row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No documents yet</strong></div></div>',
 		search: '',
 		searchPlaceholder: 'Search by name...',
 	},
@@ -98,7 +98,7 @@ $(document).ready(function() {
             { data : 'product_name', title: 'Product', render: name },
             { data : 'product_use', title: 'Product use' },
             { data : 'docID', title: 'Download', render: docData },
-			{ data : 'created_at', title: 'Created' },
+			{ data : 'created_at', title: 'Created', render: formatDate },
 			{ data : null, title: '', render: actions },
 		],
 		order: [[ 0, 'asc' ]],
@@ -133,7 +133,25 @@ $(document).ready(function() {
 		$('#tdDataSDS').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + m[1] + '</strong></div>');
 	});
 	
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
 	
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
+		}
+	  }
+	
+	  return data;
+	}
 	
 	function reload_data() {
     	$('#tdDataSDS').DataTable().ajax.reload(null, true);

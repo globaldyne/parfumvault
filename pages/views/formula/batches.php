@@ -65,7 +65,7 @@ $(document).ready(function() {
 		   	columns: [
 				{ data : 'id', title: 'Batch ID', render: batchID },
 				{ data : 'product_name', title: 'Product Name' },
-				{ data : 'created_at', title: 'Created' },
+				{ data : 'created_at', title: 'Created', render: formatDate },
 				{ data : 'pdf', title: '', render: actions}
 			],
 			order: [[ 0, 'asc' ]],
@@ -109,6 +109,26 @@ $(document).ready(function() {
 		return data;    
 	};
 
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
+	
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
+		}
+	  }
+	
+	  return data;
+	}
+	
 	function actions(data, type, row){
 		data = '<div class="dropdown">' +
 			'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
