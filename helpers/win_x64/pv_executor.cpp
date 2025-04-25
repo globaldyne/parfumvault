@@ -48,6 +48,30 @@ bool downloadFile(const char* url, const char* outputFilePath) {
     return true;
 }
 
+// Function to check if the server is returning HTTP 200
+bool isServerUp(const char* url) {
+    HINTERNET hInternet = InternetOpen("pv_executor", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+    if (!hInternet) {
+        std::cerr << "Error: Failed to initialize WinINet for server check." << std::endl;
+        return false;
+    }
+
+    HINTERNET hUrl = InternetOpenUrl(hInternet, url, NULL, 0, INTERNET_FLAG_RELOAD, 0);
+    if (!hUrl) {
+        InternetCloseHandle(hInternet);
+        return false;
+    }
+
+    DWORD statusCode = 0;
+    DWORD statusCodeSize = sizeof(statusCode);
+    HttpQueryInfo(hUrl, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &statusCode, &statusCodeSize, NULL);
+
+    InternetCloseHandle(hUrl);
+    InternetCloseHandle(hInternet);
+
+    return statusCode == 200;
+}
+
 int main() {
     // Check if Docker is installed and running
     int dockerCheck = system("docker info >nul 2>&1");
@@ -81,11 +105,28 @@ int main() {
     if (result == 0) {
         std::cout << "Docker Compose executed successfully." << std::endl;
 
-        // Open a browser to http://localhost:8000
-        std::cout << "Opening browser to http://localhost:8000..." << std::endl;
-        int browserResult = system("start http://localhost:8000"); // For Windows
-        if (browserResult != 0) {
-            std::cerr << "Warning: Failed to open browser. Please navigate to http://localhost:8000 manually." << std::endl;
+        // Check if the server is up
+        const char* serverUrl = "http://localhost:8000";
+        std::cout << "Checking if server is up at " << serverUrl << "..." << std::endl;
+
+        bool serverUp = false;
+        for (int i = 0; i < 10; ++i) {
+            if (isServerUp(serverUrl)) {
+                serverUp = true;
+                break;
+            }
+            std::cout << "Server not up yet. Retrying in 10 seconds..." << std::endl;
+            Sleep(10000); // Wait for 10 seconds
+        }
+
+        if (serverUp) {
+            std::cout << "Server is up. Opening browser to " << serverUrl << "..." << std::endl;
+            int browserResult = system("start http://localhost:8000"); // For Windows
+            if (browserResult != 0) {
+                std::cerr << "Warning: Failed to open browser. Please navigate to " << serverUrl << " manually." << std::endl;
+            }
+        } else {
+            std::cerr << "Error: Server did not respond with HTTP 200 after 10 attempts. Please check the server manually." << std::endl;
         }
     } else {
         std::cerr << "Error: Docker Compose execution failed with code " << result << "." << std::endl;
