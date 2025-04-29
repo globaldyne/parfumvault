@@ -5,6 +5,7 @@
 - Removed created and updated timestamps from ingredient suppliers, bottles, customers and formula documents
 - Removed updated timestamp from html templates
 - Added windows and macos executors
+- Added formula advisor
 
 ### Version 12.8
 - Added links for PV apps
