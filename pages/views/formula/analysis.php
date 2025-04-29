@@ -1,4 +1,11 @@
 <?php
+/**
+ * File: analysis.php
+ * Description: Composition analysis page for formula.
+ * Author: John B.
+ * License: MIT License
+ * Copyright: 2023 John B.
+ */
 
 define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__))))); 
 
