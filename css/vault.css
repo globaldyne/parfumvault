@@ -1767,3 +1767,8 @@ th.dt-center, td.dt-center {
   border-radius: 3px;
 }
 
+.pv-footer {
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}

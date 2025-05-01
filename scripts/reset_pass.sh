@@ -3,7 +3,7 @@
 #
 # Reset admin pass
 # Script Version: v1.7
-# Author: John Belekios <john@globaldyne.co.uk>
+# Author: John Belekios <john@perfumersvault.com>
 #
 #
 

@@ -6,6 +6,8 @@
 - Removed updated timestamp from html templates
 - Added windows and macos executors
 - Added formula advisor
+- Ensure random id is assigned to first time user creation
+- Check if db schema needs to be created when PV is started instead of the login page
 
 ### Version 12.8
 - Added links for PV apps
