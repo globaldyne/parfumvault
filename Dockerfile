@@ -57,6 +57,7 @@ ADD scripts/php-fpm/php-fpm.conf /etc/php-fpm.conf
 ADD scripts/entrypoint.sh /usr/bin/entrypoint.sh
 ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
+ADD scripts/create_db_schema.sh /usr/bin/create_db_schema.sh
 ADD scripts/update_db_schema.sh /usr/bin/update_db_schema.sh
 
 RUN chmod +x /usr/bin/entrypoint.sh /usr/bin/reset_pass.sh /usr/bin/update_db_schema.sh && \

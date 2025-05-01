@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" data-bs-theme="{{theme}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="{{meta_description}}">
+    <meta name="author" content="{{author}}">
+    <title>{{title}}</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{favicon_32}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{favicon_16}}">
+    
+    <!-- JavaScript -->
+    <script src="{{jquery_js}}"></script>
+    <script src="{{bootstrap_js}}"></script>
+    <script src="{{custom_js}}"></script>
+
+    <!-- CSS -->
+    <link href="{{sb_admin_css}}" rel="stylesheet">
+    <link href="{{bootstrap_css}}" rel="stylesheet">
+    <link href="{{vault_css}}" rel="stylesheet">
+    <link href="{{fontawesome_css}}" rel="stylesheet">
+</head>
+
+<body class="{{body_class}}">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Content injected via PHP -->
+                        {{content}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="container my-auto pv-footer">
+        <div class="copyright text-center">
+            <hr />
+            <strong><a href="{{product_url}}" target="_blank">{{product_name}}</a></strong>
+            <div id="footer_release">Version: <strong>{{version}}</strong></div>
+            <div><a href="{{discord_url}}" target="_blank"><strong>Discord Server</strong></a></div>
+            <div class="mt-2" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+                <div style="text-align: center;">
+                    <a href="{{appstore_pv}}" target="_blank">
+                        <img src="{{appstore_pv_img}}" alt="App Store" style="width: 150px;">
+                    </a>
+                    <div class="mt-1">Get the Perfumers Vault app</div>
+                </div>
+                <div style="text-align: center;">
+                    <a href="{{appstore_aroma}}" target="_blank">
+                        <img src="{{appstore_aroma_img}}" alt="App Store" style="width: 150px;">
+                    </a>
+                    <div class="mt-1">Get the AromaTrack app</div>
+                </div>
+            </div>
+            <div class="mt-2">Copyright &copy; {{copyright_year}}</div>
+        </div>
+    </footer>
+</body>
+</html>

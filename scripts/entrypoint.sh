@@ -53,6 +53,14 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             touch "$ERROR_LOG"
         fi
 
+        # Execute the create_db_schema.sh script
+        /usr/bin/create_db_schema.sh
+        if [ $? -eq 0 ]; then
+            echo "Database schema is up to date."
+        else
+            echo "create_db_schema.sh script failed. Please check the logs."
+        fi
+
         # Execute the update_db_schema.sh script
         /usr/bin/update_db_schema.sh
         if [ $? -eq 0 ]; then
