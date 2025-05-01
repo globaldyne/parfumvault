@@ -102,6 +102,36 @@ $(document).ready(function () {
         });
     });
 
+    // Handle SSO authentication if enabled
+    $('#login_form #login_sso').click(function () {
+        console.log('SSO AUTH');
+        $('#login_form :input, #login_form button').prop('disabled', true);
+        $('#login_sso').append('<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>');
+        $.ajax({
+            url: '/core/auth.php',
+            type: 'POST',
+            data: {
+                action: "auth_sso",
+                provider: $(this).data('provider'),
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.auth.success) {
+                    window.location = data.auth.redirect;
+                } else if (data.auth.error) {
+                    $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.auth.msg + '</div>');
+                    $("#login_form .spinner-border").remove();
+                    $('#login_form :input, #login_form button').prop('disabled', false);
+                }
+            },
+            error: function (request, status, error) {
+                $('#msg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Unable to handle request, server returned an error: ' + request.status + '</div>');
+                $("#login_form .spinner-border").remove();
+                $('#login_form :input, #login_form button').prop('disabled', false);
+            },
+        });
+    });
+
     // Handle reset password logic
     $("#reset_pass_btn").click(function () {
         var password = $("#password").val();
