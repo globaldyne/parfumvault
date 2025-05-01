@@ -1,5 +1,5 @@
 <?php
-define('pvault_panel', TRUE);
+define('pvault_panel', true);
 define('__ROOT__', dirname(__FILE__));
 
 require_once(__ROOT__.'/inc/opendb.php');
@@ -16,6 +16,9 @@ if (isset($_SESSION['parfumvault'])) {
     exit;
 }
 
+// Ensure global variables are available
+global $product, $ver, $commit, $system_settings;
+
 // Load the template
 $template = file_get_contents(__ROOT__ . '/template.html');
 
@@ -30,13 +33,13 @@ $placeholders = [
     '{{favicon_16}}' => '/img/favicon-16x16.png',
     '{{jquery_js}}' => '/js/jquery/jquery.min.js',
     '{{bootstrap_js}}' => '/js/bootstrap.bundle.min.js',
-    '{{custom_js}}' => '/js/custom.js', // Add your custom JavaScript file
+    '{{custom_js}}' => '/js/custom.js',
     '{{sb_admin_css}}' => '/css/sb-admin-2.css',
     '{{bootstrap_css}}' => '/css/bootstrap.min.css',
     '{{vault_css}}' => '/css/vault.css',
     '{{fontawesome_css}}' => '/css/fontawesome-free/css/all.min.css',
     '{{body_class}}' => 'bg-gradient-primary',
-    '{{content}}' => generateContent($conn), // Dynamically generated content
+    '{{content}}' => generateContent($conn),
     '{{product_url}}' => 'https://www.perfumersvault.com',
     '{{product_name}}' => htmlspecialchars($product),
     '{{version}}' => htmlspecialchars($ver . " " . $commit),
@@ -61,16 +64,17 @@ echo $output;
 
 /**
  * Generate dynamic content based on conditions
- */
-/**
- * Generate dynamic content based on conditions
- * @param mysqli $conn - Database connection
- * @return string - HTML content to be injected into the template
+ *
+ * @param mysqli $conn Database connection
+ * @return string HTML content to be injected into the template
  */
 function generateContent($conn) {
-    // Check if there are no users in the database
+    global $product, $system_settings;
+
+    // Show registration form if no users exist
     if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) {
         return <<<HTML
+<!-- Registration HTML -->
 <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
 <div class="col-lg-6">
     <div class="p-5">
@@ -102,8 +106,9 @@ function generateContent($conn) {
 HTML;
     }
 
-    // If a password reset is requested
+    // Handle password reset
     if (isset($_GET['do']) && $_GET['do'] === 'reset-password' && isset($_GET['token'])) {
+        $token = htmlspecialchars($_GET['token']);
         return <<<HTML
 <div class="col-lg-6 d-none d-lg-block bg-reset-password-image"></div>
 <div class="col-lg-6">
@@ -147,7 +152,7 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 action: 'resetPassword',
-                token: '{$_GET['token']}',
+                token: '{$token}',
                 newPassword: password
             },
             dataType: 'json',
@@ -170,7 +175,7 @@ $(document).ready(function() {
 HTML;
     }
 
-    // If email confirmation is requested
+    // Handle email confirmation
     if (isset($_GET['do']) && $_GET['do'] === 'confirm-email' && isset($_GET['token'])) {
         $token = mysqli_real_escape_string($conn, $_GET['token']);
         $checkTokenQuery = "SELECT email FROM users WHERE token = '$token' AND isVerified = 0";
@@ -192,39 +197,98 @@ HTML;
     }
 
     // Default to login form
-    return <<<HTML
-<div class="row">
-    <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-    <div class="col-lg-6">
-        <div class="p-5">
-            <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Log In or Sign Up</h1>
+    $forgotPasswordModal = '';
+    if (getenv('PASS_RESET_INFO') !== "DISABLED") {
+        if ($system_settings['EMAIL_isEnabled'] == '1') {
+            $forgotPasswordModal = <<<HTML
+<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" aria-labelledby="forgot_pass_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="msg"></div>
-            <div class="user" id="login_form">
-                <hr />
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
-                    <label for="login_email">Email address</label>
+            <div class="modal-body">
+                <div id="forgot_msg"></div>
+                <div class="form-floating mb-3" id="forgot_email_form">
+                    <input type="email" class="form-control" id="forgot_email" placeholder="name@example.com">
+                    <label for="forgot_email">Email address</label>
                 </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="login_pass" placeholder="Password">
-                    <label for="login_pass">Password</label>
-                </div>
-                <button class="btn btn-primary btn-user btn-block" id="login_btn">
-                    Sign In
-                </button>
             </div>
-            <hr/>
-            <div class="text-center">
-                    <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
-            </div>
-            <div class="text-center">
-                <a class="small" href="/register.php">Create an Account</a>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="forgot_submit">Reset Password</button>
             </div>
         </div>
     </div>
 </div>
 HTML;
+        } else {
+            $msg = $conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0
+                ? "<p>When you first installed <strong>{$product}</strong>, you were prompted to set a password...</p>"
+                : "<p>If you have forgotten your password, please contact your system administrator for assistance.</p>";
+
+            $forgotPasswordModal = <<<HTML
+<div class="modal fade" id="forgot_pass" data-bs-backdrop="static" tabindex="-1" aria-labelledby="forgot_pass_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">{$msg}</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+HTML;
+        }
+    }
+
+    $registerLink = '';
+    if ($system_settings['USER_selfRegister'] == '1') {
+        $registerLink = <<<HTML
+        <div class="text-center">
+            <a class="small" href="/register.php">Create an Account!</a>
+        </div>
+        HTML;
+    }
+    
+    return <<<HTML
+    <div class="row">
+        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+        <div class="col-lg-6">
+            <div class="p-5">
+                <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Log In or Sign Up</h1>
+                </div>
+                <div id="msg"></div>
+                <div class="user" id="login_form">
+                    <hr />
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
+                        <label for="login_email">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="login_pass" placeholder="Password">
+                        <label for="login_pass">Password</label>
+                    </div>
+                    <button class="btn btn-primary btn-user btn-block" id="login_btn">
+                        Sign In
+                    </button>
+                </div>
+                <hr/>
+                <div class="text-center">
+                    <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
+                </div>
+                {$registerLink}
+            </div>
+        </div>
+    </div>
+    {$forgotPasswordModal}
+    HTML;
+    
 }
 ?>
