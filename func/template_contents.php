@@ -63,26 +63,28 @@ HTML;
     if (isset($_GET['do']) && $_GET['do'] === 'reset-password' && isset($_GET['token'])) {
         $token = htmlspecialchars($_GET['token']);
         return <<<HTML
-<div class="col-lg-6 d-none d-lg-block bg-reset-password-image"></div>
-<div class="col-lg-6">
-    <div class="p-5">
-        <div class="text-center">
-            <h1 class="h4 text-gray-900 mb-4">Reset Password</h1>
-        </div>
-        <div id="msg"></div>
-        <div id="reset_pass">
-            <hr>
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control password-input" id="password" placeholder="Password">
-                <label for="password">Password</label>
+<div class="row">
+    <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+    <div class="col-lg-6">
+        <div class="p-5">
+            <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Reset Password</h1>
             </div>
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control password-input" id="confirm_password" placeholder="Confirm Password">
-                <label for="confirm_password">Confirm Password</label>
+            <div id="msg"></div>
+            <div id="reset_pass">
+                <hr>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control password-input" id="password" placeholder="Password">
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control password-input" id="confirm_password" placeholder="Confirm Password">
+                    <label for="confirm_password">Confirm Password</label>
+                </div>
+                <button class="btn btn-primary btn-user btn-block" id="reset_pass_btn">
+                    Reset Password
+                </button>
             </div>
-            <button class="btn btn-primary btn-user btn-block" id="reset_pass_btn">
-                Reset Password
-            </button>
         </div>
     </div>
 </div>
