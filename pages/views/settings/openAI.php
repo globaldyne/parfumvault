@@ -122,9 +122,12 @@ $(document).ready(function() {
 	  });
 	});
 	
-    // Disable openai_api_key if use_ai_service is unchecked
+    // Disable openai_api_key, openai_model, and openai_temperature if use_ai_service is unchecked
     $('#use_ai_service').change(function() {
-        $('#openai_api_key').prop('disabled', !$(this).is(':checked'));
+        const isChecked = $(this).is(':checked');
+        $('#openai_api_key').prop('disabled', !isChecked);
+        $('#openai_model').prop('disabled', !isChecked);
+        $('#openai_temperature').prop('disabled', !isChecked);
     }).trigger('change'); // Trigger change on page load to set initial state
 
     // Update temperature value display
