@@ -92,7 +92,7 @@ RUN if [ "$INSTALL_SESS_MONITOR" = "true" ]; then \
 	fi
 
 # Clean up unnecessary files
-RUN rm -rf /html/scripts /helpers /html/docker-compose /html/k8s /html/.git /html/.github 
+RUN rm -rf /html/scripts /html/helpers /html/docker-compose /html/k8s /html/.git /html/.github 
 
 # Set executable permissions for scripts
 RUN chmod +x /usr/bin/entrypoint.sh /usr/bin/reset_pass.sh /usr/bin/update_db_schema.sh /usr/bin/create_db_schema.sh
