@@ -5,7 +5,7 @@
 # =============================================================================
 
 # Base image
-FROM quay.io/centos/centos:stream9-minimal
+FROM quay.io/centos/centos:stream10-minimal
 
 # Metadata labels
 LABEL co.uk.globaldyne.component="perfumers-vault-container" \
@@ -24,34 +24,42 @@ ENV LANG=en_GB.UTF-8
 # Define user and group IDs
 ARG uid=100001
 ARG gid=100001
+ARG INSTALL_SESS_MONITOR=false
 
-# Install required packages
-RUN microdnf -y install epel-release && \
-	microdnf -y update && \
-	microdnf -y module enable nginx:1.26 php:8.3 && \
-	microdnf --setopt=tsflags=nodocs -y install \
+
+# Update the system
+RUN microdnf -y update
+# Install PHP and other dependencies
+RUN microdnf --setopt=tsflags=nodocs -y install \
 	  php \
 	  php-mysqlnd \
 	  php-gd \
 	  php-mbstring \
 	  php-fpm \
-	  php-pear-Mail \
+	  php-pear \
 	  openssl \
 	  mysql \
 	  ncurses \
 	  nginx \
 	  procps-ng \
-	  diffutils \
-	  golang
+	  diffutils
 
 # Configure PHP settings with environment variable defaults
-RUN	sed -i \
+RUN sed -i \
 	  -e 's~^;date.timezone =$~date.timezone = ${PHP_TIMEZONE:-UTC}~g' \
 	  -e 's~^upload_max_filesize.*$~upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE:-500M}~g' \
 	  -e 's~^post_max_size.*$~post_max_size = ${PHP_POST_MAX_SIZE:-500M}~g' \
 	  -e 's~^session.auto_start.*$~session.auto_start = 1~g' \
 	  -e 's~^memory_limit.*$~memory_limit = ${PHP_MEMORY_LIMIT:-512M}~g' \
 	  /etc/php.ini
+
+# Install additional PHP extensions
+RUN pear install mail Mail_mime Auth_SASL Net_SMTP
+
+# Conditionally install Go for session monitor
+RUN if [ "$INSTALL_SESS_MONITOR" = "true" ]; then \
+	microdnf -y install golang; \
+	fi
 
 # Clean up package manager cache
 RUN microdnf clean all && \
@@ -74,15 +82,17 @@ ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 ADD scripts/create_db_schema.sh /usr/bin/create_db_schema.sh
 ADD scripts/update_db_schema.sh /usr/bin/update_db_schema.sh
 
-# Build Go-based session monitor
-WORKDIR /html/scripts/session_monitor
-RUN [ ! -f go.mod ] && go mod init session_monitor || true && \
-	go mod tidy && go build -o session_monitor . && \
-	cp session_monitor /usr/bin/session_monitor && \
-	chmod +x /usr/bin/session_monitor
+# Build Go-based session monitor if enabled
+RUN if [ "$INSTALL_SESS_MONITOR" = "true" ]; then \
+		cd /html/scripts/session_monitor && \
+		[ ! -f go.mod ] && go mod init session_monitor || true && \
+		go mod tidy && go build -o session_monitor . && \
+		cp session_monitor /usr/bin/session_monitor && \
+		chmod +x /usr/bin/session_monitor; \
+	fi
 
 # Clean up unnecessary files
-RUN	rm -rf /html/scripts /helpers /html/docker-compose /html/k8s /html/.git /html/.github 
+RUN rm -rf /html/scripts /helpers /html/docker-compose /html/k8s /html/.git /html/.github 
 
 # Set executable permissions for scripts
 RUN chmod +x /usr/bin/entrypoint.sh /usr/bin/reset_pass.sh /usr/bin/update_db_schema.sh /usr/bin/create_db_schema.sh
