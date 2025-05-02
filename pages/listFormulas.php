@@ -57,7 +57,13 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                                         <i class="fa-solid fa-plus mx-2"></i>Add new formula
                                     </a>
                                 </li>
-
+								<?php if($user_settings['use_ai_service'] == 1) { ?>
+									<li>
+										<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_ai">
+											<i class="fa-solid fa-robot mx-2"></i>Generate formula with AI
+										</a>
+									</li>
+								<?php } ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat">
@@ -560,6 +566,7 @@ $(document).ready(function() {
 	  });
 	});
 	
+	//Add formula
 	$('#add_formula').on('click', '[id*=btnAdd]', function () {
 		$.ajax({ 
 		url: '/core/core.php', 
@@ -576,7 +583,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 			}else if(data.success){
 				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="/?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
 				reload_formulas_data();
@@ -587,14 +594,48 @@ $(document).ready(function() {
 			$('#addFormulaMsg').html(rmsg);
 		},
 		error: function (xhr, status, error) {
-			$('#addFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#addFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	  });
 	});
 	
+	//Add formula AI
+	$('#add_formula_ai').on('click', '[id*=generateAIFormula]', function () {
+		var name = $("#ai-formula-name").val().trim();
+		var description = $("#ai-description").val().trim();
+
+		if (name === "" || description === "") {
+			$('#aiFormulaMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Formula name and description cannot be empty.</div>');
+			return;
+		}
+
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: 'addFormulaAI',
+				name: name,
+				profile: $("#ai-profile").val(),
+				description: description
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				} else if(data.success){
+					window.location = "/?do=Formula&id=" + data.success.id;
+				}
+				$('#aiFormulaMsg').html(rmsg);
+			},
+			error: function (xhr, status, error) {
+				$('#aiFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			}
+		});
+	});
+	
+	//Import CSV
 	$("#btnImport").prop("disabled", true);
 	$("#btnImport").hide();
-		
 	$("input[type=file]").on('change',function(){	
 		var fd = new FormData();
 		var files = $('#CSVFile')[0].files;
@@ -969,7 +1010,6 @@ $(document).ready(function() {
 </div>
 
 
-
 <!-- IMPORT JSON MODAL -->
 <div class="modal fade" id="import_formulas_json" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="import_formulas_json" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -1038,6 +1078,49 @@ $(document).ready(function() {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_imp_txt">Close</button>
         <button type="submit" name="btn-txtFormula" class="btn btn-primary" id="addtxtFormula">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD FORMULA AI MODAL -->
+<div class="modal fade" id="add_formula_ai" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Generate Formula with AI</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="aiFormulaMsg" class="mb-3"></div>
+        <div class="form">
+          <div class="row mb-3">
+            <div class="col-sm">
+              <label for="ai-formula-name" class="form-label">Formula Name</label>
+              <input name="ai-formula-name" id="ai-formula-name" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm">
+              <label for="ai-profile" class="form-label">Profile</label>
+              <select name="ai-profile" id="ai-profile" class="form-control selectpicker" data-live-search="true">
+                <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){ ?>
+                  <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+                <?php } } ?>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm">
+              <label for="ai-description" class="form-label">Description</label>
+              <textarea name="ai-description" id="ai-description" cols="45" rows="5" class="form-control" placeholder="Describe the formula you want to generate..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" name="btn-generate-ai" class="btn btn-primary" id="generateAIFormula">Generate</button>
       </div>
     </div>
   </div>

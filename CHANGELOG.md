@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.9
+- Added OpenAI formula creation
 - Localise date across the app
 - Removed time from created and updated fields
 - Removed created and updated timestamps from ingredient suppliers, bottles, customers and formula documents
