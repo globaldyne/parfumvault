@@ -1,0 +1,20 @@
+<?php
+return [
+    'forgot_password_title' => 'Forgot Password',
+    'email_placeholder' => 'name@example.com',
+    'email_label' => 'Email address',
+    'password_placeholder' => 'Password',
+    'password_label' => 'Password',
+    'full_name_placeholder' => 'Full name',
+    'full_name_label' => 'Full name',
+    'close_button' => 'Close',
+    'reset_password_button' => 'Reset Password',
+    'continue_with_sso' => 'Continue with SSO',
+    'or_separator' => 'or',
+    'forgot_password_link' => 'Forgot Password?',
+    'create_account_link' => 'Create an Account!',
+    'register_user_title' => 'Please register a user',
+    'register_button' => 'Register',
+    'sign_in_title' => 'Sign In',
+    'sign_in_button' => 'Sign In',
+];
