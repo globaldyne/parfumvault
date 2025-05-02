@@ -16,6 +16,14 @@
 function generateContent($conn) {
     global $product, $system_settings;
 
+    // Load language file
+    $langFile = __ROOT__ . '/pvTemplates/lang/en.php';
+    if (file_exists($langFile)) {
+        $lang = include($langFile);
+    } else {
+        $lang = []; // Fallback to an empty array if the language file is missing
+    }
+
     // Show registration form if no users exist
     if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) {
         return <<<HTML
@@ -24,26 +32,26 @@ function generateContent($conn) {
 <div class="col-lg-6">
     <div class="p-5">
         <div class="text-center">
-            <h1 class="h4 text-gray-900 mb-4">Please register a user</h1>
+            <h1 class="h4 text-gray-900 mb-4">{$lang['register_user_title']}</h1>
         </div>
         <div id="msg"></div>
         <div class="user" id="reg_form">
             <hr>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="fullName" placeholder="Full name">
-                <label for="fullName">Full name</label>
+                <input type="text" class="form-control" id="fullName" placeholder="{$lang['full_name_placeholder']}">
+                <label for="fullName">{$lang['full_name_label']}</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" placeholder="Email">
-                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="{$lang['email_placeholder']}">
+                <label for="email">{$lang['email_label']}</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control password-input" id="password" placeholder="Password">
-                <label for="password">Password</label>
+                <input type="password" class="form-control password-input" id="password" placeholder="{$lang['password_placeholder']}">
+                <label for="password">{$lang['password_label']}</label>
                 <i class="toggle-password fa fa-eye"></i>
             </div>
             <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
-                Register
+                {$lang['register_button']}
             </button>
         </div>
     </div>
@@ -150,19 +158,19 @@ HTML;
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+                <h5 class="modal-title" id="forgot_pass_label">{$lang['forgot_password_title']}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="forgot_msg"></div>
                 <div class="form-floating mb-3" id="forgot_email_form">
-                    <input type="email" class="form-control" id="forgot_email" placeholder="name@example.com">
-                    <label for="forgot_email">Email address</label>
+                    <input type="email" class="form-control" id="forgot_email" placeholder="{$lang['email_placeholder']}">
+                    <label for="forgot_email">{$lang['email_label']}</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="forgot_submit">Reset Password</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{$lang['close_button']}</button>
+                <button type="button" class="btn btn-primary" id="forgot_submit">{$lang['reset_password_button']}</button>
             </div>
         </div>
     </div>
@@ -178,12 +186,12 @@ HTML;
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="forgot_pass_label">Forgot Password</h5>
+                <h5 class="modal-title" id="forgot_pass_label">{$lang['forgot_password_title']}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">{$msg}</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{$lang['close_button']}</button>
             </div>
         </div>
     </div>
@@ -297,9 +305,9 @@ HTML;
     
         $ssoBlock .= <<<HTML
     <div class="text-center">
-        <button type="button" class="btn btn-danger me-2" data-provider="google" id="login_sso">Sign in with Google</button>
+        <button type="button" class="btn btn-danger me-2" data-provider="google" id="login_sso">{$lang['continue_with_sso']}</button>
     </div>
-    <div class="separator mt-2 mb-2">or</div>
+    <div class="separator mt-2 mb-2">{$lang['or_separator']}</div>
     HTML;
     }
     
@@ -309,7 +317,7 @@ HTML;
         $forgotPassBlock = <<<HTML
     <hr />
     <div class="text-center">
-        <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">Forgot Password?</a>
+        <a class="small" href="#" data-bs-toggle="modal" data-bs-target="#forgot_pass">{$lang['forgot_password_link']}</a>
     </div>
     HTML;
     }
@@ -319,7 +327,7 @@ HTML;
     if ($system_settings['USER_selfRegister'] == '1') {
         $registerBlock = <<<HTML
     <div class="text-center">
-        <a class="small" href="/register.php">Create an Account!</a>
+        <a class="small" href="/register.php">{$lang['create_account_link']}</a>
     </div>
     HTML;
     }
@@ -332,22 +340,22 @@ HTML;
         <div class="col-lg-6">
             <div class="p-5">
                 <div class="text-center">
-                    <h1 class="h4 mb-4">Sign In</h1>
+                    <h1 class="h4 mb-4">{$lang['sign_in_title']}</h1>
                 </div>
                 <div id="msg"></div>
                 <div class="user" id="login_form">
                     {$ssoBlock}
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="login_email" placeholder="name@example.com">
-                        <label for="login_email">Email address</label>
+                        <input type="email" class="form-control" id="login_email" placeholder="{$lang['email_placeholder']}">
+                        <label for="login_email">{$lang['email_label']}</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="login_pass" placeholder="Password">
-                        <label for="login_pass">Password</label>
+                        <input type="password" class="form-control" id="login_pass" placeholder="{$lang['password_placeholder']}">
+                        <label for="login_pass">{$lang['password_label']}</label>
                     </div>
                     <div class="form-group"></div>
                     <button class="btn btn-primary btn-user btn-block" id="login_btn">
-                        Sign In
+                        {$lang['sign_in_button']}
                     </button>
                 </div>
                 {$forgotPassBlock}

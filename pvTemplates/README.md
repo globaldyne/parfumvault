@@ -34,6 +34,83 @@ The following placeholders are used in the `pvDefault.html` file. These placehol
 - `{{appstore_aroma_img}}`: Path to the image for the AromaTrack app link.
 - `{{copyright_year}}`: The current year, dynamically set.
 
+---
+
+## Language File (`lang/en.php`)
+
+The `lang/en.php` file contains all the text strings used in the application. These strings are dynamically loaded and used to populate the UI, making it easier to support multiple languages.
+
+### Structure of the Language File
+
+The language file is a PHP file that returns an associative array. Each key in the array corresponds to a specific text string used in the application.
+
+### Example
+
+Here is an example of the structure of the language file:
+
+```php
+<?php
+return [
+    'forgot_password_title' => 'Forgot Password',
+    'email_placeholder' => 'name@example.com',
+    'email_label' => 'Email address',
+    'password_placeholder' => 'Password',
+    'password_label' => 'Password',
+    'full_name_placeholder' => 'Full name',
+    'full_name_label' => 'Full name',
+    'close_button' => 'Close',
+    'reset_password_button' => 'Reset Password',
+    'continue_with_sso' => 'Continue with SSO',
+    'or_separator' => 'or',
+    'forgot_password_link' => 'Forgot Password?',
+    'create_account_link' => 'Create an Account!',
+    'register_user_title' => 'Please register a user',
+    'register_button' => 'Register',
+    'sign_in_title' => 'Sign In',
+    'sign_in_button' => 'Sign In',
+];
+```
+
+### Adding New Text Strings
+
+To add new text strings:
+
+1. Open the `lang/en.php` file.
+2. Add a new key-value pair to the array. The key should be a descriptive identifier, and the value should be the text string.
+
+Example:
+
+```php
+'new_feature_title' => 'Welcome to the New Feature',
+```
+
+### Using Text Strings in the Application
+
+To use a text string from the language file:
+
+1. Load the language file in your PHP script:
+   ```php
+   $lang = include('/path/to/lang/en.php');
+   ```
+2. Access the desired text string using its key:
+   ```php
+   echo $lang['forgot_password_title'];
+   ```
+
+### Benefits of Using a Language File
+
+- **Centralized Management**: All text strings are stored in one place, making it easier to update or translate.
+- **Multi-language Support**: Easily add support for new languages by creating additional language files (e.g., `lang/fr.php` for French).
+- **Consistency**: Ensures consistent text across the application.
+
+### Adding Support for Additional Languages
+
+To add support for a new language:
+
+1. Create a new file in the `lang` directory (e.g., `lang/fr.php` for French).
+2. Copy the structure of `lang/en.php` and translate the text strings into the desired language.
+3. Update the application to load the appropriate language file based on user preferences or system settings.
+
 ### Overriding the Default Template
 
 Users can override the default template by mounting the `pvTemplates` directory and adding their own HTML file. To do this:
