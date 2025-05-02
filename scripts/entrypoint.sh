@@ -71,14 +71,19 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
 
         # Start the session monitor if SESSION_MONITOR is true
         if [ "$SESSION_MONITOR" = "true" ]; then
-            /usr/bin/session_monitor &
-            if [ $? -ne 0 ]; then
-            echo "Failed to start session monitor. Exiting."
-            exit 1
+            if [ -f "/usr/bin/session_monitor" ]; then
+                /usr/bin/session_monitor &
+                if [ $? -ne 0 ]; then
+                    echo "Failed to start session monitor. Exiting."
+                    exit 1
+                fi
+            else
+                echo "Session monitor not installed. Continuing..."
             fi
         else
             echo "Session monitor is disabled."
         fi
+        
         echo "----------------------------------"
 
         # Tail error logs
