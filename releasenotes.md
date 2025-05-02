@@ -1,5 +1,6 @@
 Whats New in v12.9
 --------------------------
+- Added OpenAI formula creation
 - Added a login screen template for easier integration with external SSO
 - Added formula advisor
 - Added windows and macos executors

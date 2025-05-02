@@ -13,6 +13,10 @@ $(document).ready(function() {
 		get_systemSettings();
 	});
 
+	$('#openAI_tab').on( 'click', function () {
+		get_openAI();
+	});
+
 	$('#users_tab').on( 'click', function () {
 		get_users();
 	});
@@ -225,5 +229,15 @@ $(document).ready(function() {
 		});
 	};
 	
+	function get_openAI(){
+		$.ajax({ 
+			url: '/pages/views/settings/openAI.php', 
+			dataType: 'html',
+			success: function (data) {
+				$('#openAI').html(data);
+			}
+		});
+	};
+
 	get_general();
 });
