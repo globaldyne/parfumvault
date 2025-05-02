@@ -4,6 +4,8 @@
 
 The `pvDefault.html` file serves as the default template for the application. It is used to render the UI when no custom template is provided.
 
+> **Note:** Currently, only the login screen is supported.
+
 ### Placeholders in `pvDefault.html`
 
 The following placeholders are used in the `pvDefault.html` file. These placeholders are dynamically replaced by the application at runtime:
@@ -88,28 +90,19 @@ Example:
 
 To use a text string from the language file:
 
-1. Load the language file in your PHP script:
-   ```php
-   $lang = include('/path/to/lang/en.php');
-   ```
-2. Access the desired text string using its key:
-   ```php
-   echo $lang['forgot_password_title'];
-   ```
+1. Mount the `lang` directory as a Docker volume to ensure your changes persist:
+    ```bash
+    docker run -v /path/to/your/lang:/app/lang your-docker-image
+    ```
+2. Create your own `en.php` file in the mounted `lang` directory:
+    ```php
+    <?php
+    return [
+         'forgot_password_title' => 'Forgot Password',
+         // Add your custom text strings here
+    ];
+    ```
 
-### Benefits of Using a Language File
-
-- **Centralized Management**: All text strings are stored in one place, making it easier to update or translate.
-- **Multi-language Support**: Easily add support for new languages by creating additional language files (e.g., `lang/fr.php` for French).
-- **Consistency**: Ensures consistent text across the application.
-
-### Adding Support for Additional Languages
-
-To add support for a new language:
-
-1. Create a new file in the `lang` directory (e.g., `lang/fr.php` for French).
-2. Copy the structure of `lang/en.php` and translate the text strings into the desired language.
-3. Update the application to load the appropriate language file based on user preferences or system settings.
 
 ### Overriding the Default Template
 
