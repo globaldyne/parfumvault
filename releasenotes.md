@@ -1,5 +1,6 @@
 Whats New in v12.9
 --------------------------
+- Added a login screen template for easier integration with external SSO
 - Added formula advisor
 - Added windows and macos executors
 - Localise date across the app
