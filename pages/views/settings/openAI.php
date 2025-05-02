@@ -73,7 +73,6 @@ require_once(__ROOT__.'/inc/settings.php');
         </div>
     </div>
     <div class="row">
-        <hr />
         <div class="col-sm-auto text-start">
             <button type="submit" name="save-openai" id="save-openai" value="Save" class="btn btn-primary btn-lg">Save</button>
         </div>
