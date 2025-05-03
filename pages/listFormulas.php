@@ -609,6 +609,11 @@ $(document).ready(function() {
 			return;
 		}
 
+		// Disable fields and show loading icon
+		$("#ai-formula-name, #ai-profile, #ai-description").prop("disabled", true);
+		var $button = $(this);
+		$button.prop("disabled", true).html('<i class="fa-solid fa-spinner fa-spin mx-2"></i>Generating...');
+
 		$.ajax({ 
 			url: '/core/core.php', 
 			type: 'POST',
@@ -629,6 +634,11 @@ $(document).ready(function() {
 			},
 			error: function (xhr, status, error) {
 				$('#aiFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			},
+			complete: function () {
+				// Re-enable fields and reset button
+				$("#ai-formula-name, #ai-profile, #ai-description").prop("disabled", false);
+				$button.prop("disabled", false).html('Generate');
 			}
 		});
 	});
@@ -1116,6 +1126,16 @@ $(document).ready(function() {
 						<label for="ai-description">Describe the formula you want to generate...</label>
 					</div>
 				</div>
+			</div>
+			<hr/>
+			<div class="alert alert-info mt-3 mx-3">
+				Using <strong>
+					<?php 
+					echo $user_settings['ai_service_provider'] === 'openai' 
+						? 'OpenAI' 
+						: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
+					?>
+				</strong> provider
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
