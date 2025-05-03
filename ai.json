@@ -1,0 +1,22 @@
+{
+    "id": "chatcmpl-9xyzAbCDE1234567890",
+    "object": "chat.completion",
+    "created": 1714672200,
+    "model": "gpt-4",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "[\n  {\n    \"ingredient\": \"Linalool\",\n    \"cas\": \"78-70-6\",\n    \"quantity\": 2.5,\n    \"concentration\": 100,\n    \"dilutant\": \"Ethanol\"\n  },\n  {\n    \"ingredient\": \"Geraniol\",\n    \"cas\": \"106-24-1\",\n    \"quantity\": 1.2,\n    \"concentration\": 100,\n    \"dilutant\": \"DIPG\"\n  },\n  {\n    \"ingredient\": \"Iso E Super\",\n    \"cas\": \"54464-57-2\",\n    \"quantity\": 3.0,\n    \"concentration\": 100,\n    \"dilutant\": \"None\"\n  },\n  {\n    \"ingredient\": \"Hedione\",\n    \"cas\": \"24851-98-7\",\n    \"quantity\": 1.8,\n    \"concentration\": 100,\n    \"dilutant\": \"TEC\"\n  }\n]"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 100,
+      "completion_tokens": 150,
+      "total_tokens": 250
+    }
+  }
+  
