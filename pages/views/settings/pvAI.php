@@ -45,8 +45,8 @@ require_once(__ROOT__.'/inc/settings.php');
                         <div class="mb-3">
                             <label for="openai_temperature" class="form-label">Temperature</label>
                             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Set the temperature for the AI model (0.0 to 1.0)"></a>
-                            <input type="range" name="openai_temperature" id="openai_temperature" class="form-range" min="0" max="1" step="0.1" value="<?= $user_settings['openai_temperature'] ?>" />
-                            <div class="form-text">Current value: <span id="temperature_value"><?= $user_settings['openai_temperature'] ?></span></div>
+                            <input type="range" name="openai_temperature" id="openai_temperature" class="form-range" min="0" max="1" step="0.1" value="<?= $user_settings['openai_temperature'] ?: 0.5 ?>" />
+                            <div class="form-text">Current value: <span id="temperature_value"><?= $user_settings['openai_temperature'] ?: 0.5 ?></span></div>
                         </div>
                     </div>
 
