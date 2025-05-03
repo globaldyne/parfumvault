@@ -46,7 +46,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = "Create a perfume formula in JSON with ingredient name, CAS number as cas, and quantity in grams as quantity. Description: $notes. Profile: $profile. Return only JSON.";
+    $prompt = "Create a perfume formula in JSON with ingredient name as ingredient, CAS number as cas, and quantity in grams as quantity. Total formula quantity 100. Description: $notes. Profile: $profile. Return only JSON.";
 
     $formula_json = '';
     $decoded = null;
