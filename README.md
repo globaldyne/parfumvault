@@ -24,7 +24,7 @@ This is FREE software provided "as is" without ANY warranty under the MIT licens
 * Batch history tracking
 * Customizable document HTML templates
 
-For the full feature list, please visit the [Knowledge Base](https://www.perfumersvault.com/knowledge-base/).
+For the full feature list, please visit the [Knowledge Base](https://www.perfumersvault.com/kb/).
 
 ---
 
@@ -127,6 +127,6 @@ Once the container is running, open your browser and navigate to:
 
 [http://localhost:8000](http://localhost:8000)
 
-For more information, please refer to the [Knowledge Base](https://www.perfumersvault.com/knowledge-base/).
+For more information, please refer to the [Knowledge Base](https://www.perfumersvault.com/kb/).
 
 
