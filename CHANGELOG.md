@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 12.9
+- Added Gooogle Gemini support
 - Added OpenAI formula creation
 - Localise date across the app
 - Removed time from created and updated fields
