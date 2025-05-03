@@ -15,7 +15,7 @@ require_once(__ROOT__.'/func/php-settings.php');
           <li class="active"><a href="#systemSettings" id="systemSettings_tab" role="tab" data-bs-toggle="tab">System settings</a></li>
           <li class="active"><a href="#users" id="users_tab" role="tab" data-bs-toggle="tab">Users</a></li>
         <?php }?>
-        <li><a href="#openAI" id="openAI_tab" role="tab" data-bs-toggle="tab">Open AI</a></li>
+        <li><a href="#pvAI" id="pvAI_tab" role="tab" data-bs-toggle="tab">Perfumer AI</a></li>
         <li><a href="#categories" id="cat_tab" role="tab" data-bs-toggle="tab">Ingredient Categories</a></li>
         <li><a href="#frmCat" id="frmCat_tab" role="tab" data-bs-toggle="tab">Formula Categories</a></li>
         <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-bs-toggle="tab">Perfume Types</a></li>
@@ -63,8 +63,8 @@ require_once(__ROOT__.'/func/php-settings.php');
       </div>
     <?php } ?>
 
-      <div class="tab-pane" id="openAI">
-        <div id="get_openAI">
+      <div class="tab-pane" id="pvAI">
+        <div id="get_pvAI">
           <div class="loader-center">
             <div class="loader"></div>
             <div class="loader-text"></div>

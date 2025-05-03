@@ -883,12 +883,19 @@ if ($_POST['action'] === 'update_user_profile') {
     return;
 }
 
-// UPDATE OPENAI SETTINGS
+// UPDATE PVAI SETTINGS
 if ($_POST['action'] === 'update_openai_settings') {
-    $openai_api_key = mysqli_real_escape_string($conn, $_POST['openai_api_key']);
     $use_ai_service = isset($_POST['use_ai_service']) && $_POST['use_ai_service'] !== '' ? ($_POST['use_ai_service'] === 'true' ? '1' : '0') : null;
-    $openai_model = mysqli_real_escape_string($conn, $_POST['openai_model']);
-    $openai_temperature = mysqli_real_escape_string($conn, $_POST['openai_temperature']);
+    $ai_service_provider = isset($_POST['ai_service_provider']) ? mysqli_real_escape_string($conn, $_POST['ai_service_provider']) : null;
+
+    // OpenAI Settings (only if present)
+    $openai_api_key = isset($_POST['openai_api_key']) ? mysqli_real_escape_string($conn, $_POST['openai_api_key']) : null;
+    $openai_model = isset($_POST['openai_model']) ? mysqli_real_escape_string($conn, $_POST['openai_model']) : null;
+    $openai_temperature = isset($_POST['openai_temperature']) ? mysqli_real_escape_string($conn, $_POST['openai_temperature']) : null;
+
+    // Gemini Settings (only if present)
+    $google_gemini_api_key = isset($_POST['google_gemini_api_key']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_api_key']) : null;
+    $google_gemini_model = isset($_POST['google_gemini_model']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_model']) : null;
 
     function upsert_user_setting($conn, $userID, $key, $value) {
         $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
@@ -926,22 +933,43 @@ if ($_POST['action'] === 'update_openai_settings') {
         return $result;
     }
 
-    $success_enable_service = true;
+    $success = true;
+
     if ($use_ai_service !== null) {
-        $success_enable_service = upsert_user_setting($conn, $userID, 'use_ai_service', $use_ai_service);
+        $success &= upsert_user_setting($conn, $userID, 'use_ai_service', $use_ai_service);
     }
 
-    $success_update_key = upsert_user_setting($conn, $userID, 'openai_api_key', $openai_api_key);
-    $success_update_model = upsert_user_setting($conn, $userID, 'openai_model', $openai_model);
-    $success_update_temperature = upsert_user_setting($conn, $userID, 'openai_temperature', $openai_temperature);
+    if ($ai_service_provider !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'ai_service_provider', $ai_service_provider);
+    }
 
-    if ($success_enable_service && $success_update_key && $success_update_model && $success_update_temperature) {
+    // Only update if values are present in POST
+    if ($openai_api_key !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_api_key', $openai_api_key);
+    }
+    if ($openai_model !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_model', $openai_model);
+    }
+    if ($openai_temperature !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_temperature', $openai_temperature);
+    }
+
+    if ($google_gemini_api_key !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'google_gemini_api_key', $google_gemini_api_key);
+    }
+    if ($google_gemini_model !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'google_gemini_model', $google_gemini_model);
+    }
+
+    if ($success) {
         echo json_encode(['success' => 'AI settings updated successfully']);
     } else {
         echo json_encode(['error' => 'Failed to update one or more AI settings']);
     }
     return;
 }
+
+
 
 //UPDATE USER SETTINGS
 if ($_POST['action'] === 'update_user_settings') {
@@ -7148,143 +7176,9 @@ if($_POST['action'] == 'addFormula'){
 
 //ADD NEW AI FORMULA
 if ($_POST['action'] == 'addFormulaAI') {
-    if ($user_settings['use_ai_service'] == '0') {
-        echo json_encode(['error' => 'AI formula creation is disabled']);
-        return;
-    }
-    if (empty($_POST['name'])) {
-        echo json_encode(['error' => 'Formula name is required.']);
-        return;
-    }
-    if (empty($_POST['description'])) {
-        echo json_encode(['error' => 'Formula description is required.']);
-        return;
-    }
-    if (empty($_POST['profile'])) {
-        echo json_encode(['error' => 'Formula profile is required.']);
-        return;
-    }
-    if (strlen($_POST['name']) > 100) {
-        echo json_encode(['error' => 'Formula name is too big. Max 100 chars allowed.']);
-        return;
-    }
-
-    require_once(__ROOT__.'/func/genFID.php');
-
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $notes = mysqli_real_escape_string($conn, $_POST['description']);
-    $profile = mysqli_real_escape_string($conn, $_POST['profile']);
-    $catClass = mysqli_real_escape_string($conn, $_POST['catClass']);
-    $finalType = mysqli_real_escape_string($conn, $_POST['finalType']) ?: 100;
-    $customer_id = $_POST['customer'] ?: 0;
-    $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
-    $openai_api_key = $user_settings['openai_api_key'];
-
-    if (empty($openai_api_key)) {
-        echo json_encode(['error' => 'OpenAI API key is not set']);
-        return;
-    }
-
-    // === Call OpenAI ===
-    $prompt = "Create a perfume formula in JSON with ingredient name, CAS number, and quantity in grams. Description: $notes. Profile: $profile. Return only JSON.";
-
-    $curl = curl_init();
-    curl_setopt_array($curl, [
-        CURLOPT_URL => "https://api.openai.com/v1/chat/completions",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => [
-            "Content-Type: application/json",
-            "Authorization: Bearer $openai_api_key"
-        ],
-        CURLOPT_POSTFIELDS => json_encode([
-            "model" => $user_settings['openai_model'] ?: "gpt-4.1",
-            "messages" => [
-                ["role" => "system", "content" => "You are a perfumer AI that only responds with valid JSON arrays of ingredients."],
-                ["role" => "user", "content" => $prompt]
-            ],
-            "temperature" => $user_settings['openai_temperature'] ?:  0.7
-        ])
-    ]);
-
-    $openai_response = curl_exec($curl);
-    $error = curl_error($curl);
-    curl_close($curl);
-
-    if ($error) {
-        echo json_encode(['error' => 'OpenAI API request failed: ' . $error]);
-        return;
-    }
-
-    $openai_data = json_decode($openai_response, true);
-    $formula_json = $openai_data['choices'][0]['message']['content'] ?? '';
-
-    if (!$formula_json || json_decode($formula_json) === null) {
-        error_log("OpenAI error: " . json_encode($openai_data));
-        echo json_encode(['error' => $openai_data['error']['message'] ]);
-        return;
-    }
-
-    // === Save metadata ===
-    if (mysqli_num_rows(mysqli_query($conn, "SELECT name FROM formulasMetaData WHERE name = '$name' AND owner_id = '$userID'"))) {
-        echo json_encode(['error' => "$name already exists!"]);
-    } else {
-        $query = "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id, owner_id) 
-                  VALUES ('$fid', '$name', '$notes', '$profile', '$catClass', '$finalType', '$customer_id', '$userID')";
-        if (mysqli_query($conn, $query)) {
-            $last_id = mysqli_insert_id($conn);
-            mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES ('$last_id','AI','$userID')");
-            mysqli_query($conn, "UPDATE formulasMetaData SET isProtected='1' WHERE id='$last_id' AND owner_id='$userID'");
-
-            $ingredients = json_decode($formula_json, true);
-
-            if (!is_array($ingredients)) {
-                echo json_encode(['error' => 'Invalid ingredient format from AI']);
-                return;
-            }
-
-            foreach ($ingredients as $row) {
-                $ingredient = mysqli_real_escape_string($conn, $row['ingredient'] ?? '');
-                $cas = mysqli_real_escape_string($conn, $row['cas'] ?? '');
-                $quantity = floatval($row['quantity'] ?? 0);
-            
-                if ($ingredient && $cas && $quantity > 0) {
-                    // Default values
-                    $concentration = 100;
-                    $dilutant = 'None';
-            
-                    // Fetch ingredient ID
-                    $result = mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient' AND owner_id = '$userID' LIMIT 1");
-                    if ($row = mysqli_fetch_assoc($result)) {
-                        $ingredient_id = (int)$row['id'];
-                    } else {
-                        $ingredient_id = 0;
-                    }
-            
-                    // Insert into formulas table
-                    mysqli_query($conn, "
-                        INSERT INTO formulas (fid, name, ingredient, ingredient_id, cas, concentration, dilutant, quantity, owner_id)
-                        VALUES ('$fid', '$name', '$ingredient', '$ingredient_id', '$cas', '$concentration', '$dilutant', '$quantity', '$userID')
-                    ");
-                }
-            }
-            
-            $response = [
-                "success" => [
-                    "id" => (int)$last_id,
-                    "msg" => "$name created",
-                    "formula" => json_decode($formula_json, true)
-                ]
-            ];
-        } else {
-            $response['error'] = 'Something went wrong ' . mysqli_error($conn);
-        }
-        echo json_encode($response);
-    }
-
+    require_once(__ROOT__.'/core/pvAI.php');
     return;
 }
-
 
 
 //DELETE FORMULA

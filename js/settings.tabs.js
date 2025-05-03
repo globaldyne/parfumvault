@@ -13,8 +13,8 @@ $(document).ready(function() {
 		get_systemSettings();
 	});
 
-	$('#openAI_tab').on( 'click', function () {
-		get_openAI();
+	$('#pvAI_tab').on( 'click', function () {
+		get_pvAI();
 	});
 
 	$('#users_tab').on( 'click', function () {
@@ -229,12 +229,12 @@ $(document).ready(function() {
 		});
 	};
 	
-	function get_openAI(){
+	function get_pvAI(){
 		$.ajax({ 
-			url: '/pages/views/settings/openAI.php', 
+			url: '/pages/views/settings/pvAI.php', 
 			dataType: 'html',
 			success: function (data) {
-				$('#openAI').html(data);
+				$('#pvAI').html(data);
 			}
 		});
 	};
