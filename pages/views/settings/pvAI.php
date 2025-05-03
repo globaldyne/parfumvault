@@ -60,9 +60,9 @@ require_once(__ROOT__.'/inc/settings.php');
                             <label for="google_gemini_model" class="form-label">Model</label>
                             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select the Google Gemini model to use"></a>
                             <select name="google_gemini_model" id="google_gemini_model" class="form-control">
-                                <option value="gemini-2.0-flash" <?= $user_settings['google_gemini_model'] == 'gemini-2.0-flash' ? 'selected' : '' ?>>Gemini 2</option>
-                                <option value="gemini-1" <?= $user_settings['google_gemini_model'] == 'gemini-1' ? 'selected' : '' ?>>Gemini 1</option>
-                                <option value="gemini-lite" <?= $user_settings['google_gemini_model'] == 'gemini-lite' ? 'selected' : '' ?>>Gemini Lite</option>
+                                <option value="gemini-2.0-flash-lite" <?= $user_settings['google_gemini_model'] == 'gemini-2.0-flash-lite' ? 'selected' : '' ?>>Gemini 2.0 Flash-Lite</option>
+                                <option value="gemini-2.0-flash" <?= $user_settings['google_gemini_model'] == 'gemini-2.0-flash' ? 'selected' : '' ?>>Gemini 2.0 Flash</option>
+                                <option value="gemini-1.5-pro" <?= $user_settings['google_gemini_model'] == 'gemini-1.5-pro' ? 'selected' : '' ?>>Gemini 1.5 Pro</option>
                             </select>
                         </div>
                     </div>
@@ -107,6 +107,14 @@ require_once(__ROOT__.'/inc/settings.php');
                 <div class="mb-2">Once you have your API key, enter it in the field above and select the appropriate model to enable the service.</div>
                 <div class="mb-2">To generate an API key, visit the <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="link-info">Google AI Studio API Credentials</a> page.</div>
                 <div class="mb-2">Note: Google Gemini is a paid service, and you will be charged for API calls. Monitor your usage to avoid unexpected charges.</div>
+                <hr />
+                <h5>Google Gemini Models</h5>
+                <div class="mb-2">The model determines the AI's capabilities and performance:</div>
+                <ul>
+                    <li><strong>Gemini 2.0 Flash:</strong> A high-performance model optimized for speed and accuracy, suitable for complex tasks requiring quick responses.</li>
+                    <li><strong>Gemini 2.0 Flash Lite:</strong> A lightweight version of Gemini 2.0 Flash, designed for less demanding tasks while maintaining good performance.</li>
+                    <li><strong>Gemini 1.5 Pro:</strong> A robust model offering balanced performance and versatility, ideal for a wide range of applications.</li>
+                </ul>
             </div>
         </div>
     </div>
