@@ -1085,45 +1085,44 @@ $(document).ready(function() {
 
 <!-- ADD FORMULA AI MODAL -->
 <div class="modal fade" id="add_formula_ai" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Generate Formula with AI</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="aiFormulaMsg" class="mb-3"></div>
-        <div class="form">
-          <div class="row mb-3">
-            <div class="col-sm">
-              <label for="ai-formula-name" class="form-label">Formula Name</label>
-              <input name="ai-formula-name" id="ai-formula-name" type="text" class="form-control" />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-sm">
-              <label for="ai-profile" class="form-label">Profile</label>
-              <select name="ai-profile" id="ai-profile" class="form-control selectpicker" data-live-search="true">
-                <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){ ?>
-                  <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-                <?php } } ?>
-              </select>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-sm">
-              <label for="ai-description" class="form-label">Description</label>
-              <textarea name="ai-description" id="ai-description" cols="45" rows="5" class="form-control" placeholder="Describe the formula you want to generate..."></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" name="btn-generate-ai" class="btn btn-primary" id="generateAIFormula">Generate</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generate Formula with AI</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="aiFormulaMsg" class="mb-3"></div>
+				<div class="form">
+					<div class="form-floating mb-3">
+						<input name="ai-formula-name" id="ai-formula-name" type="text" class="form-control" placeholder="Formula Name" />
+						<label for="ai-formula-name">Formula Name</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="ai-profile" id="ai-profile" class="form-control selectpicker" data-live-search="true">
+							<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){ ?>
+								<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+							<?php } } ?>
+						</select>
+						<label for="ai-profile">Profile</label>
+					</div>
+					<div class="mb-3">
+						<a href="/?do=settings#frmCat" target="_blank" class="link-primary ms-2">
+							<i class="fa-solid fa-arrow-up-right-from-square"></i> Manage profiles
+						</a>
+					</div>
+					<div class="form-floating">
+						<textarea name="ai-description" id="ai-description" class="form-control" placeholder="Describe the formula you want to generate..." style="height: 150px;"></textarea>
+						<label for="ai-description">Describe the formula you want to generate...</label>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" name="btn-generate-ai" class="btn btn-primary" id="generateAIFormula">Generate</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="/js/import.formulas.js"></script>
