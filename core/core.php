@@ -7198,7 +7198,7 @@ if ($_POST['action'] == 'addFormulaAI') {
             "Authorization: Bearer $openai_api_key"
         ],
         CURLOPT_POSTFIELDS => json_encode([
-            "model" => $user_settings['openai_model'] ?: "gpt-4",
+            "model" => $user_settings['openai_model'] ?: "gpt-4.1",
             "messages" => [
                 ["role" => "system", "content" => "You are a perfumer AI that only responds with valid JSON arrays of ingredients."],
                 ["role" => "user", "content" => $prompt]

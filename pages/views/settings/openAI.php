@@ -27,8 +27,9 @@ require_once(__ROOT__.'/inc/settings.php');
                         <label for="openai_model" class="form-label">Model</label>
                         <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select the OpenAI model to use"></a>
                         <select name="openai_model" id="openai_model" class="form-control">
-                            <option value="gpt-4" <?= $user_settings['openai_model'] == 'gpt-4' ? 'selected' : '' ?>>gpt-4</option>
-                            <option value="gpt-4-32k" <?= $user_settings['openai_model'] == 'gpt-4-32k' ? 'selected' : '' ?>>gpt-4-32k</option>
+                            <option value="gpt-4.1" <?= $user_settings['openai_model'] == 'gpt-4.1' ? 'selected' : '' ?>>gpt-4.1</option>
+                            <option value="o4-mini" <?= $user_settings['openai_model'] == 'o4-mini' ? 'selected' : '' ?>>o4-mini</option>
+                            <option value="o3" <?= $user_settings['openai_model'] == 'o3' ? 'selected' : '' ?>>o3</option>
                             <option value="gpt-3.5-turbo" <?= $user_settings['openai_model'] == 'gpt-3.5-turbo' ? 'selected' : '' ?>>gpt-3.5-turbo</option>
                         </select>
                     </div>
@@ -53,8 +54,9 @@ require_once(__ROOT__.'/inc/settings.php');
             <h5>OpenAI Models</h5>
             <div class="mb-2">The model determines the AI's capabilities and performance:</div>
             <ul>
-                <li><strong>gpt-4:</strong> The most advanced model, capable of handling complex tasks with high accuracy.</li>
-                <li><strong>gpt-4-32k:</strong> Similar to gpt-4 but with a larger context window for handling longer inputs.</li>
+                <li><strong>gpt-4.1:</strong> The most advanced model, capable of handling complex tasks with high accuracy.</li>
+                <li><strong>o4-mini:</strong> A smaller version of gpt-4, suitable for less demanding tasks.</li>
+                <li><strong>o3</strong> is a well-rounded and powerful model across domains. It sets a new standard for math, science, coding, and visual reasoning tasks.</li>                
                 <li><strong>gpt-3.5-turbo:</strong> A faster and cheaper alternative to gpt-4, suitable for most tasks.</li>
             </ul>
             <hr />
