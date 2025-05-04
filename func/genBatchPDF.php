@@ -126,14 +126,15 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 	
 	$fq = mysqli_query($conn, "SELECT ingredient FROM $formulaTable WHERE fid = '$fid' AND owner_id = '$userID'");
+	$allergen = []; // Initialize as an empty array
 	while($ing = mysqli_fetch_array($fq)){
-		$getIngAlergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1' AND owner_id = '$userID'"));
+		$getIngAllergen = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '".$ing['ingredient']."' AND allergen = '1' AND owner_id = '$userID'"));
 		$qAll = mysqli_query($conn, "SELECT name FROM ingredient_compounds WHERE ing = '".$ing['ingredient']."' AND owner_id = '$userID'");
 		
 		while($getAllergen = mysqli_fetch_array($qAll)){
 			$allergen[] = $getAllergen['name'];
 		}
-		$allergen[] = $getIngAlergen['name'];
+		$allergen[] = $getIngAllergen['name'];
 		$allergen[] = $getAllergen['name'];
 	}
 	
