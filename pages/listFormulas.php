@@ -1074,7 +1074,7 @@ $(document).ready(function() {
       
       <div class="modal-body">
         <div id="txtImpMsg" class="mb-3"></div>
-	    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>We will try to automatically match the provided format, although please refer to the guide <a href="https://www.perfumersvault.com/knowledge-base/import-formula-from-text/" target="_blank" class="text-link">here</a> for the right format.</div>
+	    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>We will try to automatically match the provided format, although please refer to the guide <a href="https://www.perfumersvault.com/kb/import-formula-from-text/" target="_blank" class="text-link">here</a> for the right format.</div>
         <div class="form-floating mb-3">
           <input type="text" class="form-control" id="txtImpName" name="fcatName" placeholder="Formula name">
           <label for="txtImpName">Formula Name</label>

@@ -169,7 +169,7 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
             <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
             Join our Discord Server
           </a>
-          <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
+          <a class="dropdown-item" href="https://www.perfumersvault.com/kb" target="_blank">
             <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
             Documentation
           </a>
