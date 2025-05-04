@@ -12,7 +12,7 @@ if (!file_exists(__ROOT__ . '/inc/config.php') &&
     !getenv('DB_USER') && 
     !getenv('DB_PASS') && 
     !getenv('DB_NAME')) {
-        $error_msg = 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.perfumersvault.com/knowledge-base/howto-docker/" target="_blank">documentation</a>';
+        $error_msg = 'Required parameters not found. Please make sure your provided all the required variables as per <a href="https://www.perfumersvault.com/kb/howto-docker/" target="_blank">documentation</a>';
         require_once(__ROOT__.'/pages/error.php');
         error_log("Configuration file not found.");
         exit;

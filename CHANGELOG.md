@@ -15,6 +15,7 @@
 - Check if materials exists when generating a bathch PDF
 - Added formula archive explanation
 - Generate a new random id for archived formulas
+- Documentation links update
 
 ### Version 12.8
 - Added links for PV apps

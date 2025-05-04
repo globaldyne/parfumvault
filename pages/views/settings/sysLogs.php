@@ -20,7 +20,7 @@ if ($role !== 1){
     if ($platform !== "CLOUD") {
         echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>This feature is only available in cloud or Docker installations.</div>';
     } elseif (!$sysLogsEnabled) {
-        echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>System logs access is disabled by configuration. See our <a href="https://www.perfumersvault.com/knowledge-base/howto-docker/" target="_blank">KB article</a> for more information</div>';
+        echo '<div class="mt-4 alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>System logs access is disabled by configuration. See our <a href="https://www.perfumersvault.com/kb/howto-docker/" target="_blank">KB article</a> for more information</div>';
     } else {
 ?>
     <div class="mb-3 col mt-2">
