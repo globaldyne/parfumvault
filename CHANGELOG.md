@@ -11,6 +11,9 @@
 - Ensure random id is assigned to first time user creation
 - Check if db schema needs to be created when PV is started instead of the login page
 - Templated login screen
+- Prevent archiving a protected formula if deletion attempted
+- Check if materials exists when generating a bathch PDF
+- Added formula archive explanation
 
 ### Version 12.8
 - Added links for PV apps
