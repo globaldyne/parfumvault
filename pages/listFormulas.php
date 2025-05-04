@@ -292,8 +292,7 @@ $(document).ready(function() {
 
 	function pName(data, type, row, meta){
 		data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
-		
-	  return data;
+		return data;
 	};
 	
 	function fMade(data, type, row, meta){
@@ -370,7 +369,7 @@ $(document).ready(function() {
 			if (row.gid) {
 				data += '<li><a class="dropdown-item" href="/?do=Formula&id='+ row.id +'&gid='+ row.gid +'"><i class="fas fa-share-alt mx-2"></i>View shared formula</a></li>';
 			} else {
-				data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+				data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'" data-protected="' + row.isProtected + '"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
 			}
 			data += '</ul></div>';
 		
@@ -429,13 +428,15 @@ $(document).ready(function() {
 		var formula = {};
 		formula.ID = $(this).attr('data-id');
 		formula.Name = $(this).attr('data-name');
+		formula.Protected = $(this).attr('data-protected');
 		
 		bootbox.dialog({
 		   title: "Confirm formula deletion",
 		   message : '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
 		   '<div class="form-group col-sm">' + 
 			'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
-			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
+			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>' +
+			'<i class="fa-solid fa-circle-info" rel="tip" title="Archived formulas will be saved as a PDF and can be found under the Batches section."></i>' +
 		   '</div>',
 		   buttons :{
 			   main: {
@@ -455,17 +456,17 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_formulas_data();
 							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
