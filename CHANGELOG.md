@@ -14,6 +14,7 @@
 - Prevent archiving a protected formula if deletion attempted
 - Check if materials exists when generating a bathch PDF
 - Added formula archive explanation
+- Generate a new random id for archived formulas
 
 ### Version 12.8
 - Added links for PV apps
