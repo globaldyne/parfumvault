@@ -7183,8 +7183,15 @@ if ($_POST['action'] == 'addFormulaAI') {
 
 //DELETE FORMULA
 if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
+    
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
+
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1' AND owner_id = '$userID'"))){
+		$response['error'] = 'Formula '.$fname.' is protected and cannot be deleted';
+		echo json_encode($response);
+		return;
+	}
 
 	if($_POST['archiveFormula'] == "true"){
 		require_once(__ROOT__.'/libs/fpdf.php');
@@ -7206,12 +7213,6 @@ if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 
 	}
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1' AND owner_id = '$userID'"))){
-		$response['error'] = 'Formula '.$fname.' is protected and cannot be deleted';
-		echo json_encode($response);
-		return;
-	}
-		
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'")){
