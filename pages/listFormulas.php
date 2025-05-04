@@ -1129,9 +1129,9 @@ $(document).ready(function() {
 				</div>
 			</div>
 			<hr/>
-			<div class="mx-3">Examples:</div>
+			<div class="mx-3">Examples</div>
 			<div class="px-3 mt-2">
-				<div id="aiTerminal" class="bg-black text-success p-3 rounded" style="font-family: monospace; min-height: 60px;">
+				<div id="aiTerminal" class="bg-black text-success p-3 rounded" style="font-family: monospace; min-height: 80px;">
 					<span id="terminalText"></span><span class="blinking-cursor">|</span>
 				</div>
 			</div>
@@ -1142,7 +1142,7 @@ $(document).ready(function() {
 						? 'OpenAI' 
 						: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
 					?>
-				</strong> provider
+				</strong> as a provider
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
