@@ -73,7 +73,13 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
         <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
       </div>
       <div class="modal-body">
-        <?php echo htmlspecialchars($announcement, ENT_QUOTES, 'UTF-8'); ?>
+        <?php 
+        if (preg_match('/<[^<]+>/', $announcement)) {
+          echo $announcement; // Display as HTML if valid HTML is found
+        } else {
+          echo htmlspecialchars($announcement, ENT_QUOTES, 'UTF-8'); // Escape otherwise
+        }
+        ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
@@ -310,4 +316,4 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
   <!-- /SYS UPGRADE MODAL -->
 
   <script src="/js/sys-upgrade.js"></script>
-<?php } ?> 
+<?php } ?>
