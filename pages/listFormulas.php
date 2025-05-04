@@ -1129,6 +1129,12 @@ $(document).ready(function() {
 				</div>
 			</div>
 			<hr/>
+			<div class="mx-3">Examples:</div>
+			<div class="px-3 mt-2">
+				<div id="aiTerminal" class="bg-black text-success p-3 rounded" style="font-family: monospace; min-height: 60px;">
+					<span id="terminalText"></span><span class="blinking-cursor">|</span>
+				</div>
+			</div>
 			<div class="alert alert-info mt-3 mx-3">
 				Using <strong>
 					<?php 
@@ -1147,3 +1153,4 @@ $(document).ready(function() {
 </div>
 
 <script src="/js/import.formulas.js"></script>
+<script src="/js/pvAI.js"></script>
