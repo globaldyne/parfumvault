@@ -7183,7 +7183,7 @@ if ($_POST['action'] == 'addFormulaAI') {
 
 //DELETE FORMULA
 if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
-    
+
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
@@ -7194,14 +7194,16 @@ if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 	}
 
 	if($_POST['archiveFormula'] == "true"){
+        
 		require_once(__ROOT__.'/libs/fpdf.php');
 		require_once(__ROOT__.'/func/genBatchPDF.php');
 		require_once(__ROOT__.'/func/ml2L.php');
-		
+        require_once(__ROOT__.'/func/genFID.php');
+
 		define('FPDF_FONTPATH',__ROOT__.'/fonts');
-		
+        $nfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 		$defCatClass = $settings['defCatClass'];
-		$arcID = "Archived-".$fname.$fid;
+		$arcID = "Archived-".$fname.$nfid;
 		
 		$rs = genBatchPDF($fid,$arcID,'100','100','100',$defCatClass,$settings['qStep'],$settings['defPercentage'],'formulas');
 		
