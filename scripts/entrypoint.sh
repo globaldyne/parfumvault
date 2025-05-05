@@ -47,7 +47,7 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         echo "Server is ready."
 
         # Set error log file path from environment variable or use default
-        ERROR_LOG="${ERROR_LOG:-/tmp/php-fpm-www-error.log}"
+        ERROR_LOG="${ERROR_LOG_FILE:-/tmp/php-fpm-www-error.log}"
 
         # Create error log file if missing
         if [ ! -f "$ERROR_LOG" ]; then
