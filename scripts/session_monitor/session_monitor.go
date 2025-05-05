@@ -16,13 +16,16 @@ import (
 )
 
 const (
-	envDBHost           = "DB_HOST"
-	envDBUsername       = "DB_USER"
-	envDBPassword       = "DB_PASS"
-	envDBName           = "DB_NAME"
-	envTimeout          = "SESSION_TIMEOUT"
-	envInactiveDays     = "INACTIVE_DAYS"
-	envLogFile          = "SESS_LOG_FILE"
+	// Environment variable names
+	envDBHost       = "DB_HOST"
+	envDBUsername   = "DB_USER"
+	envDBPassword   = "DB_PASS"
+	envDBName       = "DB_NAME"
+	envTimeout      = "SESSION_TIMEOUT"
+	envInactiveDays = "INACTIVE_DAYS"
+	envLogFile      = "SESS_LOG_FILE"
+
+	// Default values for environment variables
 	defaultDBHost       = "127.0.0.1"
 	defaultTimeout      = "1800"
 	defaultInactiveDays = 30
