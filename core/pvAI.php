@@ -14,7 +14,6 @@ if ($_POST['action'] === 'addFormulaAI') {
 
     $name = trim($_POST['name'] ?? '');
     $notes = trim($_POST['description'] ?? '');
-    $profile = trim($_POST['profile'] ?? '');
 
     if (!$name) {
         echo json_encode(['error' => 'Formula name is required.']);
@@ -26,10 +25,6 @@ if ($_POST['action'] === 'addFormulaAI') {
     }
     if (!$notes) {
         echo json_encode(['error' => 'Formula description is required.']);
-        return;
-    }
-    if (!$profile) {
-        echo json_encode(['error' => 'Formula profile is required.']);
         return;
     }
 
@@ -46,7 +41,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = "Create a perfume formula in JSON with ingredient name as ingredient, CAS number as cas, and quantity in grams as quantity. Total formula quantity 100. Description: $notes. Profile: $profile. Return only JSON.";
+    $prompt = "Create a perfume formula in JSON with ingredient name as ingredient, CAS number as cas, and quantity in grams as quantity. Total formula quantity 100. Description: $notes. Return only JSON.";
 
     $formula_json = '';
     $decoded = null;
@@ -167,10 +162,9 @@ if ($_POST['action'] === 'addFormulaAI') {
 
     $escaped_name = mysqli_real_escape_string($conn, $name);
     $escaped_notes = mysqli_real_escape_string($conn, $notes);
-    $escaped_profile = mysqli_real_escape_string($conn, $profile);
 
-    $query = "INSERT INTO formulasMetaData (fid, name, notes, profile, catClass, finalType, customer_id, owner_id) 
-              VALUES ('$fid', '$escaped_name', '$escaped_notes', '$escaped_profile', '$catClass', '$finalType', '$customer_id', '$userID')";
+    $query = "INSERT INTO formulasMetaData (fid, name, notes, catClass, finalType, customer_id, owner_id) 
+              VALUES ('$fid', '$escaped_name', '$escaped_notes', '$catClass', '$finalType', '$customer_id', '$userID')";
 
     if (!mysqli_query($conn, $query)) {
         echo json_encode(['error' => 'Failed to save metadata: ' . mysqli_error($conn)]);
@@ -179,7 +173,7 @@ if ($_POST['action'] === 'addFormulaAI') {
 
     $last_id = mysqli_insert_id($conn);
     mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES ('$last_id','AI','$userID')");
-    mysqli_query($conn, "UPDATE formulasMetaData SET isProtected='1' WHERE id='$last_id' AND owner_id='$userID'");
+    //mysqli_query($conn, "UPDATE formulasMetaData SET isProtected='1' WHERE id='$last_id' AND owner_id='$userID'");
 
     foreach ($ingredients as $row) {
         $ingredient = mysqli_real_escape_string($conn, $row['ingredient'] ?? '');

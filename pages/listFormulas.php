@@ -611,7 +611,7 @@ $(document).ready(function() {
 		}
 
 		// Disable fields and show loading icon
-		$("#ai-formula-name, #ai-profile, #ai-description").prop("disabled", true);
+		$("#ai-formula-name, #ai-description").prop("disabled", true);
 		var $button = $(this);
 		$button.prop("disabled", true).html('<i class="fa-solid fa-spinner fa-spin mx-2"></i>Generating...');
 
@@ -621,7 +621,6 @@ $(document).ready(function() {
 			data: {
 				action: 'addFormulaAI',
 				name: name,
-				profile: $("#ai-profile").val(),
 				description: description
 			},
 			dataType: 'json',
@@ -638,7 +637,7 @@ $(document).ready(function() {
 			},
 			complete: function () {
 				// Re-enable fields and reset button
-				$("#ai-formula-name, #ai-profile, #ai-description").prop("disabled", false);
+				$("#ai-formula-name, #ai-description").prop("disabled", false);
 				$button.prop("disabled", false).html('Generate');
 			}
 		});
@@ -1108,19 +1107,6 @@ $(document).ready(function() {
 					<div class="form-floating mb-3">
 						<input name="ai-formula-name" id="ai-formula-name" type="text" class="form-control" placeholder="Formula Name" />
 						<label for="ai-formula-name">Formula Name</label>
-					</div>
-					<div class="form-floating mb-3">
-						<select name="ai-profile" id="ai-profile" class="form-control selectpicker" data-live-search="true">
-							<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){ ?>
-								<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-							<?php } } ?>
-						</select>
-						<label for="ai-profile">Profile</label>
-					</div>
-					<div class="mb-3">
-						<a href="/?do=settings#frmCat" target="_blank" class="link-primary ms-2">
-							<i class="fa-solid fa-arrow-up-right-from-square"></i> Manage profiles
-						</a>
 					</div>
 					<div class="form-floating">
 						<textarea name="ai-description" id="ai-description" class="form-control" placeholder="Describe the formula you want to generate..." style="height: 150px;"></textarea>
