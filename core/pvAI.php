@@ -172,7 +172,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     }
 
     $last_id = mysqli_insert_id($conn);
-    mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES ('$last_id','AI','$userID')");
+    mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES ('$last_id','AI Generated','$userID')");
     //mysqli_query($conn, "UPDATE formulasMetaData SET isProtected='1' WHERE id='$last_id' AND owner_id='$userID'");
 
     foreach ($ingredients as $row) {
