@@ -21,7 +21,7 @@ const (
 	envDBName           = "DB_NAME"
 	envTimeout          = "SESSION_TIMEOUT"
 	envInactiveDays     = "INACTIVE_DAYS"
-	envLogFile          = "LOG_FILE"
+	envLogFile          = "SESS_LOG_FILE"
 	defaultDBHost       = "127.0.0.1"
 	defaultTimeout      = "1800"
 	defaultInactiveDays = 30
@@ -204,6 +204,13 @@ func cleanupInactiveUsers(db *sql.DB) {
 
 func initLogFile() (*os.File, error) {
 	logFileName := getEnv(envLogFile, defaultLogFile)
+
+	// Ensure the directory for the log file exists
+	logDir := fmt.Sprintf("%s", logFileName[:len(logFileName)-len("/"+logFileName)])
+	if err := os.MkdirAll(logDir, os.ModePerm); err != nil {
+		return nil, fmt.Errorf("failed to create log directory %s: %v", logDir, err)
+	}
+
 	logFile, err := os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file %s: %v", logFileName, err)
