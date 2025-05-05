@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -20,11 +21,13 @@ const (
 	envDBName           = "DB_NAME"
 	envTimeout          = "SESSION_TIMEOUT"
 	envInactiveDays     = "INACTIVE_DAYS"
+	envLogFile          = "LOG_FILE"
 	defaultDBHost       = "127.0.0.1"
 	defaultTimeout      = "1800"
 	defaultInactiveDays = 30
+	defaultLogFile      = "/tmp/session_monitor.log"
 	checkInterval       = 60      // Check every 60 seconds
-	version             = "1.0.1" // Version of the session monitoring daemon
+	version             = "1.0.2" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -199,7 +202,28 @@ func cleanupInactiveUsers(db *sql.DB) {
 	}
 }
 
+func initLogFile() (*os.File, error) {
+	logFileName := getEnv(envLogFile, defaultLogFile)
+	logFile, err := os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file %s: %v", logFileName, err)
+	}
+
+	// Log to both file and stdout
+	multiWriter := io.MultiWriter(logFile, os.Stdout)
+	log.SetOutput(multiWriter)
+	return logFile, nil
+}
+
 func main() {
+	// Initialize log file
+	logFile, err := initLogFile()
+	if err != nil {
+		fmt.Printf("Error initializing log file: %v\n", err)
+		return
+	}
+	defer logFile.Close()
+
 	dbhost := getEnv(envDBHost, defaultDBHost)
 	dbuser := os.Getenv(envDBUsername)
 	dbpass := os.Getenv(envDBPassword)

@@ -16,6 +16,7 @@
 - Added formula archive explanation
 - Generate a new random id for archived formulas
 - Documentation links update
+- Session monitor now logs to a file if defined
 
 ### Version 12.8
 - Added links for PV apps
