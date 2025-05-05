@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"time"
@@ -206,7 +207,7 @@ func initLogFile() (*os.File, error) {
 	logFileName := getEnv(envLogFile, defaultLogFile)
 
 	// Ensure the directory for the log file exists
-	logDir := fmt.Sprintf("%s", logFileName[:len(logFileName)-len("/"+logFileName)])
+	logDir := filepath.Dir(logFileName)
 	if err := os.MkdirAll(logDir, os.ModePerm); err != nil {
 		return nil, fmt.Errorf("failed to create log directory %s: %v", logDir, err)
 	}
