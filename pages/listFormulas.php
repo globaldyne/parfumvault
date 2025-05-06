@@ -735,88 +735,74 @@ $(document).ready(function() {
 </div>
 
 <!--ADD FORMULA MODAL-->
-<div class="modal fade" id="add_formula" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
-      </div>
-      <div class="modal-body">
-      	<div id="addFormulaMsg"></div>
-      
-      	<div class="form">
-
-          <div class="row mb-3">
-            <div class="col-sm">
-                <label for="formula-name" class="form-label">Formula name</label>
-                <input name="formula-name" id="formula-name" type="text" class="form-control" />
-            </div>
-          </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="profile" class="form-label">Profile</label>
-          <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
-             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-             <?php } }?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="catClass" class="form-label">Purpose</label>
-          <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
-            <?php foreach ($cats as $IFRACategories) {?>
-                <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-            <?php }	?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        	<div class="col-sm">
-                <label for="finalType" class="form-label">Final type</label>
-          		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
-            		<option value="100">Concentrated (100%)</option>
-            		<?php foreach ($fTypes as $fType) {?>
-                	<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-             		<?php } ?>			
-          		</select>
-        	</div>
-      </div>
-      
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="customer" class="form-label">Customer</label>
-          <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
-            <option value="0">Internal use</option>
-            <?php foreach ((array)$customer as $c) {?>
-                <option value="<?=$c['id'];?>"><?=$c['name']?></option>
-            <?php }	?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="notes" class="form-label">Notes</label>
-          <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
-        </div>
-      </div>
-    </div>
-
-      <hr/>
-      <div class="row mb-3">
-        <div class="mx-4">
-    		<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
-   			<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
-  		</div>
-      </div>
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add formula">
-      </div>
-    </div>
-  </div>
-</div>
+<div class="modal fade" id="add_formula" data-bs-backdrop="static" tabindex="-1" aria-labelledby="add_formula" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="new-formula-name">Add new formula</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="addFormulaMsg"></div>
+				<form>
+					<div class="form-floating mb-3">
+						<input name="formula-name" id="formula-name" type="text" class="form-control" placeholder="Formula name" />
+						<label for="formula-name">Formula name</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="profile" id="profile" class="form-select" data-live-search="true">
+							<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+								<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+							<?php } }?>
+						</select>
+						<label for="profile">Profile</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="catClass" id="catClass" class="form-select" data-live-search="true">
+							<?php foreach ($cats as $IFRACategories) {?>
+								<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>>
+									<?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?>
+								</option>
+							<?php }	?>
+						</select>
+						<label for="catClass">Purpose</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="finalType" id="finalType" class="form-select" data-live-search="true">  
+							<option value="100">Concentrated (100%)</option>
+							<?php foreach ($fTypes as $fType) {?>
+								<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>>
+									<?php echo $fType['name'].' ('.$fType['concentration'];?>%)
+								</option>
+							<?php } ?>			
+						</select>
+						<label for="finalType">Final type</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="customer" id="customer" class="form-select" data-live-search="true">
+							<option value="0">Internal use</option>
+							<?php foreach ((array)$customer as $c) {?>
+								<option value="<?=$c['id'];?>"><?=$c['name']?></option>
+							<?php }	?>
+						</select>
+						<label for="customer">Customer</label>
+					</div>
+					<div class="form-floating mb-3">
+						<textarea name="notes" id="notes" class="form-control" placeholder="Notes" style="height: 100px;"></textarea>
+						<label for="notes">Notes</label>
+					</div>
+					<div class="form-check mb-3">
+						<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
+						<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary" id="btnAdd">Add formula</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--IMPORT FORMULA CSV MODAL-->
