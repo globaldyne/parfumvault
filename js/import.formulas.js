@@ -156,3 +156,122 @@ $('.table').on('show.bs.dropdown', function() {
 $('.table').on('hide.bs.dropdown', function() {
     $('.table-responsive').css("overflow", "auto");
 });
+
+
+//Import CSV
+$("#btnImportCSV").prop("disabled", true).hide();
+
+$("input[type=file]").on('change', function() {
+    const fd = new FormData();
+    const files = $('#CSVFile')[0].files;
+    const formulaNameInput = $('#CSVname');
+    let formulaName = formulaNameInput.val();
+
+    if (!formulaName) {
+        const fileInput = $('input[type=file]').val();
+        if (fileInput) {
+            const filename = fileInput.split(/(\\|\/)/g).pop().replace(/.csv$/i, '');
+            formulaNameInput.val(filename);
+        } else {
+            $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>No file selected. Please select a file.</div>');
+            return;
+        }
+    }
+
+    if (files.length > 0) {
+        fd.append('CSVFile', files[0]);
+        $.ajax({
+            url: '/pages/upload.php?type=frmCSVImport&step=upload',
+            type: 'POST',
+            data: fd,
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function(response) {
+                if (response !== 'error') {
+                    $("#CSVImportMsg").html('');
+                    $("#step_upload").html(response);
+                    $("#btnImportCSV").show();
+                } else {
+                    $("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><i class="bi bi-exclamation-circle-fill mx-2"></i>Error uploading file</div>');
+                }
+            },
+            error: function() {
+                $("#CSVImportMsg").html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>An error occurred while uploading the file.</div>');
+            }
+        });
+    } else {
+        $("#CSVImportMsg").html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>Please select a file to upload</div>');
+    }
+});
+
+let columnData = {};
+let totalSelection = 0;
+
+$(document).on('change', '.set_column_data', function() {
+    const columnName = $(this).val();
+    const columnNumber = $(this).data('column_number');
+
+    if (columnData[columnName]) {
+        $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i><strong>' + columnName + '</strong> is already assigned.</div>');
+        $(this).val('');
+        return;
+    }
+
+    $('#CSVImportMsg').html('');
+
+    if (columnName) {
+        columnData[columnName] = columnNumber;
+    } else {
+        for (const [key, value] of Object.entries(columnData)) {
+            if (value === columnNumber) {
+                delete columnData[key];
+            }
+        }
+    }
+
+    totalSelection = Object.keys(columnData).length;
+
+    if (totalSelection === 4) {
+        $('#btnImportCSV').prop("disabled", false);
+    } else {
+        $('#btnImportCSV').prop("disabled", true);
+    }
+});
+
+$(document).on('click', '#btnImportCSV', function(event) {
+    event.preventDefault();
+
+    const formulaName = $('#CSVname').val();
+    const formulaProfile = $('#CSVProfile').val();
+
+    $.ajax({
+        url: "/pages/upload.php?type=frmCSVImport&step=import",
+        method: "POST",
+        data: {
+            formula_name: formulaName,
+            formula_profile: formulaProfile,
+            ...columnData
+        },
+        dataType: "json",
+        beforeSend: function() {
+            $('#btnImportCSV').prop("disabled", true);
+        },
+        success: function(data) {
+            if (data.error) {
+                $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i><strong>' + data.error + '</strong></div>');
+                $('#btnImportCSV').prop("disabled", false);
+            } else {
+                $('#CSVImportMsg').html('<div class="alert alert-success"><i class="bi bi-check-circle-fill mx-2"></i><strong>' + data.success + '</strong></div>');
+                $('#btnImportCSV').hide();
+                $('#btnCloseCsv').prop('value', 'Close');
+                $('#process_area').hide();
+                $('#all-table').DataTable().ajax.reload(null, true);
+            }
+        },
+        error: function() {
+            $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle-fill mx-2"></i>An error occurred during the import process.</div>');
+            $('#btnImportCSV').prop("disabled", false);
+        }
+    });
+});

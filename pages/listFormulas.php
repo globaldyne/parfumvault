@@ -643,125 +643,7 @@ $(document).ready(function() {
 		});
 	});
 	
-	//Import CSV
-	$("#btnImport").prop("disabled", true);
-	$("#btnImport").hide();
-	$("input[type=file]").on('change',function(){	
-		var fd = new FormData();
-		var files = $('#CSVFile')[0].files;
-		var formula_name = $('#CSVname').val();
-		
-		if ( formula_name == '') {
-			var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
-			$('#CSVname').val(filename);
-		}
-		
-		if(files.length > 0 ){
-			fd.append('CSVFile',files[0]);
-			$.ajax({
-			   url: '/pages/upload.php?type=frmCSVImport&step=upload',
-			   type: 'POST',
-			   data: fd,
-			   contentType: false,
-			   processData: false,
-					 cache: false,
-			   success: function(response){
-				 if(response != 0){
-					$("#CSVImportMsg").html('');
-					$("#step_upload").html(response);
-					$("#btnImport").show();
-				  }else{
-					$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				  }
-			},
-		 });
-		}else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
-		}
-	});
 	
-	
-	var total_selection = 0;
-	var ingredient = 0;
-	var concentration = 0;
-	var dilutant = 0;
-	var quantity = 0;
-	
-	var column_data = [];
-	
-	$(document).on('change', '.set_column_data', function(){
-		var column_name = $(this).val();
-		var column_number = $(this).data('column_number');
-		if(column_name in column_data) {
-		  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
-		  $(this).val('');
-		  return false;
-		}else{
-			$('#CSVImportMsg').html('');
-		}
-	
-		if(column_name != '') {
-		  column_data[column_name] = column_number;
-		} else {
-		  const entries = Object.entries(column_data);
-	
-		  for(const [key, value] of entries) {
-			if(value == column_number) {
-			  delete column_data[key];
-			}
-		  }
-		}
-	
-		total_selection = Object.keys(column_data).length;
-	
-		if(total_selection == 4) {
-			$('#btnImport').prop("disabled", false);
-			ingredient = column_data.ingredient;
-			concentration = column_data.concentration;
-			dilutant = column_data.dilutant;
-			quantity = column_data.quantity;
-		} else {
-			$('#btnImport').prop("disabled", true);
-		}
-	
-	  });
-	
-	$(document).on('click', '#btnImport', function(event){
-	
-		event.preventDefault();
-		var formula_name = $('#CSVname').val();
-		var formula_profile = $('#CSVProfile').val();
-		
-		$.ajax({
-			url: "/pages/upload.php?type=frmCSVImport&step=import",
-		  	method: "POST",
-		  	data:{		  
-			  formula_name: formula_name,
-			  formula_profile: formula_profile,
-			  ingredient: ingredient, 
-			  concentration: concentration, 
-			  dilutant: dilutant, 
-			  quantity: quantity
-			},
-		  	beforeSend:function(){
-				$('#btnImport').prop("disabled", true);
-		  	},
-		  	success:function(data) {
-			  if (data.indexOf('Error:') > -1) {
-				  $('#btnImport').prop("disabled", false);
-				  $('#CSVImportMsg').html(data);
-			  }else{
-				$('#btnImport').prop("disabled", false);
-				$('#btnImport').hide();
-				$('#btnCloseCsv').prop('value', 'Close');
-				$('#process_area').css('display', 'none');
-				$('#CSVImportMsg').html(data);
-				reload_formulas_data();
-			  }
-		  }
-		})
-	
-	  });
 	  
 	function reload_formulas_data() {
 		$('#all-table').DataTable().ajax.reload(null, true);
@@ -945,47 +827,48 @@ $(document).ready(function() {
         <h5 class="modal-title">Import formula from CSV</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
-      <div class="modal-body">
-        <div id="CSVImportMsg"></div>
-        <div id="process_area">
-          <div class="mb-3 row">
-            <label for="CSVname" class="col-md-3 col-form-label">Formula name</label>
-            <div class="col-md-9">
-              <input type="text" name="CSVname" id="CSVname" class="form-control"/>
-            </div>
-          </div>
-          
-          <div class="mb-3 row">
-            <label for="CSVProfile" class="col-md-3 col-form-label">Profile</label>
-            <div class="col-md-9">
-              <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
-                <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>
-                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-                <?php } }?>
-              </select>
-            </div>
-          </div>
-          
-          <div class="mb-3 row">
-            <label for="CSVFile" class="col-md-3 col-form-label">CSV file</label>
-            <div class="col-md-9">
-              <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
-            </div>
-          </div>
+		<div class="modal-body">
+			<div id="CSVImportMsg"></div>
+			<div id="process_area">
+			
+			<div class="form-floating mb-3">
+				<input type="text" name="CSVname" id="CSVname" class="form-control" placeholder="Formula name"/>
+				<label for="CSVname">Formula name</label>
+			</div>
+			
+			<div class="form-floating mb-3">
+				<select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
+					<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>
+					<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+					<?php } }?>
+				</select>
+				<label for="CSVProfile">Profile</label>
+			</div>
 
-          <div id="step_upload" class="modal-body"></div>
-          <div class="col-md-12">
-            <hr />
-            <p>CSV format: <strong>ingredient, concentration, dilutant, quantity</strong></p>
-            <p>Example: <em><strong>Ambroxan, 10, TEC, 0.15</strong></em></p>
-          </div>
+			<div class="form-floating mb-3">
+				<input type="file" name="CSVFile" id="CSVFile" class="form-control" placeholder="CSV file"/>
+				<label for="CSVFile">CSV file</label>
+			</div>
+
+			<div id="step_upload" class="modal-body"></div>
+
+			<div class="alert alert-info">
+				<i class="fa-solid fa-circle-info mx-2"></i>
+					CSV file must include the following columns
+					<div class="text-left">
+						Example:
+						<br />
+						<em><strong>Ingredient, Concentration, Dilutant, Quantity</strong></em>
+						<br />
+						<em><strong>Vanillin, 5, Ethanol, 0.25</strong></em>
+				</div>
+			</div>
         </div>
       </div>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
-        <button type="submit" name="btnImport" class="btn btn-primary" id="btnImport">Import</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Close</button>
+        <button type="submit" name="btnImportCSV" class="btn btn-primary" id="btnImportCSV">Import</button>
       </div>
     </div>
   </div>
@@ -994,29 +877,27 @@ $(document).ready(function() {
 
 <!--ADD CATEGORY MODAL-->
 <div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create new formula category</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <div id="fcatMsg"></div>
-        <div class="mb-3 row">
-          <label for="fcatName" class="col-sm-4 col-form-label">Category name</label>
-          <div class="col-md-12">
-            <input name="fcatName" id="fcatName" type="text" class="form-control" />
-          </div>
-        </div>
-      </div>
-	  
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Cancel</button>
-        <button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Create new formula category</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			
+			<div class="modal-body">
+				<div id="fcatMsg"></div>
+				<div class="form-floating mb-3">
+					<input name="fcatName" id="fcatName" type="text" class="form-control" placeholder="Category name" />
+					<label for="fcatName">Category name</label>
+				</div>
+			</div>
+		
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Cancel</button>
+				<button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -1121,16 +1002,21 @@ $(document).ready(function() {
 					<span id="terminalText"></span><span class="blinking-cursor">|</span>
 				</div>
 			</div>
-			<div class="alert alert-info mt-3 mx-3">
-				Using <strong>
-					<?php 
-					echo $user_settings['ai_service_provider'] === 'openai' 
-						? 'OpenAI' 
-						: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
-					?>
-				</strong> as a provider
+	
+			<div class="alert alert-warning mt-3 mx-3">
+				<i class="fa-solid fa-triangle-exclamation mx-2"></i>
+				<strong>Disclaimer:</strong> AI-generated formulas may contain inaccuracies or errors. Please review the final formula carefully before use.
 			</div>
 			<div class="modal-footer">
+				<small class="text-muted me-auto" id="msg_settings_info">
+					Powered by <strong>
+						<?php 
+						echo $user_settings['ai_service_provider'] === 'openai' 
+							? 'OpenAI' 
+							: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
+						?>
+					</strong>
+				</small>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				<button type="submit" name="btn-generate-ai" class="btn btn-primary" id="generateAIFormula">Generate</button>
 			</div>

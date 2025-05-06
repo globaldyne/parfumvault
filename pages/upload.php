@@ -635,43 +635,44 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
         $fileArray = explode(".", $_FILES['CSVFile']['name']);
         $extension = strtolower(end($fileArray));
         if ($extension !== 'csv') {
-            echo '<div class="alert alert-danger">Invalid CSV file format. Please upload a valid CSV file.</div>';
+            echo json_encode(['error' => 'Invalid CSV file format. Please upload a valid CSV file.']);
             return;
         }
 
         // Read the CSV file
         $csvFileData = fopen($_FILES['CSVFile']['tmp_name'], 'r');
         if (!$csvFileData) {
-            echo '<div class="alert alert-danger">Unable to open the uploaded file.</div>';
+            echo json_encode(['error' => 'Unable to open the uploaded file.']);
             return;
         }
 
         // Process the header row
         $fileHeader = fgetcsv($csvFileData, 1000, ",");
-        echo '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+        $headerHtml = '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
         foreach ($fileHeader as $index => $header) {
-            echo '<th>
-                    <select name="set_column_data" class="form-control set_column_data" data-column_number="' . $index . '">
-                        <option value="">Assign to</option>
-                        <option value="">None</option>
-                        <option value="ingredient">Ingredient</option>
-                        <option value="concentration">Concentration</option>
-                        <option value="dilutant">Dilutant</option>
-                        <option value="quantity">Quantity</option>
-                    </select>
-                </th>';
+            $headerHtml .= '<th>
+                <select name="set_column_data" class="form-control set_column_data" data-column_number="' . $index . '">
+                    <option value="">Assign to</option>
+                    <option value="">None</option>
+                    <option value="ingredient">Ingredient</option>
+                    <option value="concentration">Concentration</option>
+                    <option value="dilutant">Dilutant</option>
+                    <option value="quantity">Quantity</option>
+                </select>
+            </th>';
         }
-        echo '</tr></thead><tbody>';
+        $headerHtml .= '</tr></thead><tbody>';
 
         // Process the remaining rows
         $tempData = [];
         $rowIndex = 0;
+        $bodyHtml = '';
         while (($row = fgetcsv($csvFileData, 1000, ",")) !== FALSE) {
-            echo '<tr id="' . $rowIndex . '">';
+            $bodyHtml .= '<tr id="' . $rowIndex . '">';
             foreach ($row as $cell) {
-                echo '<td>' . (!empty($cell) ? htmlspecialchars($cell) : '-') . '</td>';
+                $bodyHtml .= '<td>' . (!empty($cell) ? htmlspecialchars($cell) : '-') . '</td>';
             }
-            echo '</tr>';
+            $bodyHtml .= '</tr>';
             $tempData[] = $row;
             $rowIndex++;
         }
@@ -679,7 +680,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
 
         // Store data in session
         $_SESSION['csv_file_data'] = $tempData;
-        echo '</tbody></table>';
+        echo $headerHtml . $bodyHtml . '</tbody></table>';
     }
 
     if (isset($_GET['step']) && $_GET['step'] === 'import') {
@@ -688,7 +689,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
         $profile = $_POST['formula_profile'] ?? '';
 
         if (empty($name)) {
-            echo '<div class="alert alert-danger">The formula name field cannot be empty.</div>';
+            echo json_encode(['error' => 'The formula name field cannot be empty.']);
             return;
         }
 
@@ -699,13 +700,13 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
         // Check for duplicate formula names
         $checkQuery = "SELECT id FROM formulasMetaData WHERE name = '$name' AND owner_id = '$userID'";
         if ($chk = mysqli_fetch_assoc(mysqli_query($conn, $checkQuery))) {
-            echo '<div class="alert alert-danger">Error: The formula <strong>' . htmlspecialchars($name) . '</strong> already exists! Click <a href="/?do=Formula&id=' . $chk['id'] . '" target="_blank">here</a> to view/edit.</div>';
+            echo json_encode(['error' => 'The formula <strong>' . htmlspecialchars($name) . '</strong> already exists! Click <a href="/?do=Formula&id=' . $chk['id'] . '" target="_blank">here</a> to view/edit.']);
             return;
         }
 
         // Retrieve CSV data from session
         if (!isset($_SESSION['csv_file_data'])) {
-            echo '<div class="alert alert-danger">No uploaded CSV data found in the session.</div>';
+            echo json_encode(['error' => 'No uploaded CSV data found in the session.']);
             return;
         }
 
@@ -731,15 +732,15 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
             if ($result) {
                 $metaQuery = "INSERT INTO formulasMetaData (fid, name, notes, profile, owner_id) VALUES ('$fid', '$name', 'Imported via CSV', '$profile', '$userID')";
                 if (mysqli_query($conn, $metaQuery)) {
-                    echo '<div class="alert alert-success"><strong><a href="/?do=Formula&id=' . mysqli_insert_id($conn) . '" target="_blank">Formula ' . htmlspecialchars($name) . '</a></strong> has been successfully imported!</div>';
+                    echo json_encode(['success' => '<strong><a href="/?do=Formula&id=' . mysqli_insert_id($conn) . '" target="_blank">Formula ' . htmlspecialchars($name) . '</a></strong> has been successfully imported!']);
                 } else {
-                    echo '<div class="alert alert-danger">Failed to save metadata for the formula.</div>';
+                    echo json_encode(['error' => 'Failed to save metadata for the formula.']);
                 }
             } else {
-                echo '<div class="alert alert-danger">Failed to import formula data. Error: ' . mysqli_error($conn) . '</div>';
+                echo json_encode(['error' => 'Failed to import formula data. Error: ' . mysqli_error($conn)]);
             }
         } else {
-            echo '<div class="alert alert-info">No data to import; all rows are empty or invalid.</div>';
+            echo json_encode(['info' => 'No data to import; all rows are empty or invalid.']);
         }
     }
     return;
