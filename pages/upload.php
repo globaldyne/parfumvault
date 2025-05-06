@@ -649,15 +649,17 @@ if (isset($_GET['type']) && $_GET['type'] === 'frmCSVImport') {
         // Process the header row
         $fileHeader = fgetcsv($csvFileData, 1000, ",");
         $headerHtml = '<table class="jj table table-bordered"><thead><tr class="csv_upload_header">';
+        $autoAssignColumns = ['ingredient', 'concentration', 'dilutant', 'quantity'];
         foreach ($fileHeader as $index => $header) {
+            $autoAssignValue = $autoAssignColumns[$index] ?? '';
             $headerHtml .= '<th>
                 <select name="set_column_data" class="form-control set_column_data" data-column_number="' . $index . '">
                     <option value="">Assign to</option>
                     <option value="">None</option>
-                    <option value="ingredient">Ingredient</option>
-                    <option value="concentration">Concentration</option>
-                    <option value="dilutant">Dilutant</option>
-                    <option value="quantity">Quantity</option>
+                    <option value="ingredient" ' . ($autoAssignValue === 'ingredient' ? 'selected' : '') . '>Ingredient</option>
+                    <option value="concentration" ' . ($autoAssignValue === 'concentration' ? 'selected' : '') . '>Concentration</option>
+                    <option value="dilutant" ' . ($autoAssignValue === 'dilutant' ? 'selected' : '') . '>Dilutant</option>
+                    <option value="quantity" ' . ($autoAssignValue === 'quantity' ? 'selected' : '') . '>Quantity</option>
                 </select>
             </th>';
         }
