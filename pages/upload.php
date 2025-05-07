@@ -504,8 +504,6 @@ if (isset($_GET['type']) && $_GET['type'] === 'cmpCSVImport') {
 
 //IMPORT INGREDIENTS FROM CSV
 if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
-    // Default category class
-    $defCatClass = $settings['defCatClass'];
     session_start();
 
     if (isset($_GET['step']) && $_GET['step'] === 'upload') {
@@ -553,7 +551,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
         // Process the remaining rows
         $tempData = [];
         $rowIndex = 0;
-        while (($row = fgetcsv($csvFileData, 100000, ",")) !== FALSE) {
+        while (($row = fgetcsv($csvFileData, 100000, ",")) !== false) {
             echo '<tr id="' . $rowIndex . '">';
             foreach ($row as $cell) {
                 echo '<td>' . (!empty($cell) ? htmlspecialchars($cell) : '-') . '</td>';
@@ -570,9 +568,9 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
     }
 
     if (isset($_GET['step']) && $_GET['step'] === 'import') {
-        // Import the CSV data
+        // Validate form inputs
         if (!isset($_SESSION['csv_file_data'])) {
-            echo '<div class="alert alert-danger">No uploaded CSV data found in the session.</div>';
+            echo json_encode(['error' => 'No uploaded CSV data found in the session.']);
             return;
         }
 
@@ -580,31 +578,47 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
         $insertData = [];
         $importedCount = 0;
 
+        // Ensure required POST data is available
+        $requiredColumns = [
+            'ingredient_name', 'iupac', 'cas', 'fema', 'type', 
+            'strength', 'profile', 'physical_state', 'allergen', 
+            'odor', 'impact_top', 'impact_heart', 'impact_base'
+        ];
+
+        foreach ($requiredColumns as $column) {
+            if (!isset($_POST[$column])) {
+                echo json_encode(['error' => "Missing column mapping for '$column'."]);
+                return;
+            }
+        }
+
         foreach ($csvFileData as $row) {
-            $ingredientName = trim(ucwords($row[$_POST["ingredient_name"] ?? ''] ?? ''));
+            $ingredientName = trim($row[$_POST['ingredient_name']] ?? '');
             if (empty($ingredientName)) {
                 continue; // Skip rows with no name
             }
 
             // Check for duplicate ingredients
-            $checkQuery = "SELECT name FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $ingredientName) . "' AND owner_id = '$userID'";
+            $ingredientNameEscaped = mysqli_real_escape_string($conn, $ingredientName);
+            $checkQuery = "SELECT name FROM ingredients WHERE name = '$ingredientNameEscaped' AND owner_id = '$userID'";
             if (!mysqli_num_rows(mysqli_query($conn, $checkQuery))) {
-                $insertData[] = "(
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["ingredient_name"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["iupac"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["cas"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["fema"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["type"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["strength"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["profile"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["physical_state"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["allergen"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["odor"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["impact_top"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["impact_heart"]]) . "',
-                    '" . mysqli_real_escape_string($conn, $row[$_POST["impact_base"]]) . "',
-                    '$userID'
-                )";
+                $insertData[] = sprintf(
+                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                    $ingredientNameEscaped,
+                    mysqli_real_escape_string($conn, trim($row[$_POST['iupac']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['cas']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['fema']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['type']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['strength']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['profile']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['physical_state']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['allergen']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['odor']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['impact_top']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['impact_heart']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['impact_base']] ?? '')),
+                    $userID
+                );
                 $importedCount++;
             }
         }
@@ -612,15 +626,13 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
         // Insert new records into the database
         if (!empty($insertData)) {
             $query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, profile, physical_state, allergen, odor, impact_top, impact_heart, impact_base, owner_id) VALUES " . implode(", ", $insertData);
-            $result = mysqli_query($conn, $query);
-
-            if ($result) {
-                echo '<div class="alert alert-success">' . $importedCount . ' ingredients imported successfully.</div>';
+            if (mysqli_query($conn, $query)) {
+                echo json_encode(['success' => $importedCount . ' ingredients imported successfully.']);
             } else {
-                echo '<div class="alert alert-danger">Failed to import ingredients. Error: ' . mysqli_error($conn) . '</div>';
+                echo json_encode(['error' => 'Failed to import ingredients. Error: ' . mysqli_error($conn)]);
             }
         } else {
-            echo '<div class="alert alert-info">No new data to import; all entries already exist.</div>';
+            echo json_encode(['info' => 'No new data to import; all entries already exist.']);
         }
     }
     return;
