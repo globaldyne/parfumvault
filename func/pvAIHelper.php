@@ -64,7 +64,7 @@ function pvAIHelper($prompt) {
             CURLOPT_POSTFIELDS => json_encode([
                 "model" => $model,
                 "messages" => [
-                    ["role" => "system", "content" => "You are a perfumer AI that only responds with valid JSON arrays of ingredients."],
+                    ["role" => "system", "content" => "You are a perfumer AI that only responds to perfume formulation related questions."],
                     ["role" => "user", "content" => $prompt]
                 ],
                 "temperature" => $temperature

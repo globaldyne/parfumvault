@@ -2,7 +2,7 @@
 // It cycles through a list of example prompts, typing each one character by character,
 // and includes a blinking cursor effect for a terminal-like appearance.
 
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
 	const examples = [
 		"Create a fresh formula for a summer perfume",
 		"Generate a woody masculine scent",
@@ -11,17 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	];
 	let exampleIndex = 0;
 	let charIndex = 0;
-	const terminalText = document.getElementById("terminalText");
-	const cursor = document.querySelector(".blinking-cursor");
+	const $terminalText = $("#terminalText");
+	const $cursor = $(".blinking-cursor");
 
 	function typeExample() {
 		if (charIndex < examples[exampleIndex].length) {
-			terminalText.textContent += examples[exampleIndex].charAt(charIndex);
+			$terminalText.text($terminalText.text() + examples[exampleIndex].charAt(charIndex));
 			charIndex++;
 			setTimeout(typeExample, 50);
 		} else {
 			setTimeout(() => {
-				terminalText.textContent = "";
+				$terminalText.text("");
 				charIndex = 0;
 				exampleIndex = (exampleIndex + 1) % examples.length;
 				typeExample();
@@ -33,6 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Optional blinking cursor effect
 	setInterval(() => {
-		cursor.style.visibility = cursor.style.visibility === "hidden" ? "visible" : "hidden";
+		$cursor.css("visibility", $cursor.css("visibility") === "hidden" ? "visible" : "hidden");
 	}, 500);
 });

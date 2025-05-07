@@ -7181,6 +7181,12 @@ if ($_POST['action'] == 'addFormulaAI') {
 }
 
 
+//AI CHAT
+if ($_POST['action'] == 'aiChat' && $_POST['message']) {
+    require_once(__ROOT__.'/core/pvAI.php');
+    return;
+}
+
 //DELETE FORMULA
 if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 
