@@ -284,24 +284,25 @@ $(document).ready(function() {
     require_once(__ROOT__.'/pages/footer.php'); 
   ?>
 
-<div id="chatbot-icon">
-    <i class="fa fa-robot"></i>
-</div>
+<?php if( $user_settings['use_ai_service'] == '1') { ?>
+  <div id="chatbot-icon">
+      <i class="fa fa-robot"></i>
+  </div>
 
-<div id="chatbot-modal">
-  <div id="chatbot-modal-header">
-    Chat with Perfumers AI
-    <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
+  <div id="chatbot-modal">
+    <div id="chatbot-modal-header">
+      Chat with Perfumers AI
+      <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
+    </div>
+    <div id="chatbot-modal-body">
+      <p>Hi! How can I assist you today?</p>
+    </div>
+    <div id="chatbot-modal-footer">
+      <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
+      <button id="chatbot-send">Ask me...</button>
+    </div>
   </div>
-  <div id="chatbot-modal-body">
-    <p>Hi! How can I assist you today?</p>
-  </div>
-  <div id="chatbot-modal-footer">
-    <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
-    <button id="chatbot-send">Ask me...</button>
-  </div>
-</div>
-
+<?php } ?>
 
 
   <!-- TOAST -->
@@ -346,4 +347,6 @@ $(document).ready(function() {
 </script>
 <?php } ?>
 </html>
+<?php if( $user_settings['use_ai_service'] == '1') { ?>
 <script src="/js/pvAIChat.js"></script>
+<?php } ?>

@@ -127,7 +127,7 @@ $(document).ready(function () {
             if (charIndex < text.length) {
                 botMessage.text(botMessage.text() + text.charAt(charIndex));
                 charIndex++;
-                setTimeout(typeChar, 50); // Adjust typing speed here
+                setTimeout(typeChar, 60); // Adjust typing speed here
             } else {
                 chatBody.scrollTop(chatBody.prop('scrollHeight'));
                 localStorage.setItem('chatMessages', chatBody.html());
