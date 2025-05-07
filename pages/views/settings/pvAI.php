@@ -105,7 +105,7 @@ require_once(__ROOT__.'/inc/settings.php');
                 <div class="mb-2">Google Gemini is an advanced AI service that provides cutting-edge capabilities for generating formulas and other tasks.</div>
                 <div class="mb-2">To use Google Gemini, you need an API key. You can obtain one by signing up on the Google Cloud Platform.</div>
                 <div class="mb-2">Once you have your API key, enter it in the field above and select the appropriate model to enable the service.</div>
-                <div class="mb-2">To generate an API key, visit the <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="link-info">Google AI Studio API Credentials</a> page.</div>
+                <div class="mb-2">To generate an API key, visit the <a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank" class="link-info">Google AI Studio API Credentials</a> page.</div>
                 <div class="mb-2">Note: Google Gemini is a paid service, and you will be charged for API calls. Monitor your usage to avoid unexpected charges.</div>
                 <hr />
                 <h5>Google Gemini Models</h5>
