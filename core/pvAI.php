@@ -118,4 +118,20 @@ if ($_POST['action'] === 'addFormulaAI') {
             'formula' => $ingredients
         ]
     ]);
+
+} else if ($_POST['action'] === 'aiChat') {
+    $prompt = $_POST['message'] ?? '';
+    $result = pvAIHelper($prompt." \n\nAnswer in JSON format with only the answer in the property description . No other text. \n\n");
+    
+    error_log("AI Chat Prompt: $prompt");
+    error_log("AI Chat Result: " . json_encode($result));
+    
+    if (isset($result['error'])) {
+        echo json_encode(['error' => $result['error']]);
+        return;
+    }
+
+    echo json_encode(['success' => $result['success']]);
+} else {
+    echo json_encode(['error' => 'Invalid action']);
 }

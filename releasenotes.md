@@ -1,5 +1,6 @@
 Whats New in v12.9
 --------------------------
+- Added AI Chat box
 - Added Gooogle Gemini support
 - Added OpenAI formula creation
 - Added a login screen template for easier integration with external SSO

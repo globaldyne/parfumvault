@@ -18,6 +18,7 @@
 - Documentation links update
 - Session monitor now logs to a file if defined
 - Improved CSV formula import
+- Added AI Chat box
  
 ### Version 12.8
 - Added links for PV apps
