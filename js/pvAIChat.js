@@ -3,7 +3,6 @@
 // It includes a blinking cursor effect, toggles the chatbot modal, and manages chat history
 // using local storage.
 
-
 $(document).ready(function () {
     // Optional blinking cursor effect
     setInterval(() => {
@@ -36,6 +35,13 @@ $(document).ready(function () {
     if (chatMessages) {
         chatBody.html(chatMessages);
         chatBody.scrollTop(chatBody.prop('scrollHeight'));
+    } else {
+        // Add default message if localStorage is empty
+        //const defaultMessage = $('<p></p>')
+         //   .text("What are you blending today?")
+         //   .addClass('text-secondary');
+        chatBody.append(defaultMessage);
+        localStorage.setItem('chatMessages', chatBody.html());
     }
 
     function toggleChatbotModal() {
@@ -53,13 +59,21 @@ $(document).ready(function () {
 
     function sendMessage() {
         const input = $('#chatbot-input');
+        const sendButton = $('#chatbot-send');
         const message = input.val().trim();
+
         if (message) {
             const chatBody = $('#chatbot-modal-body');
-            const userMessage = $('<p></p>').text(message).css('text-align', 'right');
+            const userMessage = $('<p></p>')
+                .text(message)
+                .addClass('text-primary-subtle text-end fw-bold');
             chatBody.append(userMessage);
             input.val('');
             chatBody.scrollTop(chatBody.prop('scrollHeight'));
+
+            // Disable input and button
+            input.prop('disabled', true);
+            sendButton.prop('disabled', true);
 
             // Show "thinking..." message
             const thinkingMessage = $('<p></p>').text("Thinking...").addClass('thinking-message');
@@ -73,7 +87,7 @@ $(document).ready(function () {
                 data: { 
                     action: 'aiChat',
                     message: message
-                 },
+                },
                 dataType: 'json',
                 success: function (response) {
                     try {
@@ -111,23 +125,40 @@ $(document).ready(function () {
                         .text("Error communicating with the server: " + status + " - " + error + " - " + xhr.responseText);
                     chatBody.append(errorAlert);
                     chatBody.scrollTop(chatBody.prop('scrollHeight'));
+                },
+                complete: function () {
+                    // Re-enable input and button
+                    input.prop('disabled', false);
+                    sendButton.prop('disabled', false);
                 }
             });
-
-            localStorage.setItem('chatMessages', chatBody.html());
         }
     }
 
     function simulateTypingEffect(text, chatBody) {
-        const botMessage = $('<p></p>');
-        chatBody.append(botMessage);
+        const botMessageContainer = $('<div></div>').addClass('bot-message-container');
+        const botMessage = $('<p></p>').addClass('bot-message');
+        const copyIcon = $('<i></i>')
+            .addClass('bi bi-clipboard copy-icon')
+            .attr('title', 'Copy to clipboard')
+            .on('click', function () {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Response copied to clipboard!');
+                }).catch(err => {
+                    alert('Failed to copy: ' + err);
+                });
+            });
+
+        botMessageContainer.append(botMessage).append(copyIcon);
+        chatBody.append(botMessageContainer);
+
         let charIndex = 0;
 
         function typeChar() {
             if (charIndex < text.length) {
                 botMessage.text(botMessage.text() + text.charAt(charIndex));
                 charIndex++;
-                setTimeout(typeChar, 60); // Adjust typing speed here
+                setTimeout(typeChar, 100); // Typing speed
             } else {
                 chatBody.scrollTop(chatBody.prop('scrollHeight'));
                 localStorage.setItem('chatMessages', chatBody.html());
@@ -136,4 +167,6 @@ $(document).ready(function () {
 
         typeChar();
     }
+
+
 });
