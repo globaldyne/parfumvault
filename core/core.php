@@ -886,6 +886,7 @@ if ($_POST['action'] === 'update_user_profile') {
 // UPDATE PVAI SETTINGS
 if ($_POST['action'] === 'update_openai_settings') {
     $use_ai_service = isset($_POST['use_ai_service']) && $_POST['use_ai_service'] !== '' ? ($_POST['use_ai_service'] === 'true' ? '1' : '0') : null;
+    $use_ai_chat = isset($_POST['use_ai_chat']) && $_POST['use_ai_chat'] !== '' ? ($_POST['use_ai_chat'] === 'true' ? '1' : '0') : null;
     $ai_service_provider = isset($_POST['ai_service_provider']) ? mysqli_real_escape_string($conn, $_POST['ai_service_provider']) : null;
 
     // OpenAI Settings (only if present)
@@ -939,6 +940,10 @@ if ($_POST['action'] === 'update_openai_settings') {
         $success &= upsert_user_setting($conn, $userID, 'use_ai_service', $use_ai_service);
     }
 
+    if ($use_ai_chat !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'use_ai_chat', $use_ai_chat);
+    }
+    
     if ($ai_service_provider !== null) {
         $success &= upsert_user_setting($conn, $userID, 'ai_service_provider', $ai_service_provider);
     }

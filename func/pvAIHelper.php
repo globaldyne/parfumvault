@@ -106,7 +106,9 @@ function pvAIHelper($prompt) {
             CURLOPT_POSTFIELDS => json_encode([
                 "contents" => [[
                     "role" => "user",
-                    "parts" => [["text" => "$prompt\nOnly output JSON array."]]
+                    "parts" => [[
+                        'text' => "You are a professional perfumer. Only respond to questions about perfume formulation, ingredients, fragrance notes, and techniques for creating perfume. Do not respond to anything unrelated to perfumery.\n$prompt\nOnly output JSON array."
+                    ]]
                 ]]
             ])
         ]);

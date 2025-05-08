@@ -16,7 +16,12 @@ require_once(__ROOT__.'/inc/settings.php');
                         <label class="form-check-label" for="use_ai_service">Use Perfumer AI</label>
                         <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate AI based formulas"></a>
                     </div>
-
+                    <div class="form-check mb-3">
+                        <input name="use_ai_chat" type="checkbox" class="form-check-input" id="use_ai_chat" value="true" <?= $user_settings ['use_ai_chat'] == '1' ? 'checked' : '' ?>/>
+                        <label class="form-check-label" for="use_ai_chat">Enable Perfumers AI Chat</label>
+                        <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Use Perfumers AI Chat to help you during formulations or request ingredients info"></a>
+                    </div>
+                    <hr />
                     <div class="mb-3">
                         <label for="ai_service_provider" class="form-label">AI Service Provider</label>
                         <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Select the AI service provider"></a>
@@ -152,6 +157,7 @@ $(document).ready(function() {
         const data = {
             action: 'update_openai_settings',
             use_ai_service: $("#use_ai_service").is(':checked') ? true : false,
+            use_ai_chat: $("#use_ai_chat").is(':checked') ? true : false,
             ai_service_provider: provider
         };
 
@@ -173,6 +179,11 @@ $(document).ready(function() {
                 if (data.success) {
                     $('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
                     $('.toast-header').removeClass().addClass('toast-header alert-success');
+                    if ($("#use_ai_service").is(':checked') && $("#use_ai_chat").is(':checked')) {
+                        $('#chatbot').show();
+                    } else {
+                        $('#chatbot').hide();
+                    }
                 } else if (data.error) {
                     $('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
                     $('.toast-header').removeClass().addClass('toast-header alert-danger');
@@ -191,7 +202,7 @@ $(document).ready(function() {
     $('#use_ai_service').change(function() {
         const isChecked = $(this).is(':checked');
         $('#ai_service_provider').prop('disabled', !isChecked);
-        $('.provider-fields input, .provider-fields select').prop('disabled', !isChecked);
+        $('.provider-fields input, .provider-fields select, #use_ai_chat').prop('disabled', !isChecked);
         $('.provider-help').toggle(isChecked);
         if (isChecked) {
             $('#ai_service_provider').trigger('change'); // Trigger change to show relevant fields

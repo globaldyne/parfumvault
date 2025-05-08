@@ -184,6 +184,12 @@ while($cats_res = mysqli_fetch_array($cats_q)){
        <div class="col-sm-auto">
             <a href="#" data-bs-toggle="modal" data-bs-target="#clear_my_settings"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Reset all settings to default</b></a>
        </div>
+       
+       <?php if($user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1'){ ?>
+            <div class="col-sm-auto">
+                <a href="#" id="clear-chat-history"><i class="bi bi-arrow-counterclockwise mx-2"></i><b>Clear AI Chat history</b></a>
+            </div>
+        <?php } ?>
        <?php if ($role === 1){ ?>
        <hr />
        <div class="col-sm-auto">
@@ -377,4 +383,28 @@ function get_general(){
     });
 };
 
+<?php if($user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1'){ ?>
+    $('#clear-chat-history').on('click', function () {
+        bootbox.confirm({
+            title: "Clear AI Chat History",
+            message: "Are you sure you want to clear the AI Chat history?",
+            buttons: {
+                confirm: {
+                    label: 'Clear',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    localStorage.removeItem('chatMessages');
+                    $('#chatbot-modal-body').html('');
+                }
+            }
+        });
+    });
+<?php } ?>
 </script>
