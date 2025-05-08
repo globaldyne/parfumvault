@@ -13,7 +13,7 @@ require_once(__ROOT__.'/inc/settings.php');
                 <div class="col-sm-6">       
                     <div class="form-check mb-3">
                         <input name="use_ai_service" type="checkbox" class="form-check-input" id="use_ai_service" value="true" <?= $user_settings ['use_ai_service'] == '1' ? 'checked' : '' ?>/>
-                        <label class="form-check-label" for="use_ai_service">Use Perfumer AI</label>
+                        <label class="form-check-label" for="use_ai_service">Enable Perfumers AI</label>
                         <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate AI based formulas"></a>
                     </div>
                     <div class="form-check mb-3">
