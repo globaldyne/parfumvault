@@ -46,7 +46,7 @@
 
 #chatbot-modal-body {
     padding: 10px;
-    max-height: 400px; /* Increased height */
+    max-height: 600px; /* Increased height */
     overflow-y: auto;
 }
 

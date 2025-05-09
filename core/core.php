@@ -888,7 +888,8 @@ if ($_POST['action'] === 'update_openai_settings') {
     $use_ai_service = isset($_POST['use_ai_service']) && $_POST['use_ai_service'] !== '' ? ($_POST['use_ai_service'] === 'true' ? '1' : '0') : null;
     $use_ai_chat = isset($_POST['use_ai_chat']) && $_POST['use_ai_chat'] !== '' ? ($_POST['use_ai_chat'] === 'true' ? '1' : '0') : null;
     $ai_service_provider = isset($_POST['ai_service_provider']) ? mysqli_real_escape_string($conn, $_POST['ai_service_provider']) : null;
-
+    $making_ai_chat = isset($_POST['making_ai_chat']) && $_POST['making_ai_chat'] !== '' ? ($_POST['making_ai_chat'] === 'true' ? '1' : '0') : null;
+    
     // OpenAI Settings (only if present)
     $openai_api_key = isset($_POST['openai_api_key']) ? mysqli_real_escape_string($conn, $_POST['openai_api_key']) : null;
     $openai_model = isset($_POST['openai_model']) ? mysqli_real_escape_string($conn, $_POST['openai_model']) : null;
@@ -952,9 +953,11 @@ if ($_POST['action'] === 'update_openai_settings') {
     if ($openai_api_key !== null) {
         $success &= upsert_user_setting($conn, $userID, 'openai_api_key', $openai_api_key);
     }
+
     if ($openai_model !== null) {
         $success &= upsert_user_setting($conn, $userID, 'openai_model', $openai_model);
     }
+
     if ($openai_temperature !== null) {
         $success &= upsert_user_setting($conn, $userID, 'openai_temperature', $openai_temperature);
     }
@@ -962,8 +965,13 @@ if ($_POST['action'] === 'update_openai_settings') {
     if ($google_gemini_api_key !== null) {
         $success &= upsert_user_setting($conn, $userID, 'google_gemini_api_key', $google_gemini_api_key);
     }
+
     if ($google_gemini_model !== null) {
         $success &= upsert_user_setting($conn, $userID, 'google_gemini_model', $google_gemini_model);
+    }
+
+    if ($making_ai_chat !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'making_ai_chat', $making_ai_chat);
     }
 
     if ($success) {
