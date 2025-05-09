@@ -1,15 +1,4 @@
-Whats New in v12.9
+Whats New in v13.0
 --------------------------
-- Added AI Chat box
-- Added AI formula generation
-- Added Google Gemini support
-- Added OpenAI formula support
-- Added a login screen template for easier integration with external SSO
-- Added formula advisor
-- Added Windows and macOS executors
-- Localized date across the app
-- Removed time from created and updated fields
-- Removed created and updated timestamps from ingredient suppliers, bottles, customers, and formula documents
-- Removed updated timestamp from HTML templates
-- Overall improved CSV formula import
+
 - This release may include additional changes; for full details, please refer to the CHANGELOG
