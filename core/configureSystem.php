@@ -126,9 +126,10 @@ if ($_POST['action'] == 'register') {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert user into the database
+    $_id = bin2hex(random_bytes(16)); // Generates a 32-character unique string
     $insertUserQuery = "
         INSERT INTO users (id, email, password, fullName, role, isActive, isVerified) 
-        VALUES (1, '$email', '$hashedPassword', '$fullName', 1, 1, 1)";
+        VALUES ('$_id', '$email', '$hashedPassword', '$fullName', 1, 1, 1)";
     
     if (mysqli_query($conn, $insertUserQuery)) {
         $db_ver = trim(file_get_contents(__ROOT__ . '/db/schema.ver'));

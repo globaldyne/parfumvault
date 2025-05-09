@@ -89,7 +89,7 @@ $(document).ready(function() {
 			{ data: 'name', title: 'Formula Name', render: name },
 			{ data: null, title: 'Ingredients remaining', render: ingredients },
 			{ data: 'madeOn', title: 'Progress', render: progress },
-			{ data: 'scheduledOn', title: 'Scheduled', render: fDate },
+			{ data: 'scheduledOn', title: 'Scheduled', render: formatDate },
 			{ data: null, title: '', render: actions },
 		],
 		order: [[0, 'asc']],
@@ -165,19 +165,25 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function fDate(data, type, row, meta){
-	  if(type === 'display'){
-		if(data == '0000-00-00 00:00:00'){
-		  data = '-';
-		}else{
-			let dateTimeParts= data.split(/[- :]/); 
-			dateTimeParts[1]--; 
-			const dateObject = new Date(...dateTimeParts); 
-			data = dateObject.toLocaleDateString() + " " + dateObject.toLocaleTimeString();
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
+	
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
 		}
 	  }
+	
 	  return data;
-	};
+	}
 	
 	function actions(data, type, row){
 		data = '<div class="dropdown">' +

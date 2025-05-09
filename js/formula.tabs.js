@@ -49,4 +49,8 @@ $(document).ready(function() {
 		fetch_timeline();
 	});
 
+	$('#advisory_tab').on( 'click', function () {
+		fetch_advisory();
+	});
+
 });

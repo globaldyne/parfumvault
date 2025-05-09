@@ -216,8 +216,8 @@ $(document).ready(function() {
 			{ data : 'size', title: 'Size (<?php echo $settings['mUnit'];?>)' },
 			{ data : 'label_info', title: 'Label' },
 			{ data : 'location', title: 'Location' },
-			{ data : 'created_at', title: 'Inventory add' },
-			{ data : 'updated_at', title: 'Inventory update' },
+			{ data : 'created_at', title: 'Inventory add', render: formatDate },
+			{ data : 'updated_at', title: 'Inventory update', render: formatDate },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],
@@ -298,7 +298,26 @@ $(document).ready(function() {
     	$('#tdDataCompounds').DataTable().ajax.reload(null, true);
 	};
 
-
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
+	
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
+		}
+	  }
+	
+	  return data;
+	}
+	
 	function format(d) {
 		var details = '<strong>Bottle breakdown size: ' + d.btlSize + '<?php echo $settings['mUnit'];?></strong><br><hr/>';
 		$.each(d.breakDown, function(i, breakdownItem) {

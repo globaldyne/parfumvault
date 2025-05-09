@@ -195,7 +195,10 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 
 <script>
 $(document).ready(function() {
-	
+	$('#csv_import').on('show.bs.modal', function () {
+    resetCSVImportUI();
+});
+
 	$('#mainTitle').click(function() {
 		list_ingredients();
 	});

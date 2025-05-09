@@ -1,4 +1,27 @@
 # CHANGELOG
+### Version 12.9
+- Introduced Google Gemini integration.
+- Introduced OpenAI integration.
+- Enabled AI-powered formula creation.
+- Localized date formatting across the application.
+- Removed time from "created" and "updated" fields for a cleaner display.
+- Eliminated "created" and "updated" timestamps from ingredient suppliers, bottles, customers, and formula documents.
+- Removed "updated" timestamp from HTML templates.
+- Added support for Windows and macOS executors.
+- Introduced a formula advisor feature.
+- Ensured random IDs are assigned during first-time user creation.
+- Moved database schema creation check to PV startup instead of the login page.
+- Redesigned the login screen with a template-based approach.
+- Prevented archiving of protected formulas during deletion attempts.
+- Added a check for material existence when generating batch PDFs.
+- Included an explanation for formula archiving.
+- Assigned new random IDs to archived formulas.
+- Updated documentation links for better accessibility.
+- Enhanced session monitor to log to a file if specified.
+- Improved CSV formula import functionality.
+- Introduced an AI-powered chat box.
+- Added tab icons to the settings page for better navigation.
+
 ### Version 12.8
 - Added links for PV apps
 - Fix ingredient import compounds failing to import

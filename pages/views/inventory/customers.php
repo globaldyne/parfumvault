@@ -28,9 +28,7 @@ require_once(__ROOT__.'/func/php-settings.php');
                       <th>Name</th>
                       <th>Address</th>
                       <th>Email</th>
-                      <th>Web Site</th>
-                      <th>Created</th>
-                      <th>Updated</th>
+                      <th>Web</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -144,7 +142,7 @@ $(document).ready(function() {
 	var tdDataCustomers = $('#tdDataCustomers').DataTable( {
 		columnDefs: [
 			{ className: 'pv_vertical_middle text-center', targets: '_all' },
-			{ orderable: false, targets: [6] },
+			{ orderable: false, targets: [4] },
 		],
 		dom: 'lrftip',
 		buttons: [{
@@ -181,9 +179,7 @@ $(document).ready(function() {
 			{ data : 'name', title: 'Name' },
 			{ data : 'address', title: 'Address' },
 			{ data : 'email', title: 'Email' },
-			{ data : 'web', title: 'Web Site' },
-			{ data : 'created_at', title: 'Created' },
-			{ data : 'updated_at', title: 'Updated' },
+			{ data : 'web', title: 'Web' },
 			{ data : null, title: '', render: actions }
 		],
 		order: [[ 0, 'asc' ]],
@@ -214,7 +210,7 @@ $(document).ready(function() {
 		},	
 	});
 	
-
+	
 	function actions(data, type, row){
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +

@@ -67,13 +67,19 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
 
 <!-- Announcement Modal -->
 <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
       </div>
       <div class="modal-body">
-        <?php echo htmlspecialchars($announcement, ENT_QUOTES, 'UTF-8'); ?>
+        <?php 
+        if (preg_match('/<[^<]+>/', $announcement)) {
+          echo $announcement; // Display as HTML if valid HTML is found
+        } else {
+          echo htmlspecialchars($announcement, ENT_QUOTES, 'UTF-8'); // Escape otherwise
+        }
+        ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
@@ -163,7 +169,7 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
             <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
             Join our Discord Server
           </a>
-          <a class="dropdown-item" href="https://www.perfumersvault.com/knowledge-base" target="_blank">
+          <a class="dropdown-item" href="https://www.perfumersvault.com/kb" target="_blank">
             <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
             Documentation
           </a>
@@ -310,4 +316,4 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
   <!-- /SYS UPGRADE MODAL -->
 
   <script src="/js/sys-upgrade.js"></script>
-<?php } ?> 
+<?php } ?>

@@ -46,11 +46,21 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
         fi
         echo "Server is ready."
 
+        # Set error log file path from environment variable or use default
+        ERROR_LOG="${ERROR_LOG_FILE:-/tmp/php-fpm-www-error.log}"
+
         # Create error log file if missing
-        ERROR_LOG="/tmp/php-fpm-www-error.log"
         if [ ! -f "$ERROR_LOG" ]; then
             echo "Creating error log file at $ERROR_LOG."
             touch "$ERROR_LOG"
+        fi
+
+        # Execute the create_db_schema.sh script
+        /usr/bin/create_db_schema.sh
+        if [ $? -eq 0 ]; then
+            echo "Database schema is up to date."
+        else
+            echo "create_db_schema.sh script failed. Please check the logs."
         fi
 
         # Execute the update_db_schema.sh script
@@ -63,22 +73,20 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
 
         # Start the session monitor if SESSION_MONITOR is true
         if [ "$SESSION_MONITOR" = "true" ]; then
-            /usr/bin/session_monitor &
-            if [ $? -ne 0 ]; then
-            echo "Failed to start session monitor. Exiting."
-            exit 1
+            if [ -f "/usr/bin/session_monitor" ]; then
+                /usr/bin/session_monitor &
+                if [ $? -ne 0 ]; then
+                    echo "Failed to start session monitor. Exiting."
+                    exit 1
+                fi
+            else
+                echo "Session monitor not installed. Continuing..."
             fi
         else
             echo "Session monitor is disabled."
         fi
         
-        # Execute the sync_db.sh script
-        #/usr/bin/sync_db.sh
-        #if [ $? -eq 0 ]; then
-        #    echo "Database is up to date."
-        #else
-        #    echo "sync_db script failed. Please check the logs."
-        #fi
+        echo "----------------------------------"
 
         # Tail error logs
         echo "Tailing error logs from $ERROR_LOG..."
