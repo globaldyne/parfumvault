@@ -61,6 +61,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
       <link href="/css/select2.css" rel="stylesheet">
       <link href="/css/makeFormula.css" rel="stylesheet">
   	  <link href="/css/magnific-popup.css" rel="stylesheet">
+	  <link href="/css/pvAIChat.css" rel="stylesheet">
 
       <script src="/js/tableHTMLExport.js"></script>
       <script src="/js/jspdf.min.js"></script>
@@ -705,6 +706,33 @@ $(document).ready(function() {
   </div>
 </div>
 
-  
-  </body>
+<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1' && $user_settings['making_ai_chat'] == '1') { ?>
+  <!-- Chatbot -->
+  <div id="chatbot">
+    <div id="chatbot-icon">
+        <i class="fa fa-robot"></i>
+    </div>
+
+    <div id="chatbot-modal">
+      <div id="chatbot-modal-header">
+        Chat with Perfumers AI (BETA)
+        <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
+      </div>
+      <div id="chatbot-modal-body">
+        <?php 
+        $fullNameParts = explode(' ', $user['fullName']);
+        $firstName = $fullNameParts[0];
+        ?>
+        <p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
+      </div>
+      <div id="chatbot-modal-footer">
+        <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
+        <button id="chatbot-send">Ask me...</button>
+      </div>
+    </div>
+  </div>
+<?php } ?>
+<script src="/js/pvAIChat.js"></script>
+
+</body>
 </html>

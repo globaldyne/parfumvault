@@ -1,25 +1,27 @@
 # CHANGELOG
 ### Version 12.9
-- Added Gooogle Gemini support
-- Added OpenAI formula creation
-- Localise date across the app
-- Removed time from created and updated fields
-- Removed created and updated timestamps from ingredient suppliers, bottles, customers and formula documents
-- Removed updated timestamp from html templates
-- Added windows and macos executors
-- Added formula advisor
-- Ensure random id is assigned to first time user creation
-- Check if db schema needs to be created when PV is started instead of the login page
-- Templated login screen
-- Prevent archiving a protected formula if deletion attempted
-- Check if materials exists when generating a bathch PDF
-- Added formula archive explanation
-- Generate a new random id for archived formulas
-- Documentation links update
-- Session monitor now logs to a file if defined
-- Improved CSV formula import
-- Added AI Chat box
- 
+- Introduced Google Gemini integration.
+- Introduced OpenAI integration.
+- Enabled AI-powered formula creation.
+- Localized date formatting across the application.
+- Removed time from "created" and "updated" fields for a cleaner display.
+- Eliminated "created" and "updated" timestamps from ingredient suppliers, bottles, customers, and formula documents.
+- Removed "updated" timestamp from HTML templates.
+- Added support for Windows and macOS executors.
+- Introduced a formula advisor feature.
+- Ensured random IDs are assigned during first-time user creation.
+- Moved database schema creation check to PV startup instead of the login page.
+- Redesigned the login screen with a template-based approach.
+- Prevented archiving of protected formulas during deletion attempts.
+- Added a check for material existence when generating batch PDFs.
+- Included an explanation for formula archiving.
+- Assigned new random IDs to archived formulas.
+- Updated documentation links for better accessibility.
+- Enhanced session monitor to log to a file if specified.
+- Improved CSV formula import functionality.
+- Introduced an AI-powered chat box.
+- Added tab icons to the settings page for better navigation.
+
 ### Version 12.8
 - Added links for PV apps
 - Fix ingredient import compounds failing to import

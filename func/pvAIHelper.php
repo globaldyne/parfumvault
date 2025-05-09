@@ -1,6 +1,6 @@
 <?php
 /**
- * Generates a formula using AI based on the given provider and prompt.
+ * Generates a formula and Chat responses using AI based on the given provider and prompt.
  *
  * This function interacts with AI providers (e.g., OpenAI) to generate a response
  * based on the provided prompt and user_settings. It currently supports OpenAI and
@@ -14,6 +14,7 @@
  *   - 'error': An error message (if the request fails or the response is invalid).
  */
 
+if (!defined('pvault_panel')){ die('Not Found');}
 
 function pvAIHelper($prompt) {
 

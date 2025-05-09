@@ -21,6 +21,11 @@ require_once(__ROOT__.'/inc/settings.php');
                         <label class="form-check-label" for="use_ai_chat">Enable Perfumers AI Chat</label>
                         <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Use Perfumers AI Chat to help you during formulations or request ingredients info"></a>
                     </div>
+                    <div class="form-check mb-3 ms-4">
+                        <input name="making_ai_chat" type="checkbox" class="form-check-input" id="making_ai_chat" value="true" <?= $user_settings['making_ai_chat'] == '1' ? 'checked' : '' ?> <?= $user_settings['use_ai_chat'] != '1' ? 'disabled' : '' ?>/>
+                        <label class="form-check-label" for="making_ai_chat">Show in making</label>
+                        <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Display the chatbox in the formula-making page"></a>
+                    </div>
                     <hr />
                     <div class="mb-3">
                         <label for="ai_service_provider" class="form-label">AI Service Provider</label>
@@ -158,6 +163,7 @@ $(document).ready(function() {
             action: 'update_openai_settings',
             use_ai_service: $("#use_ai_service").is(':checked') ? true : false,
             use_ai_chat: $("#use_ai_chat").is(':checked') ? true : false,
+            making_ai_chat: $("#making_ai_chat").is(':checked') ? true : false,
             ai_service_provider: provider
         };
 
@@ -202,7 +208,7 @@ $(document).ready(function() {
     $('#use_ai_service').change(function() {
         const isChecked = $(this).is(':checked');
         $('#ai_service_provider').prop('disabled', !isChecked);
-        $('.provider-fields input, .provider-fields select, #use_ai_chat').prop('disabled', !isChecked);
+        $('.provider-fields input, .provider-fields select, #use_ai_chat, #making_ai_chat').prop('disabled', !isChecked);
         $('.provider-help').toggle(isChecked);
         if (isChecked) {
             $('#ai_service_provider').trigger('change'); // Trigger change to show relevant fields
@@ -227,6 +233,19 @@ $(document).ready(function() {
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 	
+    $('#use_ai_chat').change(function() {
+        $('#making_ai_chat').prop('disabled', !$(this).is(':checked') || !$('#use_ai_service').is(':checked'));
+    }).trigger('change'); // Trigger change on page load to set initial state
+
+    $('#making_ai_chat').change(function() {
+        if ($(this).is(':checked')) {
+            // Logic to show chatbox in formula-making page
+            $('#chatbox').show();
+        } else {
+            $('#chatbox').hide();
+        }
+    }).trigger('change'); // Trigger change on page load to set initial state
+
 });
 
 

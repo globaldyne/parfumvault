@@ -1,5 +1,7 @@
-// This script handles the chatbot modal, message sending, and response handling
-// for a perfume AI assistant on the webpage.
+//Perfumers AI Chatbot
+//Created by: JB Parfum
+// Handles the chatbot modal, message sending, and response handling
+// for a Perfumers AI assistant on the webpage.
 // It includes a blinking cursor effect, toggles the chatbot modal, and manages chat history
 // using local storage.
 
@@ -17,7 +19,7 @@ $(document).ready(function () {
 
     // Trigger send button on Enter key press
     $('#chatbot-input').on('keypress', function (e) {
-        if (e.which === 13) { // Enter key code
+        if (e.which === 13) { // Enter key pressed
             $('#chatbot-send').click();
         }
     });
@@ -34,6 +36,29 @@ $(document).ready(function () {
 
     if (chatMessages) {
         chatBody.html(chatMessages);
+        chatBody.find('.alert').each(function () {
+            const timestamp = $(this).find('small').text();
+            if (!timestamp) {
+                const newTimestamp = $('<small></small>')
+                    .addClass('text-muted d-block')
+                    .text(new Date().toLocaleTimeString());
+                $(this).append(newTimestamp);
+            }
+        });
+
+        // Reattach copy functionality to copy icons
+        chatBody.find('.copy-icon').off('click').on('click', function () {
+            const textToCopy = $(this).siblings('.bot-message').text();
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Response copied to clipboard!');
+                $('.toast-header').removeClass().addClass('toast-header alert-success');
+            }).catch(err => {
+                $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> Failed to copy:' + err);
+                $('.toast-header').removeClass().addClass('toast-header alert-danger');
+            });
+            $('.toast').toast('show');
+        });
+
         chatBody.scrollTop(chatBody.prop('scrollHeight'));
     } else {
         // Add default message if localStorage is empty
@@ -64,12 +89,16 @@ $(document).ready(function () {
 
         if (message) {
             const chatBody = $('#chatbot-modal-body');
-            const userMessage = $('<p></p>')
-                .text(message)
-                .addClass('text-primary-subtle text-end fw-bold');
+            const timestamp = new Date().toLocaleTimeString();
+            const userMessage = $('<div></div>')
+                .addClass('alert alert-secondary text-end')
+                .html(`<span class="fw-bold fs-6">${message}</span><br><small class="text-muted">${timestamp}</small>`);
             chatBody.append(userMessage);
             input.val('');
             chatBody.scrollTop(chatBody.prop('scrollHeight'));
+
+            // Save updated chat to localStorage
+            localStorage.setItem('chatMessages', chatBody.html());
 
             // Disable input and button
             input.prop('disabled', true);
@@ -136,8 +165,11 @@ $(document).ready(function () {
     }
 
     function simulateTypingEffect(text, chatBody) {
-        const botMessageContainer = $('<div></div>').addClass('bot-message-container');
-        const botMessage = $('<p></p>').addClass('bot-message');
+        const botMessageContainer = $('<div></div>')
+            .addClass('alert alert-primary bot-message-container');
+        const timestamp = new Date().toLocaleTimeString();
+        const botMessage = $('<p></p>')
+            .addClass('bot-message fw-bold'); // Add fw-bold class
         const copyIcon = $('<i></i>')
             .addClass('bi bi-clipboard copy-icon')
             .attr('title', 'Copy to clipboard')
@@ -158,9 +190,15 @@ $(document).ready(function () {
             if (charIndex < text.length) {
                 botMessage.text(botMessage.text() + text.charAt(charIndex));
                 charIndex++;
-                setTimeout(typeChar, 100); // Typing speed
+                setTimeout(typeChar, 15); // Typing speed
             } else {
+                const timestampElement = $('<small></small>')
+                    .addClass('text-muted d-block')
+                    .text(timestamp);
+                botMessageContainer.append(timestampElement);
                 chatBody.scrollTop(chatBody.prop('scrollHeight'));
+
+                // Save updated chat to localStorage
                 localStorage.setItem('chatMessages', chatBody.html());
             }
         }
