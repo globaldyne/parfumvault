@@ -21,7 +21,7 @@ if ($app_ver) {
     $githubVerUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/VERSION.md';
     $githubRelUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
 
-    $docUrl = 'https://www.perfumersvault.com/knowledge-base/how-to-update-pv-to-its-latest-version/';
+    $docUrl = 'https://www.perfumersvault.com/kb/how-to-update-pv-to-its-latest-version/';
     
     // Fetch the latest version from GitHub
     $data = trim(pv_file_get_contents($githubVerUrl));

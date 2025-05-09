@@ -27,7 +27,6 @@ $id = (int)$_POST["id"];
           <th>File</th>
           <th>Notes</th>
           <th>Size</th>
-          <th>Created</th>
           <th></th>
       </tr>
    </thead>
@@ -41,7 +40,7 @@ $(document).ready(function() {
 	var tdAttachments = $('#tdAttachments').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [5] }
+			{ orderable: false, targets: [4] }
 		],
 		dom: 'lfrtip',
 		processing: true,
@@ -65,7 +64,6 @@ $(document).ready(function() {
 		  { data : 'docData', title: 'File', render: docData},
 		  { data : 'notes', title: 'Notes', render: notes},
 		  { data : 'docSize', title: 'Size', render: docSize},
-		  { data : 'created_at', title: 'Created', render: created},
 		  { data : null, title: '', render: actions},		   
 		],
 		
@@ -99,9 +97,6 @@ $(document).ready(function() {
 		return '<a href="#" class="notes pv_point_gen" data-name="notes" data-type="textarea" data-pk="'+row.id+'">'+row.notes+'</a>';    
 	};
 	
-	function created(data, type, row){
-		return '<a href="#" class="pv_point_gen">'+row.created_at+'</a>';    
-	};
 	
 	function actions(data, type, row){
 		return '<a href="#" id="dDel" class="fas fa-trash link-danger" data-id="'+row.id+'" data-name="'+row.name+'"></a>';    

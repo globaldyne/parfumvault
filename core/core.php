@@ -883,6 +883,107 @@ if ($_POST['action'] === 'update_user_profile') {
     return;
 }
 
+// UPDATE PVAI SETTINGS
+if ($_POST['action'] === 'update_openai_settings') {
+    $use_ai_service = isset($_POST['use_ai_service']) && $_POST['use_ai_service'] !== '' ? ($_POST['use_ai_service'] === 'true' ? '1' : '0') : null;
+    $use_ai_chat = isset($_POST['use_ai_chat']) && $_POST['use_ai_chat'] !== '' ? ($_POST['use_ai_chat'] === 'true' ? '1' : '0') : null;
+    $ai_service_provider = isset($_POST['ai_service_provider']) ? mysqli_real_escape_string($conn, $_POST['ai_service_provider']) : null;
+    $making_ai_chat = isset($_POST['making_ai_chat']) && $_POST['making_ai_chat'] !== '' ? ($_POST['making_ai_chat'] === 'true' ? '1' : '0') : null;
+    
+    // OpenAI Settings (only if present)
+    $openai_api_key = isset($_POST['openai_api_key']) ? mysqli_real_escape_string($conn, $_POST['openai_api_key']) : null;
+    $openai_model = isset($_POST['openai_model']) ? mysqli_real_escape_string($conn, $_POST['openai_model']) : null;
+    $openai_temperature = isset($_POST['openai_temperature']) ? mysqli_real_escape_string($conn, $_POST['openai_temperature']) : null;
+
+    // Gemini Settings (only if present)
+    $google_gemini_api_key = isset($_POST['google_gemini_api_key']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_api_key']) : null;
+    $google_gemini_model = isset($_POST['google_gemini_model']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_model']) : null;
+
+    function upsert_user_setting($conn, $userID, $key, $value) {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
+        if (!$stmt) {
+            error_log("PV error: Failed to prepare count query - " . $conn->error);
+            return false;
+        }
+        $stmt->bind_param('ss', $key, $userID);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($count > 0) {
+            $stmt = $conn->prepare("UPDATE user_settings SET value = ? WHERE key_name = ? AND owner_id = ?");
+            if (!$stmt) {
+                error_log("PV error: Failed to prepare update query - " . $conn->error);
+                return false;
+            }
+            $stmt->bind_param('sss', $value, $key, $userID);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO user_settings (key_name, value, owner_id) VALUES (?, ?, ?)");
+            if (!$stmt) {
+                error_log("PV error: Failed to prepare insert query - " . $conn->error);
+                return false;
+            }
+            $stmt->bind_param('sss', $key, $value, $userID);
+        }
+
+        $result = $stmt->execute();
+        if (!$result) {
+            error_log("PV error: Failed to execute upsert for $key - " . $stmt->error);
+        }
+        $stmt->close();
+        return $result;
+    }
+
+    $success = true;
+
+    if ($use_ai_service !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'use_ai_service', $use_ai_service);
+    }
+
+    if ($use_ai_chat !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'use_ai_chat', $use_ai_chat);
+    }
+    
+    if ($ai_service_provider !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'ai_service_provider', $ai_service_provider);
+    }
+
+    // Only update if values are present in POST
+    if ($openai_api_key !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_api_key', $openai_api_key);
+    }
+
+    if ($openai_model !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_model', $openai_model);
+    }
+
+    if ($openai_temperature !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'openai_temperature', $openai_temperature);
+    }
+
+    if ($google_gemini_api_key !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'google_gemini_api_key', $google_gemini_api_key);
+    }
+
+    if ($google_gemini_model !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'google_gemini_model', $google_gemini_model);
+    }
+
+    if ($making_ai_chat !== null) {
+        $success &= upsert_user_setting($conn, $userID, 'making_ai_chat', $making_ai_chat);
+    }
+
+    if ($success) {
+        echo json_encode(['success' => 'AI settings updated successfully']);
+    } else {
+        echo json_encode(['error' => 'Failed to update one or more AI settings']);
+    }
+    return;
+}
+
+
+
 //UPDATE USER SETTINGS
 if ($_POST['action'] === 'update_user_settings') {
     $currency = mysqli_real_escape_string($conn, $_POST['currency']);
@@ -7085,21 +7186,43 @@ if($_POST['action'] == 'addFormula'){
 	echo json_encode($response);
 	return;
 }
-	
+
+//ADD NEW AI FORMULA
+if ($_POST['action'] == 'addFormulaAI') {
+    require_once(__ROOT__.'/core/pvAI.php');
+    return;
+}
+
+
+//AI CHAT
+if ($_POST['action'] == 'aiChat' && $_POST['message']) {
+    require_once(__ROOT__.'/core/pvAI.php');
+    return;
+}
+
 //DELETE FORMULA
 if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
+
 	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
 	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
 
+	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1' AND owner_id = '$userID'"))){
+		$response['error'] = 'Formula '.$fname.' is protected and cannot be deleted';
+		echo json_encode($response);
+		return;
+	}
+
 	if($_POST['archiveFormula'] == "true"){
+        
 		require_once(__ROOT__.'/libs/fpdf.php');
 		require_once(__ROOT__.'/func/genBatchPDF.php');
 		require_once(__ROOT__.'/func/ml2L.php');
-		
+        require_once(__ROOT__.'/func/genFID.php');
+
 		define('FPDF_FONTPATH',__ROOT__.'/fonts');
-		
+        $nfid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 		$defCatClass = $settings['defCatClass'];
-		$arcID = "Archived-".$fname.$fid;
+		$arcID = "Archived-".$fname.$nfid;
 		
 		$rs = genBatchPDF($fid,$arcID,'100','100','100',$defCatClass,$settings['qStep'],$settings['defPercentage'],'formulas');
 		
@@ -7111,12 +7234,6 @@ if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 
 	}
 	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND isProtected = '1' AND owner_id = '$userID'"))){
-		$response['error'] = 'Formula '.$fname.' is protected and cannot be deleted';
-		echo json_encode($response);
-		return;
-	}
-		
 	$meta = mysqli_fetch_array(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
 
 	if(mysqli_query($conn, "DELETE FROM formulas WHERE fid = '$fid' AND owner_id = '$userID'")){

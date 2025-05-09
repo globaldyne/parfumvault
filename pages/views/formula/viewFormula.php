@@ -988,7 +988,7 @@ function reload_formula_data() {
           </div>
         </div>
         <hr />
-        <p>*<a href="https://www.perfumersvault.com/knowledge-base/3-specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
+        <p>*<a href="https://www.perfumersvault.com/kb/specific-gravity-sg/" target="_blank">Specific Gravity of Ethanol</a></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

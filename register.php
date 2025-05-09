@@ -51,7 +51,7 @@ if(isset($_SESSION['parfumvault'])){
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 mb-4">Create an Account!</h1>
+                                        <h1 class="h4 mb-4">Create an Account</h1>
                                     </div>
                                     <div id="msg"></div>
                                     <div class="user" id="register">

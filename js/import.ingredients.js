@@ -121,3 +121,181 @@ function formatBytes(bytes, decimals = 2) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
+
+//INGREDIENTS CSV IMPORT
+$("#btnImportCSV").prop("disabled", true);
+$("input[type=file]").on('change', function() {	
+    $("#CSVImportMsg").html('<div class="alert alert-info">Please wait, file upload in progress....</div>');
+    const fd = new FormData();
+    const files = $('#CSVFile')[0].files;
+    
+    if (files.length > 0) {
+        fd.append('CSVFile', files[0]);
+
+        $.ajax({
+            url: '/pages/upload.php?type=ingCSVImport&step=upload',
+            type: 'POST',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response != 0) {
+                    $("#CSVImportMsg").html('');
+                    $("#step_upload").html(response);
+
+                    // Auto-assign columns based on server-provided defaults
+                    $('.set_column_data').each(function() {
+                        const autoAssignValue = $(this).find('option[selected]').val();
+                        if (autoAssignValue) {
+                            const column_number = $(this).data('column_number');
+                            column_data[autoAssignValue] = column_number;
+                        }
+                    });
+
+                    total_selection = Object.keys(column_data).length;
+
+                    // Enable import button if all columns are assigned
+                    if (total_selection === 13) {
+                        $('#btnImportCSV').prop("disabled", false).show();
+                    } else {
+                        $('#btnImportCSV').prop("disabled", true);
+                    }
+                } else {
+                    $("#CSVImportMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>File upload failed</div>');
+                    $("#btnImportCSV").prop("disabled", false);
+                }
+            },
+            error: function() {
+                $("#CSVImportMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred during file upload</div>');
+                $("#btnImportCSV").prop("disabled", false);
+            }
+        });
+    } else {
+        $("#CSVImportMsg").html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>Please select a file to upload</div>');
+        $("#btnImportCSV").prop("disabled", false);
+    }
+});
+
+let total_selection = 0;
+let ingredient_name = '';
+let iupac = '';
+let cas = '';
+let fema = '';
+let type = '';
+let strength = '';
+let profile = '';
+let physical_state = '';
+let allergen = 0;
+let odor = '';
+let impact_top = 0;
+let impact_heart = 0;
+let impact_base = 0;
+
+let column_data = {};
+
+$(document).on('change', '.set_column_data', function() {
+    const column_name = $(this).val();
+    const column_number = $(this).data('column_number');
+
+    if (column_name in column_data) {
+        $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>' + column_name + '</strong> is already assigned.</div>');
+        $(this).val('');
+        return false;
+    } else {
+        $('#CSVImportMsg').html('');
+    }
+
+    if (column_name !== '') {
+        column_data[column_name] = column_number;
+    } else {
+        for (const [key, value] of Object.entries(column_data)) {
+            if (value === column_number) {
+                delete column_data[key];
+            }
+        }
+    }
+
+    total_selection = Object.keys(column_data).length;
+
+    if (total_selection === 13) {
+        $('#btnImportCSV').prop("disabled", false).show();
+
+        ingredient_name = column_data.ingredient_name;
+        iupac = column_data.iupac;
+        cas = column_data.cas;
+        fema = column_data.fema;
+        type = column_data.type;
+        strength = column_data.strength;
+        profile = column_data.profile;
+        physical_state = column_data.physical_state;
+        allergen = column_data.allergen;
+        odor = column_data.odor;
+        impact_top = column_data.impact_top;
+        impact_heart = column_data.impact_heart;
+        impact_base = column_data.impact_base;
+    } else {
+        $('#btnImportCSV').prop("disabled", true);
+    }
+});
+
+$(document).on('click', '#btnImportCSV', function(event) {
+    event.preventDefault();
+
+    $.ajax({
+        url: "/pages/upload.php?type=ingCSVImport&step=import",
+        method: "POST",
+        data: {		  
+            ingredient_name,
+            iupac,  
+            cas, 
+            fema,
+            type,
+            strength,  
+            profile,  
+            physical_state,
+            allergen,
+            odor,  
+            impact_top, 
+            impact_heart, 
+            impact_base
+        },
+        beforeSend: function() {
+            $('#btnImportCSV').prop("disabled", true);
+        },
+        success: function(data) {
+            if (data.error) {
+                $('#btnImportCSV').prop("disabled", false);
+                $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error + ' </div>');
+            } else {
+                $('#btnImportCSV').prop("disabled", false).hide();
+                $('#btnCloseCsv').prop('value', 'Close');
+                $('#process_area').css('display', 'none');
+                $('#tdDataIng').DataTable().ajax.reload(null, false);
+                resetCSVImportUI();
+                $('#CSVImportMsg').html('<div class="alert alert-success"><i class="bi bi-check-circle mx-2"></i>Import complete</div>');
+            }
+        },
+        error: function() {
+            $('#CSVImportMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred during the import process</div>');
+            $('#btnImportCSV').prop("disabled", false);
+        }
+    });
+});
+
+
+function resetCSVImportUI() {
+  // Clear file input
+  $("#CSVFile").val('');
+  // Clear messages
+  $("#CSVImportMsg").html('');
+  // Clear table
+  $("#step_upload").html('');
+  // Reset column tracking
+  column_data = {};
+  // Enable import button
+  $('#btnImportCSV').prop("disabled", true).show();
+  // Reset close button if needed
+  $('#btnCloseCsv').val('Close');
+  // Re-show import processing area
+  $('#process_area').show();
+}

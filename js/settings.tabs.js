@@ -13,6 +13,10 @@ $(document).ready(function() {
 		get_systemSettings();
 	});
 
+	$('#pvAI_tab').on( 'click', function () {
+		get_pvAI();
+	});
+
 	$('#users_tab').on( 'click', function () {
 		get_users();
 	});
@@ -225,5 +229,15 @@ $(document).ready(function() {
 		});
 	};
 	
+	function get_pvAI(){
+		$.ajax({ 
+			url: '/pages/views/settings/pvAI.php', 
+			dataType: 'html',
+			success: function (data) {
+				$('#pvAI').html(data);
+			}
+		});
+	};
+
 	get_general();
 });

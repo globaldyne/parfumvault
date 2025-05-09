@@ -98,28 +98,32 @@ if(!$fid){
             </div>
         <!-- Nav tabs -->
 		<ul class="nav nav-tabs mb-3" role="tablist">
-          <li class="nav-item active" role="presentation">
-          	<a href="#main_formula" id="formula_tab" class="nav-link active" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
-          </li>
-    	  <li class="nav-item" role="presentation">
-          	<a href="#analysis" id="analysis_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magnifying-glass-chart mx-2"></i>Analysis</a>
-          </li>
-    	  <li class="nav-item" role="presentation">
-          	<a href="#usage" id="usage_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Usage Data</a>
-          </li>          
-    	  <li class="nav-item" role="presentation">
-          	<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
-          </li>
-          <li class="nav-item" role="presentation">
-          	<a href="#pyramid" id="pyramid_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a>
-          </li>
-          <li class="nav-item" role="presentation"><a href="#summary" id="summary_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
-          <li class="nav-item" role="presentation"><a href="#ingRep" id="reps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
-          <li class="nav-item" role="presentation"><a href="#attachments" id="attachments_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
-          <li class="nav-item" role="presentation"><a href="#revisions" id="revisions_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
-          <li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
+        	<li class="nav-item active" role="presentation">
+          		<a href="#main_formula" id="formula_tab" class="nav-link active" aria-selected="true" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Formula</a>
+          	</li>
+			<li class="nav-item" role="presentation">
+				<a href="#analysis" id="analysis_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magnifying-glass-chart mx-2"></i>Analysis</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a href="#usage" id="usage_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-bong mx-2"></i>Usage Data</a>
+			</li>          
+			<li class="nav-item" role="presentation">
+				<a href="#impact" id="impact_tab"class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-magic mx-2"></i>Notes Impact</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a href="#pyramid" id="pyramid_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-table mx-2"></i>Olfactory Pyramid</a>
+			</li>
+			<li class="nav-item" role="presentation"><a href="#summary" id="summary_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cubes mx-2"></i>Notes Summary</a></li>
+			<li class="nav-item" role="presentation"><a href="#ingRep" id="reps_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-exchange-alt mx-2"></i>Replacements</a></li>
+			<li class="nav-item" role="presentation"><a href="#attachments" id="attachments_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-paperclip mx-2"></i>Attachments</a></li>
+			<li class="nav-item" role="presentation"><a href="#revisions" id="revisions_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-clock-rotate-left mx-2"></i>Revisions</a></li>
+			<li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
+			
+			<li class="nav-item" role="presentation">
+				<a href="#advisory" id="advisory_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="bi bi-app-indicator mx-2"></i>Advisory</a>
+			</li>
 
-          <li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
+          	<li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
         </ul>
                      
         <div class="tab-content table-responsive">
@@ -269,7 +273,12 @@ if(!$fid){
                 <div id="fetch_timeline"><div class="loader"></div></div>
             </div>            
         </div>
-                
+            
+		<div class="tab-pane fade" id="advisory">
+            <div class="card-body">
+                <div id="fetch_advisory"><div class="loader"></div></div>
+            </div>            
+        </div>
       </div>
      </div>         
    </div><!--tabs-->
@@ -394,21 +403,21 @@ function setProtected(status) {
 
 
 function fetch_formula(){
-$.ajax({ 
-    url: '/pages/views/formula/viewFormula.php', 
-	type: 'GET',
-    data: {
-		id: "<?=$id?>",
-		"search": "<?=$_GET['search']?>"
-	},
-	dataType: 'html',
-		success: function (data) {
-			$('#fetch_formula').html(data);
+	$.ajax({ 
+    	url: '/pages/views/formula/viewFormula.php', 
+		type: 'GET',
+    	data: {
+			id: "<?=$id?>",
+			"search": "<?=$_GET['search']?>"
 		},
-		error: function (xhr, status, error) {
-			$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
-		}
-	});
+		dataType: 'html',
+			success: function (data) {
+				$('#fetch_formula').html(data);
+			},
+			error: function (xhr, status, error) {
+				$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			}
+		});
 };
 
 fetch_formula();
@@ -423,10 +432,10 @@ function fetch_pyramid(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_pyramid').html(data);
+		  	$('#fetch_pyramid').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_pyramid').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_pyramid').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -441,10 +450,10 @@ function fetch_impact(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_impact').html(data);
+		  	$('#fetch_impact').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_impact').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_impact').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -459,10 +468,10 @@ function fetch_analysis(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_analysis').html(data);
+		  	$('#fetch_analysis').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_analysis').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_analysis').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -476,10 +485,10 @@ function fetch_usage(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_usage').html(data);
+		  	$('#fetch_usage').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_usage').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_usage').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -496,7 +505,7 @@ $.ajax({
 			$('#fetch_summary').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_summary').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_summary').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -510,10 +519,10 @@ function fetch_replacements(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_replacements').html(data);
+		  	$('#fetch_replacements').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_replacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_replacements').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -527,10 +536,10 @@ function fetch_attachments(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_attachments').html(data);
+		  	$('#fetch_attachments').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_attachments').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_attachments').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -545,10 +554,10 @@ function fetch_revisions(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_revisions').html(data);
+		  	$('#fetch_revisions').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_revisions').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_revisions').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -559,14 +568,13 @@ function fetch_formula_settings(){
 		type: 'GET',
 		data: {
 			id: "<?=$meta['id']?>",
-			//embed: true
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_formula_settings').html(data);
+			$('#fetch_formula_settings').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_formula_settings').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_formula_settings').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };
@@ -580,10 +588,27 @@ function fetch_timeline(){
 		},
 		dataType: 'html',
 		success: function (data) {
-		  $('#fetch_timeline').html(data);
+		  	$('#fetch_timeline').html(data);
 		},
 		error: function (xhr, status, error) {
-			$('#fetch_timeline').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#fetch_timeline').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+		}
+	});
+};
+
+function fetch_advisory(){
+	$.ajax({ 
+		url: '/pages/views/formula/advisory.php',
+		type: 'GET',
+		data: {
+			fid: myFID
+		},
+		dataType: 'html',
+		success: function (data) {
+			$('#fetch_advisory').html(data);
+		},
+		error: function (xhr, status, error) {
+			$('#fetch_advisory').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	});
 };

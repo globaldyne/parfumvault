@@ -23,7 +23,6 @@ require_once(__ROOT__.'/inc/sec.php');
           <th>Name</th>
           <th>Description</th>
           <th>Created</th>
-          <th>Updated</th>
           <th></th>
       </tr>
    </thead>
@@ -35,7 +34,7 @@ $(document).ready(function() {
 	var tdTempls = $('#tdTempls').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [4] }
+			{ orderable: false, targets: [3] }
 		],
 		dom: 'lfrtip',
 		processing: true,
@@ -51,8 +50,7 @@ $(document).ready(function() {
 		columns: [
 				  { data : 'name', title: 'Name', render: name },
 				  { data : 'description', title: 'Description', render: description},
-				  { data : 'created', title: 'Created', render: created},
-				  { data : 'updated', title: 'Updated', render: updated},
+				  { data : 'created', title: 'Created', render: formatDate},
 				  { data : null, title: '', render: actions},		   
 		],
 		order: [[ 1, 'asc' ]],
@@ -95,14 +93,26 @@ $(document).ready(function() {
 		return '<a href="#" class="description pv_point_gen" data-name="description" data-type="textarea" data-pk="'+row.id+'">'+row.description+'</a>';    
 	};
 	
-	function created(data, type, row){
-		return row.created;    
-	};
+	function formatDate(data, type) {
+	  if (type === 'display') {
+		if (data === '0000-00-00 00:00:00') {
+		  return '-';
+		}
+		
+		try {
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
 	
-	function updated(data, type, row){
-		return row.updated;    
-	};
+		  return dateObject.toLocaleDateString();
+		} catch (error) {
+		  console.error("Date parsing error:", error);
+		  return data; // Return original data if parsing fails
+		}
+	  }
 	
+	  return data;
+	}
+
 	function actions(data, type, row){	
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +

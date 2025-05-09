@@ -3,9 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"time"
@@ -14,17 +16,22 @@ import (
 )
 
 const (
-	envDBHost           = "DB_HOST"
-	envDBUsername       = "DB_USER"
-	envDBPassword       = "DB_PASS"
-	envDBName           = "DB_NAME"
-	envTimeout          = "SESSION_TIMEOUT"
-	envInactiveDays     = "INACTIVE_DAYS"
+	// Environment variable names
+	envDBHost       = "DB_HOST"
+	envDBUsername   = "DB_USER"
+	envDBPassword   = "DB_PASS"
+	envDBName       = "DB_NAME"
+	envTimeout      = "SESSION_TIMEOUT"
+	envInactiveDays = "INACTIVE_DAYS"
+	envLogFile      = "SESS_LOG_FILE"
+
+	// Default values for environment variables
 	defaultDBHost       = "127.0.0.1"
 	defaultTimeout      = "1800"
 	defaultInactiveDays = 30
+	defaultLogFile      = "/tmp/session_monitor.log"
 	checkInterval       = 60      // Check every 60 seconds
-	version             = "1.0.1" // Version of the session monitoring daemon
+	version             = "1.0.2" // Version of the session monitoring daemon
 )
 
 // getEnv retrieves environment variables with a default fallback
@@ -199,7 +206,35 @@ func cleanupInactiveUsers(db *sql.DB) {
 	}
 }
 
+func initLogFile() (*os.File, error) {
+	logFileName := getEnv(envLogFile, defaultLogFile)
+
+	// Ensure the directory for the log file exists
+	logDir := filepath.Dir(logFileName)
+	if err := os.MkdirAll(logDir, os.ModePerm); err != nil {
+		return nil, fmt.Errorf("failed to create log directory %s: %v", logDir, err)
+	}
+
+	logFile, err := os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file %s: %v", logFileName, err)
+	}
+
+	// Log to both file and stdout
+	multiWriter := io.MultiWriter(logFile, os.Stdout)
+	log.SetOutput(multiWriter)
+	return logFile, nil
+}
+
 func main() {
+	// Initialize log file
+	logFile, err := initLogFile()
+	if err != nil {
+		fmt.Printf("Error initializing log file: %v\n", err)
+		return
+	}
+	defer logFile.Close()
+
 	dbhost := getEnv(envDBHost, defaultDBHost)
 	dbuser := os.Getenv(envDBUsername)
 	dbpass := os.Getenv(envDBPassword)

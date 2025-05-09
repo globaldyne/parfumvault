@@ -57,7 +57,13 @@ $cFormulas = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaDat
                                         <i class="fa-solid fa-plus mx-2"></i>Add new formula
                                     </a>
                                 </li>
-
+								<?php if($user_settings['use_ai_service'] == 1) { ?>
+									<li>
+										<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_ai">
+											<i class="fa-solid fa-robot mx-2"></i>Generate formula with AI
+										</a>
+									</li>
+								<?php } ?>
                                 <div class="dropdown-divider"></div>
                                 <li>
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add_formula_cat">
@@ -286,8 +292,7 @@ $(document).ready(function() {
 
 	function pName(data, type, row, meta){
 		data = '<i class="pv_point_gen_color" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-id="' + row.id + '" data-formula="'+row.name+'">'+row.product_name+'</i>';
-		
-	  return data;
+		return data;
 	};
 	
 	function fMade(data, type, row, meta){
@@ -331,10 +336,10 @@ $(document).ready(function() {
 		}
 		
 		try {
-		  const [year, month, day, hour, minute, second] = data.split(/[- :]/).map(Number);
-		  const dateObject = new Date(year, month - 1, day, hour, minute, second);
+		  const [year, month, day] = data.split(/[- :]/).map(Number);
+		  const dateObject = new Date(year, month - 1, day);
 	
-		  return `${dateObject.toLocaleDateString()} ${dateObject.toLocaleTimeString()}`;
+		  return dateObject.toLocaleDateString();
 		} catch (error) {
 		  console.error("Date parsing error:", error);
 		  return data; // Return original data if parsing fails
@@ -344,7 +349,6 @@ $(document).ready(function() {
 	  return data;
 	}
 
-	
 	function fActions(data, type, row, meta){
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
@@ -365,7 +369,7 @@ $(document).ready(function() {
 			if (row.gid) {
 				data += '<li><a class="dropdown-item" href="/?do=Formula&id='+ row.id +'&gid='+ row.gid +'"><i class="fas fa-share-alt mx-2"></i>View shared formula</a></li>';
 			} else {
-				data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
+				data += '<li><a class="dropdown-item link-danger" href="#" id="deleteMe" rel="tip" title="Delete '+ row.name +'" data-id="'+ row.fid +'" data-name="'+ row.name +'" data-protected="' + row.isProtected + '"><i class="fas fa-trash mx-2"></i>Permanently delete formula</a></li>';
 			}
 			data += '</ul></div>';
 		
@@ -424,13 +428,15 @@ $(document).ready(function() {
 		var formula = {};
 		formula.ID = $(this).attr('data-id');
 		formula.Name = $(this).attr('data-name');
+		formula.Protected = $(this).attr('data-protected');
 		
 		bootbox.dialog({
 		   title: "Confirm formula deletion",
 		   message : '<div class="alert alert-warning"><i class="fa-solid fa-triangle-exclamation mx-2"></i>WARNING, this action cannot be reverted unless you have a backup.</div><p>Permantly delete <strong>'+ $(this).attr('data-name') +'</strong> formula?</p>' +
 		   '<div class="form-group col-sm">' + 
 			'<input name="archiveFormula" id="archiveFormula" type="checkbox" value="1">'+
-			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>'+
+			'<label class="form-check-label mx-2" for="archiveFormula">Archive formula</label>' +
+			'<i class="fa-solid fa-circle-info" rel="tip" title="Archived formulas will be saved as a PDF and can be found under the Batches section."></i>' +
 		   '</div>',
 		   buttons :{
 			   main: {
@@ -450,17 +456,17 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 								reload_formulas_data();
 							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
 						},
 						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 							$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							$('.toast').toast('show');
 						}
@@ -561,6 +567,7 @@ $(document).ready(function() {
 	  });
 	});
 	
+	//Add formula
 	$('#add_formula').on('click', '[id*=btnAdd]', function () {
 		$.ajax({ 
 		url: '/core/core.php', 
@@ -577,7 +584,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function (data) {
 			if(data.error){
-				var rmsg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				var rmsg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
 			}else if(data.success){
 				var rmsg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><a href="/?do=Formula&id='+data.success.id+'">'+data.success.msg+'</a></div>';
 				reload_formulas_data();
@@ -588,130 +595,55 @@ $(document).ready(function() {
 			$('#addFormulaMsg').html(rmsg);
 		},
 		error: function (xhr, status, error) {
-			$('#addFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			$('#addFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
 		}
 	  });
 	});
 	
-	$("#btnImport").prop("disabled", true);
-	$("#btnImport").hide();
-		
-	$("input[type=file]").on('change',function(){	
-		var fd = new FormData();
-		var files = $('#CSVFile')[0].files;
-		var formula_name = $('#CSVname').val();
-		
-		if ( formula_name == '') {
-			var filename = $('input[type=file]').val().replace(/C:\\fakepath\\/i, '').replace(/.csv/i, '');
-			$('#CSVname').val(filename);
+	//Add formula AI
+	$('#add_formula_ai').on('click', '[id*=generateAIFormula]', function () {
+		var name = $("#ai-formula-name").val().trim();
+		var description = $("#ai-description").val().trim();
+
+		if (name === "" || description === "") {
+			$('#aiFormulaMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>Formula name and description cannot be empty.</div>');
+			return;
 		}
-		
-		if(files.length > 0 ){
-			fd.append('CSVFile',files[0]);
-			$.ajax({
-			   url: '/pages/upload.php?type=frmCSVImport&step=upload',
-			   type: 'POST',
-			   data: fd,
-			   contentType: false,
-			   processData: false,
-					 cache: false,
-			   success: function(response){
-				 if(response != 0){
-					$("#CSVImportMsg").html('');
-					$("#step_upload").html(response);
-					$("#btnImport").show();
-				  }else{
-					$("#CSVImportMsg").html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong>Error:</strong> File upload failed!</div>');
-				  }
+
+		// Disable fields and show loading icon
+		$("#ai-formula-name, #ai-description").prop("disabled", true);
+		var $button = $(this);
+		$button.prop("disabled", true).html('<i class="fa-solid fa-spinner fa-spin mx-2"></i>Generating...');
+
+		$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: 'addFormulaAI',
+				name: name,
+				description: description
 			},
-		 });
-		}else{
-			$("#CSVImportMsg").html('<div class="alert alert-danger">Please select a file to upload!</div>');
-		}
-	});
-	
-	
-	var total_selection = 0;
-	var ingredient = 0;
-	var concentration = 0;
-	var dilutant = 0;
-	var quantity = 0;
-	
-	var column_data = [];
-	
-	$(document).on('change', '.set_column_data', function(){
-		var column_name = $(this).val();
-		var column_number = $(this).data('column_number');
-		if(column_name in column_data) {
-		  $('#CSVImportMsg').html('<div class="alert alert-danger"><strong>'+column_name+'</strong> is already assigned.</div>');
-		  $(this).val('');
-		  return false;
-		}else{
-			$('#CSVImportMsg').html('');
-		}
-	
-		if(column_name != '') {
-		  column_data[column_name] = column_number;
-		} else {
-		  const entries = Object.entries(column_data);
-	
-		  for(const [key, value] of entries) {
-			if(value == column_number) {
-			  delete column_data[key];
+			dataType: 'json',
+			success: function (data) {
+				if(data.error){
+					var rmsg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>'+data.error+'</div>';
+				} else if(data.success){
+					window.location = "/?do=Formula&id=" + data.success.id;
+				}
+				$('#aiFormulaMsg').html(rmsg);
+			},
+			error: function (xhr, status, error) {
+				$('#aiFormulaMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
+			},
+			complete: function () {
+				// Re-enable fields and reset button
+				$("#ai-formula-name, #ai-description").prop("disabled", false);
+				$button.prop("disabled", false).html('Generate');
 			}
-		  }
-		}
+		});
+	});
 	
-		total_selection = Object.keys(column_data).length;
 	
-		if(total_selection == 4) {
-			$('#btnImport').prop("disabled", false);
-			ingredient = column_data.ingredient;
-			concentration = column_data.concentration;
-			dilutant = column_data.dilutant;
-			quantity = column_data.quantity;
-		} else {
-			$('#btnImport').prop("disabled", true);
-		}
-	
-	  });
-	
-	$(document).on('click', '#btnImport', function(event){
-	
-		event.preventDefault();
-		var formula_name = $('#CSVname').val();
-		var formula_profile = $('#CSVProfile').val();
-		
-		$.ajax({
-			url: "/pages/upload.php?type=frmCSVImport&step=import",
-		  	method: "POST",
-		  	data:{		  
-			  formula_name: formula_name,
-			  formula_profile: formula_profile,
-			  ingredient: ingredient, 
-			  concentration: concentration, 
-			  dilutant: dilutant, 
-			  quantity: quantity
-			},
-		  	beforeSend:function(){
-				$('#btnImport').prop("disabled", true);
-		  	},
-		  	success:function(data) {
-			  if (data.indexOf('Error:') > -1) {
-				  $('#btnImport').prop("disabled", false);
-				  $('#CSVImportMsg').html(data);
-			  }else{
-				$('#btnImport').prop("disabled", false);
-				$('#btnImport').hide();
-				$('#btnCloseCsv').prop('value', 'Close');
-				$('#process_area').css('display', 'none');
-				$('#CSVImportMsg').html(data);
-				reload_formulas_data();
-			  }
-		  }
-		})
-	
-	  });
 	  
 	function reload_formulas_data() {
 		$('#all-table').DataTable().ajax.reload(null, true);
@@ -789,7 +721,7 @@ $(document).ready(function() {
 
 <!--GET FORMULA SETTINGS MODAL-->            
 <div class="modal fade" id="getFormMeta" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="getFormMetalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="getFormMetaLabel">Formula settings</h5>
@@ -803,88 +735,74 @@ $(document).ready(function() {
 </div>
 
 <!--ADD FORMULA MODAL-->
-<div class="modal fade" id="add_formula" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="add_formula" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mgmIngHeader mgmIngHeader-with-separator" id="new-formula-name">Add new formula</h5>
-      </div>
-      <div class="modal-body">
-      	<div id="addFormulaMsg"></div>
-      
-      	<div class="form">
-
-          <div class="row mb-3">
-            <div class="col-sm">
-                <label for="formula-name" class="form-label">Formula name</label>
-                <input name="formula-name" id="formula-name" type="text" class="form-control" />
-            </div>
-          </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="profile" class="form-label">Profile</label>
-          <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
-             <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
-                 <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-             <?php } }?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="catClass" class="form-label">Purpose</label>
-          <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
-            <?php foreach ($cats as $IFRACategories) {?>
-                <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-            <?php }	?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        	<div class="col-sm">
-                <label for="finalType" class="form-label">Final type</label>
-          		<select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
-            		<option value="100">Concentrated (100%)</option>
-            		<?php foreach ($fTypes as $fType) {?>
-                	<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-             		<?php } ?>			
-          		</select>
-        	</div>
-      </div>
-      
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="customer" class="form-label">Customer</label>
-          <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
-            <option value="0">Internal use</option>
-            <?php foreach ((array)$customer as $c) {?>
-                <option value="<?=$c['id'];?>"><?=$c['name']?></option>
-            <?php }	?>
-          </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-sm">
-          <label for="notes" class="form-label">Notes</label>
-          <textarea name="notes" id="notes" cols="45" rows="5" class="form-control"></textarea>
-        </div>
-      </div>
-    </div>
-
-      <hr/>
-      <div class="row mb-3">
-        <div class="mx-4">
-    		<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
-   			<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
-  		</div>
-      </div>
-	  <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" name="button" class="btn btn-primary" id="btnAdd" value="Add formula">
-      </div>
-    </div>
-  </div>
-</div>
+<div class="modal fade" id="add_formula" data-bs-backdrop="static" tabindex="-1" aria-labelledby="add_formula" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="new-formula-name">Add new formula</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="addFormulaMsg"></div>
+				<form>
+					<div class="form-floating mb-3">
+						<input name="formula-name" id="formula-name" type="text" class="form-control" placeholder="Formula name" />
+						<label for="formula-name">Formula name</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="profile" id="profile" class="form-select" data-live-search="true">
+							<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>		
+								<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+							<?php } }?>
+						</select>
+						<label for="profile">Profile</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="catClass" id="catClass" class="form-select" data-live-search="true">
+							<?php foreach ($cats as $IFRACategories) {?>
+								<option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($settings['defCatClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>>
+									<?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?>
+								</option>
+							<?php }	?>
+						</select>
+						<label for="catClass">Purpose</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="finalType" id="finalType" class="form-select" data-live-search="true">  
+							<option value="100">Concentrated (100%)</option>
+							<?php foreach ($fTypes as $fType) {?>
+								<option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>>
+									<?php echo $fType['name'].' ('.$fType['concentration'];?>%)
+								</option>
+							<?php } ?>			
+						</select>
+						<label for="finalType">Final type</label>
+					</div>
+					<div class="form-floating mb-3">
+						<select name="customer" id="customer" class="form-select" data-live-search="true">
+							<option value="0">Internal use</option>
+							<?php foreach ((array)$customer as $c) {?>
+								<option value="<?=$c['id'];?>"><?=$c['name']?></option>
+							<?php }	?>
+						</select>
+						<label for="customer">Customer</label>
+					</div>
+					<div class="form-floating mb-3">
+						<textarea name="notes" id="notes" class="form-control" placeholder="Notes" style="height: 100px;"></textarea>
+						<label for="notes">Notes</label>
+					</div>
+					<div class="form-check mb-3">
+						<input type="checkbox" class="form-check-input" id="go_to_formula" checked>
+						<label class="form-check-label" for="go_to_formula">Go to formula when created</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary" id="btnAdd">Add formula</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!--IMPORT FORMULA CSV MODAL-->
@@ -895,47 +813,48 @@ $(document).ready(function() {
         <h5 class="modal-title">Import formula from CSV</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
-      <div class="modal-body">
-        <div id="CSVImportMsg"></div>
-        <div id="process_area">
-          <div class="mb-3 row">
-            <label for="CSVname" class="col-md-3 col-form-label">Formula name</label>
-            <div class="col-md-9">
-              <input type="text" name="CSVname" id="CSVname" class="form-control"/>
-            </div>
-          </div>
-          
-          <div class="mb-3 row">
-            <label for="CSVProfile" class="col-md-3 col-form-label">Profile</label>
-            <div class="col-md-9">
-              <select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
-                <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>
-                <option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
-                <?php } }?>
-              </select>
-            </div>
-          </div>
-          
-          <div class="mb-3 row">
-            <label for="CSVFile" class="col-md-3 col-form-label">CSV file</label>
-            <div class="col-md-9">
-              <input type="file" name="CSVFile" id="CSVFile" class="form-control" />
-            </div>
-          </div>
+		<div class="modal-body">
+			<div id="CSVImportMsg"></div>
+			<div id="process_area">
+			
+			<div class="form-floating mb-3">
+				<input type="text" name="CSVname" id="CSVname" class="form-control" placeholder="Formula name"/>
+				<label for="CSVname">Formula name</label>
+			</div>
+			
+			<div class="form-floating mb-3">
+				<select name="CSVProfile" id="CSVProfile" class="form-control selectpicker" data-live-search="true">
+					<?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>
+					<option value="<?=$cat['cname']?>"><?=$cat['name']?></option>
+					<?php } }?>
+				</select>
+				<label for="CSVProfile">Profile</label>
+			</div>
 
-          <div id="step_upload" class="modal-body"></div>
-          <div class="col-md-12">
-            <hr />
-            <p>CSV format: <strong>ingredient, concentration, dilutant, quantity</strong></p>
-            <p>Example: <em><strong>Ambroxan, 10, TEC, 0.15</strong></em></p>
-          </div>
+			<div class="form-floating mb-3">
+				<input type="file" name="CSVFile" id="CSVFile" class="form-control" placeholder="CSV file"/>
+				<label for="CSVFile">CSV file</label>
+			</div>
+
+			<div id="step_upload" class="modal-body"></div>
+
+			<div class="alert alert-info">
+				<i class="fa-solid fa-circle-info mx-2"></i>
+					CSV file must include the following columns
+					<div class="text-left">
+						Example:
+						<br />
+						<em><strong>Ingredient, Concentration, Dilutant, Quantity</strong></em>
+						<br />
+						<em><strong>Vanillin, 5, Ethanol, 0.25</strong></em>
+				</div>
+			</div>
         </div>
       </div>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Cancel</button>
-        <button type="submit" name="btnImport" class="btn btn-primary" id="btnImport">Import</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCloseCsv">Close</button>
+        <button type="submit" name="btnImportCSV" class="btn btn-primary" id="btnImportCSV">Import</button>
       </div>
     </div>
   </div>
@@ -944,31 +863,28 @@ $(document).ready(function() {
 
 <!--ADD CATEGORY MODAL-->
 <div class="modal fade" id="add_formula_cat" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create new formula category</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <div id="fcatMsg"></div>
-        <div class="mb-3 row">
-          <label for="fcatName" class="col-sm-4 col-form-label">Category name</label>
-          <div class="col-md-12">
-            <input name="fcatName" id="fcatName" type="text" class="form-control" />
-          </div>
-        </div>
-      </div>
-	  
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Cancel</button>
-        <button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Create new formula category</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			
+			<div class="modal-body">
+				<div id="fcatMsg"></div>
+				<div class="form-floating mb-3">
+					<input name="fcatName" id="fcatName" type="text" class="form-control" placeholder="Category name" />
+					<label for="fcatName">Category name</label>
+				</div>
+			</div>
+		
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_cat">Cancel</button>
+				<button type="submit" name="add-fcat" class="btn btn-primary" id="add-fcat">Create</button>
+			</div>
+		</div>
+	</div>
 </div>
-
 
 
 <!-- IMPORT JSON MODAL -->
@@ -1024,7 +940,7 @@ $(document).ready(function() {
       
       <div class="modal-body">
         <div id="txtImpMsg" class="mb-3"></div>
-	    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>We will try to automatically match the provided format, although please refer to the guide <a href="https://www.perfumersvault.com/knowledge-base/import-formula-from-text/" target="_blank" class="text-link">here</a> for the right format.</div>
+	    <div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i>We will try to automatically match the provided format, although please refer to the guide <a href="https://www.perfumersvault.com/kb/import-formula-from-text/" target="_blank" class="text-link">here</a> for the right format.</div>
         <div class="form-floating mb-3">
           <input type="text" class="form-control" id="txtImpName" name="fcatName" placeholder="Formula name">
           <label for="txtImpName">Formula Name</label>
@@ -1044,4 +960,55 @@ $(document).ready(function() {
   </div>
 </div>
 
+<!-- ADD FORMULA AI MODAL -->
+<div class="modal fade" id="add_formula_ai" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Generate Formula with AI</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="aiFormulaMsg" class="mb-3"></div>
+				<div class="form">
+					<div class="form-floating mb-3">
+						<input name="ai-formula-name" id="ai-formula-name" type="text" class="form-control" placeholder="Formula Name" />
+						<label for="ai-formula-name">Formula Name</label>
+					</div>
+					<div class="form-floating">
+						<textarea name="ai-description" id="ai-description" class="form-control" placeholder="Describe the formula you want to generate..." style="height: 150px;"></textarea>
+						<label for="ai-description">Describe the formula you want to generate...</label>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="mx-3">Examples</div>
+			<div class="px-3 mt-2">
+				<div id="aiTerminal" class="bg-black text-success p-3 rounded" style="font-family: monospace; min-height: 80px;">
+					<span id="terminalText"></span><span class="blinking-cursor">|</span>
+				</div>
+			</div>
+	
+			<div class="alert alert-warning mt-3 mx-3">
+				<i class="fa-solid fa-triangle-exclamation mx-2"></i>
+				<strong>Disclaimer:</strong> AI-generated formulas may contain inaccuracies or errors. Please review the final formula carefully before use.
+			</div>
+			<div class="modal-footer">
+				<small class="text-muted me-auto" id="msg_settings_info">
+					Powered by <strong>
+						<?php 
+						echo $user_settings['ai_service_provider'] === 'openai' 
+							? 'OpenAI' 
+							: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
+						?>
+					</strong>
+				</small>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" name="btn-generate-ai" class="btn btn-primary" id="generateAIFormula">Generate</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script src="/js/import.formulas.js"></script>
+<script src="/js/pvAI.js"></script>

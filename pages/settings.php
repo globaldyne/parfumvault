@@ -10,26 +10,27 @@ require_once(__ROOT__.'/func/php-settings.php');
   <h2 class="m-0 mb-4">Settings</h2>
   <div id="settings">
     <ul>
-        <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab">My preferences</a></li>
+        <li class="active"><a href="#general" id="general_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-gear mx-2"></i>My preferences</a></li>
         <?php if($role === 1){?>
-          <li class="active"><a href="#systemSettings" id="systemSettings_tab" role="tab" data-bs-toggle="tab">System settings</a></li>
-          <li class="active"><a href="#users" id="users_tab" role="tab" data-bs-toggle="tab">Users</a></li>
+          <li class="active"><a href="#systemSettings" id="systemSettings_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-sliders mx-2"></i>System settings</a></li>
+          <li class="active"><a href="#users" id="users_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-people mx-2"></i>Users</a></li>
         <?php }?>
-        <li><a href="#categories" id="cat_tab" role="tab" data-bs-toggle="tab">Ingredient Categories</a></li>
-        <li><a href="#frmCat" id="frmCat_tab" role="tab" data-bs-toggle="tab">Formula Categories</a></li>
-        <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-bs-toggle="tab">Perfume Types</a></li>
-        <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab">HTML Templates</a></li>
-        <li><a href="#sds" id="sds_tab" role="tab" data-bs-toggle="tab">SDS Settings</a></li>
-        <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab">Branding</span></a></li>
+        <li><a href="#pvAI" id="pvAI_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-robot mx-2"></i>Perfumers AI</a></li>
+        <li><a href="#categories" id="cat_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-tags mx-2"></i>Ingredient Categories</a></li>
+        <li><a href="#frmCat" id="frmCat_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-collection mx-2"></i>Formula Categories</a></li>
+        <li><a href="#perfumeTypes" id="perfume_types_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-droplet mx-2"></i>Perfume Types</a></li>
+        <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-file-earmark-code mx-2"></i>HTML Templates</a></li>
+        <li><a href="#sds" id="sds_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-file-earmark-text mx-2"></i>SDS Settings</a></li>
+        <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-palette mx-2"></i>Branding</span></a></li>
         <?php if($system_settings['INTEGRATIONS_enable'] === '1') {?>
-          <li><a href="#integrations" id="integrations_tab" role="tab" data-bs-toggle="tab">Integrations</a></li>
+          <li><a href="#integrations" id="integrations_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-plug mx-2"></i>Integrations</a></li>
         <?php } ?>
         <?php if($role === 1){?>
-          <li><a href="#maintenance" id="maintenance_tab" role="tab" data-bs-toggle="tab">Maintenance</a></li>
-          <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab">System logs</a></li>
+          <li><a href="#maintenance" id="maintenance_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-tools mx-2"></i>Maintenance</a></li>
+          <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-journal-text mx-2"></i>System logs</a></li>
         <?php } ?>
-        <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab">API</a></li>
-        <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab">About</a></li>
+        <li><a href="#api" id="api_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-cloud mx-2"></i>API</a></li>
+        <li><a href="#about" id="about_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-info-circle mx-2"></i>About</a></li>
     </ul>
     
     <div class="tab-content">
@@ -61,6 +62,16 @@ require_once(__ROOT__.'/func/php-settings.php');
         </div> 
       </div>
     <?php } ?>
+
+      <div class="tab-pane" id="pvAI">
+        <div id="get_pvAI">
+          <div class="loader-center">
+            <div class="loader"></div>
+            <div class="loader-text"></div>
+          </div>
+        </div>
+      </div>
+      
       <div id="categories">
         <div id="catMsg"></div>
           <div id="list_cat">

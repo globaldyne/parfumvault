@@ -1,9 +1,15 @@
-Whats New in v12.8
+Whats New in v12.9
 --------------------------
-- Added links for PV apps
-- Fix ingredient import compounds failing to import
-- Fix AromaTrack app api
-- Fix JSON export from within the formula page
-- Minor cosmetic changes
-- Backwards compatibility db schema fix
+- Added AI Chat box
+- Added AI formula generation
+- Added Google Gemini support
+- Added OpenAI formula support
+- Added a login screen template for easier integration with external SSO
+- Added formula advisor
+- Added Windows and macOS executors
+- Localized date across the app
+- Removed time from created and updated fields
+- Removed created and updated timestamps from ingredient suppliers, bottles, customers, and formula documents
+- Removed updated timestamp from HTML templates
+- Overall improved CSV formula import
 - This release may include additional changes; for full details, please refer to the CHANGELOG
