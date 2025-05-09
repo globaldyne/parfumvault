@@ -69,8 +69,6 @@ $res_ingSupplier = mysqli_query($conn, "SELECT id,name,min_ml,min_gr FROM ingSup
           <th>Supplier SKU</th>
           <th>Storage location</th>
           <th>Status</th>
-          <th>Last updated</th>
-          <th>Created</th>
           <th data-priority="1"></th>
       </tr>
    </thead>
@@ -89,7 +87,7 @@ $(document).ready(function() {
 	var tdIngSup = $('#tdIngSup').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [15] },
+			{ orderable: false, targets: [13] },
 			{ responsivePriority: 1, targets: 0 }
 		],
 		dom: 'lfrtip',
@@ -118,8 +116,6 @@ $(document).ready(function() {
 			{ data : 'supplier_sku', title: 'Supplier SKU', render: supplier_sku},
 			{ data : 'storage_location', title: 'Storage location', render: storage_location},
 			{ data : 'status', title: 'Status', render: status},
-			{ data : 'updated', title: 'Last update'},
-			{ data : 'created', title: 'Created'},
 			{ data : null, title: '', render: sActions},		   
 		],
 		order: [[ 1, 'asc' ]],

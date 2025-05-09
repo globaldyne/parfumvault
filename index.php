@@ -47,7 +47,8 @@ if ($role === 1) {
   <link href="/css/jquery-ui.css" rel="stylesheet">
   <link href="/css/magnific-popup.css" rel="stylesheet">
   <link href="/css/vault.css" rel="stylesheet">
-  
+  <link href="/css/pvAIChat.css" rel="stylesheet">
+
   <script src="/js/jquery/jquery.min.js"></script>
   <script src="/js/tableHTMLExport.js"></script>
   <script src="/js/jspdf.min.js"></script>
@@ -283,6 +284,34 @@ $(document).ready(function() {
     require_once(__ROOT__.'/pages/footer.php'); 
   ?>
 
+<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1') { ?>
+  <!-- Chatbot -->
+  <div id="chatbot">
+    <div id="chatbot-icon">
+        <i class="fa fa-robot"></i>
+    </div>
+
+    <div id="chatbot-modal">
+      <div id="chatbot-modal-header">
+        Chat with Perfumers AI (BETA)
+        <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
+      </div>
+      <div id="chatbot-modal-body">
+        <?php 
+        $fullNameParts = explode(' ', $user['fullName']);
+        $firstName = $fullNameParts[0];
+        ?>
+        <p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
+      </div>
+      <div id="chatbot-modal-footer">
+        <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
+        <button id="chatbot-send">Ask me...</button>
+      </div>
+    </div>
+  </div>
+<?php } ?>
+
+
   <!-- TOAST -->
   <div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
     <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
@@ -325,3 +354,6 @@ $(document).ready(function() {
 </script>
 <?php } ?>
 </html>
+<?php if( $user_settings['use_ai_service'] == '1') { ?>
+<script src="/js/pvAIChat.js"></script>
+<?php } ?>
