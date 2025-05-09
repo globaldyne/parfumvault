@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 13.0
+
 ### Version 12.9
 - Introduced Google Gemini integration.
 - Introduced OpenAI integration.
