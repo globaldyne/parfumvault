@@ -76,7 +76,7 @@
 }
 
 #chatbot-modal-footer button:hover {
-    background-color: var(--bs-primary-dark); /* Bootstrap darker primary color */
+    background-color: var(--bs-primary-border-subtle); /* Bootstrap darker primary color */
 }
 
 .copy-button {
