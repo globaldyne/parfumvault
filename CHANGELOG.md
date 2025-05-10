@@ -2,6 +2,7 @@
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
 - Replaced alert box with toast message when copying AI response
+- Added a realtime advisory count badge
 
 ### Version 12.9
 - Introduced Google Gemini integration.
