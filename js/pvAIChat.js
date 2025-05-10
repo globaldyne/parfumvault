@@ -184,10 +184,13 @@ $(document).ready(function () {
             .attr('title', 'Copy to clipboard')
             .on('click', function () {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('Response copied to clipboard!');
+                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Response copied to clipboard!');
+                    $('.toast-header').removeClass().addClass('toast-header alert-success');
                 }).catch(err => {
-                    alert('Failed to copy: ' + err);
+                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> Failed to copy:' + err);
+                    $('.toast-header').removeClass().addClass('toast-header alert-danger');
                 });
+                $('.toast').toast('show');
             });
 
         botMessageContainer.append(botMessage).append(copyIcon);
