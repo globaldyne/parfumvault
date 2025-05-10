@@ -303,9 +303,9 @@ $(document).ready(function() {
         ?>
         <p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
       </div>
-      <div id="chatbot-modal-footer">
-        <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
-        <button id="chatbot-send">Ask me...</button>
+      <div id="chatbot-modal-footer" class="d-flex align-items-center">
+        <input type="text" id="chatbot-input" class="me-2" placeholder="Ask perfumers AI...">
+        <button id="chatbot-send" class="btn btn-primary">Ask me...</button>
       </div>
     </div>
   </div>
