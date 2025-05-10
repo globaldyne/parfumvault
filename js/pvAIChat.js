@@ -71,15 +71,24 @@ $(document).ready(function () {
 
     function toggleChatbotModal() {
         const modal = $('#chatbot-modal');
-        modal.css('display', modal.css('display') === 'block' ? 'none' : 'block');
+        const input = $('#chatbot-input');
+        const isModalOpen = modal.css('display') === 'block';
+
+        if (isModalOpen) {
+            modal.css('display', 'none');
+            modal.css('z-index', '2000'); // Reset z-index when closed
+        } else {
+            modal.css('display', 'block');
+            modal.css('z-index', '2000'); // Ensure it appears above other modals
+            input.focus(); // Focus on the input field when opened
+        }
 
         // Dynamically apply Bootstrap theme classes
         const isDarkTheme = $('body').hasClass('bg-dark');
         modal.toggleClass('bg-dark text-light', isDarkTheme);
         modal.toggleClass('bg-light text-dark', !isDarkTheme);
 
-        const isModalOpen = modal.css('display') === 'block';
-        localStorage.setItem('chatBoxState', isModalOpen ? 'open' : 'closed');
+        localStorage.setItem('chatBoxState', isModalOpen ? 'closed' : 'open');
     }
 
     function sendMessage() {
