@@ -272,5 +272,3 @@ $(document).ready(function() {
 });
 
 </script>
-
-<script src="/js/ingredients.js"></script>
