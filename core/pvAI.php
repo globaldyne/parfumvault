@@ -154,7 +154,25 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    echo json_encode(['success' => $result['success']]);
+    $suggestions = $result['success'];
+    foreach ($suggestions as &$suggestion) {
+        $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
+        $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$safe_ingredient' AND owner_id = '$userID' LIMIT 1"));
+
+        if ($ingredient_data) {
+            $ingredient_id = (int)$ingredient_data['id'];
+            $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
+                SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
+                FROM suppliers 
+                WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
+            "));
+            $suggestion['inventory'] = $inventory;
+        } else {
+            $suggestion['inventory'] = 0;
+        }
+    }
+
+    echo json_encode(['success' => $suggestions]);
 } else {
     echo json_encode(['error' => 'Invalid action']);
 }
