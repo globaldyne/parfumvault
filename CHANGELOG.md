@@ -3,9 +3,10 @@
 - Fixed ingredients CSV redeclarations
 - Replaced alert box with toast message when copying AI response
 - Added a realtime advisory count badge
-- Cosmetic changes for formulas tags
+- Cosmetic changes for formulas labels
 - Added BS5 floating elements for formula properties
-- Extend formulas search in tags
+- Extend formulas search in labels
+- Rename tags to labels
 
 ### Version 12.9
 - Introduced Google Gemini integration.

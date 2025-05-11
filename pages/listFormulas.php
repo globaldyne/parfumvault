@@ -195,7 +195,7 @@ $(document).ready(function() {
 						d.order_by = d.columns[d.order[0].column].data;
 						d.order_as = d.order[0].dir;
 					}
-					d.extendSearchTags = $('#extendSearchTags').is(':checked'); // Add this line
+					d.extendSearchLabels = $('#extendSearchLabels').is(':checked');
 				},
 			},
 			columns: [
@@ -266,15 +266,15 @@ $(document).ready(function() {
 				let searchBox = $('#' + tableId + '_filter');
 				let checkboxHTML = `
 					<div class="form-check mt-2">
-						<input type="checkbox" value="" id="extendSearchTags">
-						<label class="form-check-label" for="extendSearchTags">
-							Include tags in search
+						<input type="checkbox" value="" id="extendSearchLabels">
+						<label class="form-check-label" for="extendSearchLabels">
+							Include labels in search
 						</label>
 					</div>`;
 				searchBox.append(checkboxHTML);
 
 				// Trigger table reload when checkbox state changes
-				$('#extendSearchTags').on('change', function() {
+				$('#extendSearchLabels').on('change', function() {
 					table.ajax.reload();
 				});
 			}
