@@ -1470,11 +1470,11 @@ hr.hr-text::before {
   right:20px;
 }
 
-.dataTables_filter input {
+.dataTables_pv_search_box {
 	width: 400px !important;
-    height: 40px; 
-    padding: 10px;
-    font-size: 16px;
+  height: 40px; 
+  padding: 10px;
+  font-size: 16px;
 }
 
 .pvCustomSearch {

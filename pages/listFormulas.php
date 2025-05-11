@@ -191,10 +191,11 @@ $(document).ready(function() {
 			   type: 'POST',
 			   dataType: 'json',
 			   data: function(d) {
-				   if (d.order.length>0){
-						d.order_by = d.columns[d.order[0].column].data
-						d.order_as = d.order[0].dir
+				   if (d.order.length > 0) {
+						d.order_by = d.columns[d.order[0].column].data;
+						d.order_as = d.order[0].dir;
 					}
+					d.extendSearchTags = $('#extendSearchTags').is(':checked'); // Add this line
 				},
 			},
 			columns: [
@@ -258,6 +259,25 @@ $(document).ready(function() {
 				 type: "POST"
 			  });
 			},
+			initComplete: function() {
+				$('#' + tableId + '_filter input')
+        			.addClass('form-control dataTables_pv_search_box');
+				// Add checkbox below the search field
+				let searchBox = $('#' + tableId + '_filter');
+				let checkboxHTML = `
+					<div class="form-check mt-2">
+						<input type="checkbox" value="" id="extendSearchTags">
+						<label class="form-check-label" for="extendSearchTags">
+							Include tags in search
+						</label>
+					</div>`;
+				searchBox.append(checkboxHTML);
+
+				// Trigger table reload when checkbox state changes
+				$('#extendSearchTags').on('change', function() {
+					table.ajax.reload();
+				});
+			}
 		});
 	}
 	
@@ -502,7 +522,7 @@ $(document).ready(function() {
 						data: {
 							formulas_wipe: "true",
 						},
-						dataType: 'json',
+					 	dataType: 'json',
 						success: function (data) {
 							if ( data.success ) {
 								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
