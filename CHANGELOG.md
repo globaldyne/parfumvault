@@ -5,6 +5,7 @@
 - Added a realtime advisory count badge
 - Cosmetic changes for formulas tags
 - Added BS5 floating elements for formula properties
+- Extend formulas search in tags
 
 ### Version 12.9
 - Introduced Google Gemini integration.
