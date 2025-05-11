@@ -132,6 +132,23 @@ if ($_POST['action'] === 'addFormulaAI') {
     }
 
     echo json_encode(['success' => $result['success']]);
+
+} else if ($_POST['action'] === 'getAIReplacementSuggestions') {
+
+    $ingredient = $_POST['ingredient'] ?? '';
+    $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name and description as a JSON.";
+    
+    $result = pvAIHelper($prompt);
+    
+    error_log("AI Replacement Prompt: $prompt");
+    error_log("AI Replacement Result: " . json_encode($result));
+    
+    if (isset($result['error'])) {
+        echo json_encode(['error' => $result['error']]);
+        return;
+    }
+
+    echo json_encode(['success' => $result['success']]);
 } else {
     echo json_encode(['error' => 'Invalid action']);
 }

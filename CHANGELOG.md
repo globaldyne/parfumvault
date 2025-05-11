@@ -7,6 +7,7 @@
 - Added BS5 floating elements for formula properties
 - Extend formulas search in labels
 - Rename tags to labels
+- Added ingredient replacement suggestion in formula making using Perfumers AI
 
 ### Version 12.9
 - Introduced Google Gemini integration.
