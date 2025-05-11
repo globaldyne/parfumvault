@@ -1337,7 +1337,7 @@ hr.hr-text::before {
 #slvMetaDel, #slvMetaAdd {
 	display: none;	
 }
-
+/*
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;
@@ -1349,7 +1349,7 @@ hr.hr-text::before {
   vertical-align: baseline;
   border-radius: 0.25rem;
 }
-
+*/
 .badge:empty {
   display: none;
 }

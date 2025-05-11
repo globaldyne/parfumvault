@@ -6660,7 +6660,7 @@ if($_GET['action'] == 'exportIngProf'){
 }
 
 //ADD tags
-if($_POST['do'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
+if($_POST['action'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."' AND owner_id = '$userID'"))){
 		$response[] = '';
 		echo json_encode($response);
@@ -6673,7 +6673,7 @@ if($_POST['do'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
 }
 
 //REMOVE tags
-if($_POST['do'] == 'tagremove' && $_POST['fid'] && $_POST['tag']){
+if($_POST['action'] == 'tagremove' && $_POST['fid'] && $_POST['tag']){
 	mysqli_query($conn,"DELETE FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."' AND owner_id = '$userID'" );
 	$response[] = '';
 	echo json_encode($response);
