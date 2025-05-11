@@ -274,23 +274,26 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function actions(data, type, row){
-		var data;
-		//if (row.quantity != row.originalQuantity) {
-			data = '<i id="undo_add" data-row-id="'+row.id+'" data-ingredient="'+row.ingredient+'" data-originalQuantity="'+row.originalQuantity+'" data-rep-name = "'+row.repName+'" data-rep-id = "'+row.repID+'" data-ingID = "'+row.ingID+'" class="mr fas fa-undo pv_point_gen" title="Reset original quantity for '+row.ingredient+'"></i>';
-		//}
-		
+	function actions(data, type, row) {
+		let actionsHtml = '';
+
 		if (row.toAdd == 1 && row.toSkip == 0) {
-			data += '<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-check pv_point_gen" title="Confirm add '+row.ingredient+'"></i>';
-			
-		   data += '<i data-bs-toggle="modal" data-bs-target="#confirm_skip" data-quantity="'+row.quantity+'" data-ingredient="'+row.ingredient+'" data-row-id="'+row.id+'" data-ing-id="'+row.ingID+'" data-qr="'+row.quantity+'" class="mr fas fa-forward pv_point_gen" title="Skip '+row.ingredient+'"></i>';
-	
+			actionsHtml += `
+				<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="${row.quantity}" data-ingredient="${row.ingredient}" data-row-id="${row.id}" data-ing-id="${row.ingID}" data-qr="${row.quantity}" class="mr fas fa-check pv_point_gen" title="Confirm add ${row.ingredient}"></i>
+				<?php if( $user_settings['use_ai_service'] == '1') { ?>
+				<i data-bs-toggle="modal" data-bs-target="#confirm_skip" data-quantity="${row.quantity}" data-ingredient="${row.ingredient}" data-row-id="${row.id}" data-ing-id="${row.ingID}" data-qr="${row.quantity}" class="mr fas fa-forward pv_point_gen" title="Skip ${row.ingredient}"></i>
+				<?php } ?>
+				<i data-bs-toggle="modal" data-bs-target="#ai_replacement" data-ingredient="${row.ingredient}" data-row-id="${row.id}" class="mr bi bi-robot pv_point_gen" title="Suggest a replacement"></i>
+			`;
 		}
-		
-						  
-		data += '<i data-ingredient="'+row.ingredient+'" data-quantity="'+row.quantity+'" data-concentration="'+row.concentration+'" data-ingID="'+row.ingID+'" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen"></i>'; 
-						 
-		return data;    
+
+		//if (row.quantity != row.originalQuantity) {
+			actionsHtml += `<i id="undo_add" data-row-id="${row.id}" data-ingredient="${row.ingredient}" data-originalQuantity="${row.originalQuantity}" data-rep-name="${row.repName}" data-rep-id="${row.repID}" data-ingID="${row.ingID}" class="mr fas fa-undo pv_point_gen" title="Reset original quantity for ${row.ingredient}"></i>`;
+		//}
+
+		actionsHtml += `<i data-ingredient="${row.ingredient}" data-quantity="${row.quantity}" data-concentration="${row.concentration}" data-ingID="${row.ingID}" id="addToCart" class="mr fas fa-shopping-cart pv_point_gen" title="Add ${row.ingredient} to cart"></i>`;
+
+		return actionsHtml;
 	};
 	
 	function stock(data, type, row){
@@ -537,19 +540,19 @@ $(document).ready(function() {
 					dataType: 'json',
 					success: function (data) {
 						if(data.success){
-							$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+							$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 							$('.toast-header').removeClass().addClass('toast-header alert-success');
 							reload_data();
 							bootbox.hideAll();
 							$('.toast').toast('show');
 						}else{
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 							 var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
 						}	
 						$('#msg').html(msg);
 					},
 					error: function (xhr, status, error) {
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 						$('.toast-header').removeClass().addClass('toast-header alert-danger');
 						$('.toast').toast('show');
 					}
@@ -706,31 +709,117 @@ $(document).ready(function() {
   </div>
 </div>
 
-<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1' && $user_settings['making_ai_chat'] == '1') { ?>
-  <!-- Chatbot -->
-  <div id="chatbot">
-    <div id="chatbot-icon">
-        <i class="fa fa-robot"></i>
-    </div>
+<?php if( $user_settings['use_ai_service'] == '1') { ?>
+	<!-- Modal AI Replacement -->
+	<div class="modal fade" id="ai_replacement" data-bs-backdrop="static" tabindex="-1" aria-labelledby="ai_replacement" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">AI Replacement Suggestions</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="aiReplacementLoading" class="text-center">
+						<div class="spinner-border text-primary" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+						<p>Fetching AI suggestions...</p>
+					</div>
+					<div id="aiReplacementContent" style="display: none;">
+						<div id="aiReplacementSuggestions"></div>
+					</div>
+					<div id="aiReplacementError" class="alert alert-danger d-none" role="alert">
+						Unable to fetch suggestions. Please try again later.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal AI Replacement END -->
+	<script> 		
+	$('#ai_replacement').on('show.bs.modal', function (event) {
+		const button = $(event.relatedTarget);
+		const ingredient = button.data('ingredient');
+		const rowId = button.data('row-id');
 
-    <div id="chatbot-modal">
-      <div id="chatbot-modal-header">
-        Chat with Perfumers AI (BETA)
-        <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
-      </div>
-      <div id="chatbot-modal-body">
-        <?php 
-        $fullNameParts = explode(' ', $user['fullName']);
-        $firstName = $fullNameParts[0];
-        ?>
-        <p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
-      </div>
-      <div id="chatbot-modal-footer">
-        <input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
-        <button id="chatbot-send">Ask me...</button>
-      </div>
-    </div>
-  </div>
+		$('#aiReplacementLoading').show();
+		$('#aiReplacementContent').hide();
+		$('#aiReplacementError').addClass('d-none');
+
+		// Update modal title with the ingredient name
+		$('#ai_replacement .modal-title').text(`AI Replacement Suggestions for ${ingredient}`);
+
+		$.ajax({
+			url: '/core/core.php',
+			type: 'POST',
+			data: { 
+				action: 'getAIReplacementSuggestions',
+				ingredient: ingredient 
+			},
+			dataType: 'json',
+			success: function (response) {
+				$('#aiReplacementLoading').hide();
+				if (response.success) {
+					let suggestionsHtml = '<ul class="list-group">';
+					response.success.forEach(function (suggestion) {
+						suggestionsHtml += `<li class="list-group-item">
+							<strong>${suggestion.ingredient}</strong> - ${suggestion.description}
+							<button class="btn btn-sm btn-primary float-end copy-replacement" data-name="${suggestion.ingredient}">Copy</button>
+						</li>`;
+					});
+					suggestionsHtml += '</ul>';
+					$('#aiReplacementSuggestions').html(suggestionsHtml);
+					$('#aiReplacementContent').show();
+				} else {
+					$('#aiReplacementError').removeClass('d-none').text('No suggestions available.');
+				}
+			},
+			error: function () {
+				$('#aiReplacementLoading').hide();
+				$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
+			}
+		});
+	});
+
+	$('#aiReplacementSuggestions').on('click', '.copy-replacement', function () {
+		const replacementName = $(this).data('name');
+		navigator.clipboard.writeText(replacementName).then(() => {
+			console.log(`Copied to clipboard: ${replacementName}`);
+			alert(`Copied "${replacementName}" to clipboard.`);
+		}).catch(err => {
+			console.error('Failed to copy text: ', err);
+		});
+	});
+	</script>
+<?php } ?>
+<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1' && $user_settings['making_ai_chat'] == '1') { ?>
+  	<!-- Chatbot -->
+	<div id="chatbot">
+		<div id="chatbot-icon">
+			<i class="fa fa-robot"></i>
+		</div>
+
+		<div id="chatbot-modal">
+		<div id="chatbot-modal-header">
+			Chat with Perfumers AI (BETA)
+			<span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
+		</div>
+		<div id="chatbot-modal-body">
+			<?php 
+			$fullNameParts = explode(' ', $user['fullName']);
+			$firstName = $fullNameParts[0];
+			?>
+			<p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
+		</div>
+		<div id="chatbot-modal-footer">
+			<input type="text" id="chatbot-input" placeholder="Ask perfumers AI...">
+			<button id="chatbot-send">Ask me...</button>
+		</div>
+		</div>
+	</div>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
 

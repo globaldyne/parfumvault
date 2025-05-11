@@ -7193,6 +7193,11 @@ if ($_POST['action'] == 'addFormulaAI') {
     return;
 }
 
+//AI SUGGESTIONS
+if ($_POST['action'] == 'getAIReplacementSuggestions' && $_POST['ingredient']) {
+    require_once(__ROOT__.'/core/pvAI.php');
+    return;
+}
 
 //AI CHAT
 if ($_POST['action'] == 'aiChat' && $_POST['message']) {
