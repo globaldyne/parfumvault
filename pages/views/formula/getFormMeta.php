@@ -117,7 +117,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   
     <div class="form-group col-md-6">
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="tagsinput" placeholder="Tags" data-role="tagsinput" value="<?= implode(",", $tagsData) ?>">
+            <input type="text" class="form-control" id="tagsinput" placeholder="Start typing to add a label..." data-role="tagsinput" value="<?= implode(",", $tagsData) ?>">
         </div>
     </div>
     
