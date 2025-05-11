@@ -733,6 +733,9 @@ $(document).ready(function() {
 					</div>
 				</div>
 				<div class="modal-footer">
+					<small class="text-muted me-auto" id="msg_settings_info">
+            			Note: Up to 5 materials will be requested. The returned information may be inaccurate and must be reviewed carefully.
+					</small>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				</div>
 			</div>
