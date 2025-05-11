@@ -136,6 +136,12 @@ if ($_POST['action'] === 'addFormulaAI') {
 } else if ($_POST['action'] === 'getAIReplacementSuggestions') {
 
     $ingredient = $_POST['ingredient'] ?? '';
+    
+    if (empty($ingredient)) {
+        echo json_encode(['error' => 'Ingredient is required.']);
+        return;
+    }
+
     $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name and description as a JSON.";
     
     $result = pvAIHelper($prompt);
