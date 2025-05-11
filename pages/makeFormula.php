@@ -768,9 +768,14 @@ $(document).ready(function() {
 				if (response.success) {
 					let suggestionsHtml = '<ul class="list-group">';
 					response.success.forEach(function (suggestion) {
+						const inventory = suggestion.inventory || {};
+						const stock = parseFloat(inventory.stock || 0);
+						const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
+						const badgeText = stock > 0 ? `In Stock: ${stock} ${inventory.mUnit || ''}` : 'Out of Stock';
 						suggestionsHtml += `<li class="list-group-item">
 							<strong>${suggestion.ingredient}</strong> - ${suggestion.description}
-							<button class="btn btn-sm btn-primary float-end copy-replacement" data-name="${suggestion.ingredient}">Copy</button>
+							<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
+							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}" title="Copy to clipboard"></i>
 						</li>`;
 					});
 					suggestionsHtml += '</ul>';
