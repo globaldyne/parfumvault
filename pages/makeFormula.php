@@ -233,10 +233,14 @@ $(document).ready(function() {
 			drawCallback: function( settings ) {
 				extrasShow();
 			},
+			initComplete: function() {
+				$('#tdDataPending_filter input')
+        			.addClass('form-control dataTables_pv_search_box');
+			},
 			order: [[ 0, 'asc' ]],
 			lengthMenu: [[200, 500, 1000], [200, 500, 1000]],
 			pageLength: 200,
-			displayLength: 200,
+			displayLength: 200
 	});
 	
 	$('#tdDataPending').on('mouseenter', '.pv-zoom', function() {
@@ -254,16 +258,15 @@ $(document).ready(function() {
 	});
 	<?php } ?>
 
-
-
 	function ingredient(data, type, row){
 		data ='<div class="listIngNameCas-with-separator"><a href="#" class="dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient+'</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span><div class="dropdown-menu dropdown-menu-right">';
 		data+='<li><a class="dropdown-item " href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" ><i class="fa-solid fa-circle-info mx-2"></i>Quick Info</a></li>';
 		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?id='+row.ingID+'" target="_blank"><i class="fa-solid fa-eye mx-2"></i>Go to ingredient</a></li>';
+		data+= '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ai_replacement" data-ingredient="' + row.ingredient + '" data-row-id="' + row.id + '"><i class="bi bi-robot mx-2"></i>Suggest a replacement</a></li>';
 		data+='</div></div>';
 		return data;
 	};
-	
+
 	function quantity(data, type, row){
 		var overdose = '';
 		if(row.overdose != 0 ){
