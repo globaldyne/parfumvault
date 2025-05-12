@@ -176,7 +176,7 @@ $(document).ready(function () {
     function simulateTypingEffect(text, chatBody) {
         const botMessageContainer = $('<div></div>')
             .addClass('alert alert-primary bot-message-container');
-        const timestamp = new Date().toLocaleTimeString();
+        const timestamp = new Date();
         const botMessage = $('<p></p>')
             .addClass('bot-message fw-bold'); // Add fw-bold class
         const copyIcon = $('<i></i>')
@@ -206,7 +206,8 @@ $(document).ready(function () {
             } else {
                 const timestampElement = $('<small></small>')
                     .addClass('text-muted d-block')
-                    .text(timestamp);
+                    .text(timestamp.toLocaleTimeString())
+                    .attr('title', timestamp.toLocaleString()); // Add hover with full date
                 botMessageContainer.append(timestampElement);
                 chatBody.scrollTop(chatBody.prop('scrollHeight'));
 
