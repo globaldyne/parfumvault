@@ -8,6 +8,7 @@
 - Extend formulas search in labels
 - Rename tags to labels
 - Added ingredient replacement suggestion in formula making using Perfumers AI
+- Added full date in AI chat repsonse
 
 ### Version 12.9
 - Introduced Google Gemini integration.
