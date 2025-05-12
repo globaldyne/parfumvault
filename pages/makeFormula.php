@@ -785,7 +785,7 @@ $(document).ready(function() {
 					$('#aiReplacementSuggestions').html(suggestionsHtml);
 					$('#aiReplacementContent').show();
 				} else {
-					$('#aiReplacementError').removeClass('d-none').text('No suggestions available.');
+					$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
 				}
 			},
 			error: function () {
