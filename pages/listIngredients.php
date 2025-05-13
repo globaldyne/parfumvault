@@ -38,7 +38,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
 	<div class="text-right">
         <div class="pv_input_grp">   
           <div class="btn-group input-group-btn">
-          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
+          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS...">
             <button class="btn btn-search btn-primary col" id="pv_search_btn" data-provider="local">
             	<span class="label-icon">
                     <i class="fas fa-database mx-2"></i>
@@ -156,7 +156,6 @@ $(document).ready(function() {
 				"Ingredient name": $('#ing_name').val(),
 				"CAS#": $('#ing_cas').val(),
 				"EINECS": $('#ing_einecs').val(),
-				"Odor": $('#ing_odor').val(),
 				"Profile": $('#ing_profile').val(),
 				"Category": $('#ing_category').find('option:selected').data('text'),
 				"Synonym": $('#ing_synonym').val()
@@ -188,9 +187,6 @@ $(document).ready(function() {
 					case "EINECS":
 						$('#ing_einecs').val('');
 						break;
-					case "Odor":
-						$('#ing_odor').val('');
-						break;
 					case "Profile":
 						$('#ing_profile').val('').trigger('change');
 						break;
@@ -218,7 +214,7 @@ $(document).ready(function() {
 			processing: 'Blending...',
 			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
 			search: 'Quick Search:',
-			searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
+			searchPlaceholder: 'Name, CAS, EINECS, IUPAC...',
 		},
 		ajax: {	
 			url: '/core/list_ingredients_data.php',
@@ -231,9 +227,9 @@ $(document).ready(function() {
 				d.name = '<?=htmlspecialchars($_POST['name']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.cas = '<?=htmlspecialchars($_POST['cas']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.einecs = '<?=htmlspecialchars($_POST['einecs']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.odor = '<?=htmlspecialchars($_POST['odor']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.cat = '<?=htmlspecialchars($_POST['cat']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.synonym = '<?=htmlspecialchars($_POST['synonym']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.notes = '<?=htmlspecialchars($_POST['notes']?:null, ENT_QUOTES, 'UTF-8')?>'
 				if (d.order.length>0){
 					d.order_by = d.columns[d.order[0].column].data
 					d.order_as = d.order[0].dir
@@ -244,7 +240,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'name', title: 'Name', render: iName },
 			  { data : 'IUPAC', title: 'IUPAC' },
-			  { data : 'odor', title: 'Description'},
+			  { data : 'notes', title: 'Description'},
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
@@ -649,7 +645,9 @@ $(document).ready(function() {
 			$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 		}else{
 			$("#advanced_search").html('');
-			tdDataIng.settings()[0].language.emptyTable = '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try a different term instead? You can search for ingredient name or CAS number</strong></div>';
+			tdDataIng.language = {
+    			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
+			};
 		}
 		
 	});

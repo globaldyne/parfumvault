@@ -65,7 +65,7 @@ $(document).ready(function () {
         //const defaultMessage = $('<p></p>')
          //   .text("What are you blending today?")
          //   .addClass('text-secondary');
-        chatBody.append(defaultMessage);
+        //chatBody.append(defaultMessage);
         localStorage.setItem('chatMessages', chatBody.html());
     }
 

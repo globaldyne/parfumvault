@@ -641,13 +641,14 @@ $(document).ready(function() {
 	};
 	
 	function ingNotes(data, type, row, meta){
-		 if(type === 'display'){
-		  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
-		  <?php if($meta['isProtected'] == FALSE){?>
-		  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
-		  <?php } ?>
-		 }
-		return data;
+	  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
+	  <?php if($meta['isProtected'] == FALSE){?>
+	  ingNotes = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
+	  <?php } ?>
+		if (data.length > 64) {
+			return ingNotes = '<div class="text-wrap" rel="tip" title="' + data + '">' + data.substring(0, 64) + '...</div>';
+		}
+		return ingNotes;
 	};
 	  
 	  

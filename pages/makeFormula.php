@@ -453,7 +453,7 @@ $(document).ready(function() {
 							"fid": data.fid,
 							"name": data.name,
 							"cas" : data.cas,
-							"odor" : data.odor,
+							"notes" : data.notes,
 							"ingredient": data.ingredient,
 							"ingredient_id": data.ingID,
 							"concentration": data.concentration,
@@ -776,7 +776,7 @@ $(document).ready(function() {
 						const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
 						const badgeText = stock > 0 ? `In Stock: ${stock} ${inventory.mUnit || ''}` : 'Out of Stock';
 						suggestionsHtml += `<li class="list-group-item">
-							<strong>${suggestion.ingredient}</strong> - ${suggestion.description}
+							<strong>${suggestion.ingredient}</strong> (CAS: ${suggestion.cas || 'N/A'}) - ${suggestion.description}
 							<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
 							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}" title="Copy to clipboard"></i>
 						</li>`;
@@ -788,9 +788,10 @@ $(document).ready(function() {
 					$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
 				}
 			},
-			error: function () {
+			error: function (xhr, status, error) {
 				$('#aiReplacementLoading').hide();
 				$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
+				console.error('Error fetching AI suggestions:', error);
 			}
 		});
 	});
