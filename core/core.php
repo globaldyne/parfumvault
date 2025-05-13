@@ -1596,7 +1596,7 @@ if($_POST['ingredient_wipe'] == 'true'){
 	
 	if(mysqli_query($conn, "DELETE FROM ingredients  WHERE owner_id = '$userID'")){
 		mysqli_query($conn, "DELETE FROM ingCategory WHERE owner_id = '$userID'");
-		//mysqli_query($conn, "DELETE FROM ingProfiles WHERE owner_id = '$userID'");
+		mysqli_query($conn, "DELETE FROM inggredientLabels WHERE owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM ingReplacements WHERE owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM ingSafetyInfo WHERE owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM suppliers WHERE owner_id = '$userID'");
@@ -7279,6 +7279,7 @@ if($_POST['action'] == 'deleteFormula' && $_POST['fid']){
 		mysqli_query($conn, "DELETE FROM formulasRevisions WHERE fid = '$fid' AND owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM formula_history WHERE fid = '".$meta['id']."' AND owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM formulasTags WHERE formula_id = '".$meta['id']."' AND owner_id = '$userID'");
+        mysqli_query($conn, "DELETE FROM ingredientLabels WHERE formula_id = '".$meta['id']."' AND owner_id = '$userID'");
 		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
 		$response['success'] = 'Formula '.$fname.' deleted';
 	}else{
