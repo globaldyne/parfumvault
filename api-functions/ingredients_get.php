@@ -28,7 +28,7 @@ function normalize_value($value, $type = 'string', $default = '-') {
 }
 
 // Fetch ingredients data
-$sql = "SELECT id, INCI, name, cas, odor, profile, physical_state, category, purity, allergen 
+$sql = "SELECT id, INCI, name, cas, notes, profile, physical_state, category, purity, allergen 
         FROM ingredients WHERE owner_id = '$userID'";
 $result = mysqli_query($conn, $sql);
 
@@ -85,7 +85,6 @@ while ($rx = mysqli_fetch_assoc($result)) {
 	$rx['rdi'] = normalize_value($rx['rdi'], 'int', 0);
 	$rx['notes'] = normalize_value($rx['notes']);
 	$rx['solvent'] = normalize_value($rx['solvent']);
-    $rx['odor'] = normalize_value($rx['odor']);
     $rx['flavor_use'] = normalize_value($rx['flavor_use']);
     $rx['soluble'] = normalize_value($rx['soluble']);
     $rx['logp'] = normalize_value($rx['logp']);

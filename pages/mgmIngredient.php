@@ -46,6 +46,7 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE i
 	<script src="/js/bootstrap-editable.js"></script>
 	<script src="/js/datatables.min.js"></script>
 	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/bootstrap-tagsinput.js"></script> 
 
     <link href="/css/datatables.min.css" rel="stylesheet"/>
 	<link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -54,7 +55,8 @@ $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE i
 	<link href="/css/vault.css" rel="stylesheet">
 	<link href="/css/bootstrap-editable.css" rel="stylesheet">
 	<link href="/css/mgmIngredient.css" rel="stylesheet">
-	
+	<link href="/css/bootstrap-tagsinput.css" rel="stylesheet" />
+
 <script>
 var myIngName = "<?=$ing['name']?>";
 var newIngName = "<?=$_GET["newIngName"]?>";

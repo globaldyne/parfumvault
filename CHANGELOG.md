@@ -9,6 +9,11 @@
 - Rename tags to labels
 - Added ingredient replacement suggestion in formula making using Perfumers AI
 - Added full date in AI chat repsonse
+- Added CAS in ingrdeient suggestions
+- Updated AI formula generation to include dilution and solvent
+- Fixed js error when searching in PV library
+- Replaced odor with labels for ingredients
+- Fixed defaultMessage error in AI Chat
 
 ### Version 12.9
 - Introduced Google Gemini integration.

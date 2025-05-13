@@ -290,7 +290,7 @@ if($role === 1) {
                 "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
                 "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
                 "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-                "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
+                "templates", "user_prefs", "user_settings", "branding", "orders", "order_items", "ingredientLabels"
             ];
 
             foreach ($tables as $table) {
@@ -583,7 +583,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteprofile') {
             "formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
             "ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
             "inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-            "templates", "user_prefs", "user_settings", "branding", "orders", "order_items"
+            "templates", "user_prefs", "user_settings", "branding", "orders", "order_items", "ingredientLabels"
         ];
 
         foreach ($tables as $table) {
@@ -3465,12 +3465,11 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	$strength = mysqli_real_escape_string($conn, $_POST["strength"]);
 	$category = mysqli_real_escape_string($conn, $_POST["category"] ? $_POST['category']: '1');
 	$physical_state = mysqli_real_escape_string($conn, $_POST["physical_state"]);
-	$odor = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["odor"])));
 	$notes = ucfirst(trim(mysqli_real_escape_string($conn, $_POST["notes"])));
 	
 	if(empty($_POST['name'])){
 	
-		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',odor = '$odor',notes = '$notes' WHERE name='$ing' AND owner_id = '$userID'";
+		$query = "UPDATE ingredients SET INCI = '$INCI',cas = '$cas',solvent='".$_POST["solvent"]."', einecs = '$einecs', reach = '$reach',FEMA = '$fema',purity='$purity',profile='$profile',type = '$type',strength = '$strength', category='$category',physical_state = '$physical_state',notes = '$notes' WHERE name='$ing' AND owner_id = '$userID'";
 		
 		if(mysqli_query($conn, $query)){
 			$response["success"] = 'General details have been updated';
@@ -3480,7 +3479,7 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'general'){
 	}else{
 		$name = sanChar(mysqli_real_escape_string($conn, $_POST["name"]));
 
-		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, odor, purity, solvent, physical_state,owner_id) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$odor', '$purity', '$solvent', '1','$userID')";
+		$query = "INSERT INTO ingredients (name, INCI, cas, einecs, reach, FEMA, type, strength, category, profile, notes, purity, solvent, physical_state,owner_id) VALUES ('$name', '$INCI', '$cas', '$einecs', '$reach', '$fema', '$type', '$strength', '$category', '$profile',  '$notes', '$purity', '$solvent', '1','$userID')";
 		
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name' AND owner_id = '$userID'"))){
 			$response["error"] = $name.' already exists';
@@ -3648,9 +3647,10 @@ if($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'safety_info' && $_POST[
 }
 
 //DEPRECATED????
+/*
 if($_GET['import'] == 'ingredient'){
 	$name = sanChar(mysqli_real_escape_string($conn, base64_decode($_GET["name"])));
-	$query = "INSERT INTO ingredients (name, INCI, cas, notes, odor, owner_id) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$odor', '$userID')";
+	$query = "INSERT INTO ingredients (name, INCI, cas, notes, owner_id) VALUES ('$name', '$INCI', '$cas', 'Auto Imported', '$userID')";
 	
 	if(mysqli_num_rows(mysqli_query($conn, "SELECT name FROM ingredients WHERE name = '$name' AND owner_id = '$userID'"))){
 		$response["error"] = $name.' already exists';
@@ -3664,7 +3664,7 @@ if($_GET['import'] == 'ingredient'){
 	echo json_encode($response);	
 	return;
 }
-
+*/
 //DUPLICATE INGREDIENT
 if ($_POST['action'] == 'duplicate_ingredient' && isset($_POST['old_ing_name'], $_POST['ing_id'], $_POST['new_ing_name'])) {
     // Sanitize inputs
@@ -3697,11 +3697,11 @@ if ($_POST['action'] == 'duplicate_ingredient' && isset($_POST['old_ing_name'], 
 
     // Duplicate ingredient details
 	$queries[] = "INSERT INTO ingredients (name, INCI, type, strength, category, purity, cas, FEMA, reach, tenacity, chemical_name, formula, 
-				flash_point, appearance, notes, profile, solvent, odor, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
+				flash_point, appearance, notes, profile, solvent, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
 				cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, impact_top, impact_heart, impact_base, 
 				usage_type, noUsageLimit, isPrivate, molecularWeight, physical_state, owner_id)
 				SELECT '$new_ing_name', INCI, type, strength, category, purity, cas, FEMA, reach, tenacity, chemical_name, formula, 
-				flash_point, appearance, notes, profile, solvent, odor, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
+				flash_point, appearance, notes, profile, solvent, allergen, flavor_use, soluble, logp, cat1, cat2, cat3, cat4, cat5A, 
 				cat5B, cat5C, cat5D, cat6, cat7A, cat7B, cat8, cat9, cat10A, cat10B, cat11A, cat11B, cat12, impact_top, impact_heart, impact_base, 
 				usage_type, noUsageLimit, isPrivate, molecularWeight, physical_state, '$userID'
 				FROM ingredients WHERE id = '$ing_id' AND owner_id = '$userID'
@@ -6659,7 +6659,7 @@ if($_GET['action'] == 'exportIngProf'){
 	return;
 }
 
-//ADD tags
+//ADD FORMUAL LABEL
 if($_POST['action'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
 	if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."' AND owner_id = '$userID'"))){
 		$response[] = '';
@@ -6672,13 +6672,46 @@ if($_POST['action'] == 'tagadd' && $_POST['fid'] && $_POST['tag']){
 	return;
 }
 
-//REMOVE tags
+//REMOVE FORMULA LABEL
 if($_POST['action'] == 'tagremove' && $_POST['fid'] && $_POST['tag']){
-	mysqli_query($conn,"DELETE FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."' AND owner_id = '$userID'" );
-	$response[] = '';
-	echo json_encode($response);
-	return;
+    if(mysqli_query($conn,"DELETE FROM formulasTags WHERE formula_id='".$_POST['fid']."' AND tag_name = '".$_POST['tag']."' AND owner_id = '$userID'")) {
+        $response['success'] = 'Tag removed successfully';
+    } else {
+        $response['error'] = 'Error removing tag: ' . mysqli_error($conn);
+    }
+    echo json_encode($response);
+    return;
 }
+
+
+//ADD INGREDIENT LABEL
+if($_POST['action'] == 'inglabeladd' && $_POST['id'] && $_POST['label']){
+    if(mysqli_num_rows(mysqli_query($conn,"SELECT id FROM ingredientLabels WHERE ingredient_id='".$_POST['id']."' AND label_name = '".$_POST['label']."' AND owner_id = '$userID'"))){
+        $response['success'] = 'Label already exists for this ingredient';
+        echo json_encode($response);
+        error_log("Label already exists for this ingredient: " . mysqli_error($conn));
+        return;
+    }
+    if(mysqli_query($conn,"INSERT INTO ingredientLabels (ingredient_id,label_name,owner_id) VALUES('".$_POST['id']."','".$_POST['label']."','$userID')")) {
+        $response['success'] = 'Label added successfully';
+    } else {
+        $response['error'] = 'Error adding label: ' . mysqli_error($conn);
+    }
+    echo json_encode($response);
+    return;
+}
+
+//REMOVE INGREDIENT LABEL
+if($_POST['action'] == 'inglabelremove' && $_POST['id'] && $_POST['label']){
+    if(mysqli_query($conn,"DELETE FROM ingredientLabels WHERE ingredient_id='".$_POST['id']."' AND label_name = '".$_POST['label']."' AND owner_id = '$userID'")) {
+        $response['success'] = 'Label removed successfully';
+    } else {
+        $response['error'] = 'Error removing label: ' . mysqli_error($conn);
+    }
+    echo json_encode($response);
+    return;
+}
+
 
 //RATING UPDATE
 if($_POST['update_rating'] == '1' && $_POST['fid'] && is_numeric($_POST['score'])){
@@ -7187,7 +7220,7 @@ if($_POST['action'] == 'addFormula'){
 	return;
 }
 
-//ADD NEW AI FORMULA
+//GENERATE AI FORMULA
 if ($_POST['action'] == 'addFormulaAI') {
     require_once(__ROOT__.'/core/pvAI.php');
     return;

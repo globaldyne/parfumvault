@@ -39,8 +39,8 @@ if ($_POST['advanced']) {
         $filter .= " AND ingredients.einecs LIKE '%$einecs%'";
     }
 
-    if ($odor = trim(mysqli_real_escape_string($conn, $_POST['odor']))) {
-        $filter .= " AND ingredients.odor LIKE '%$odor%'";
+    if ($notes = trim(mysqli_real_escape_string($conn, $_POST['notes']))) {
+        $filter .= " AND ingredients.notes LIKE '%$notes%'";
     }
 
     if ($profile = mysqli_real_escape_string($conn, $_POST['profile'])) {
@@ -58,20 +58,32 @@ if ($_POST['advanced']) {
 
 $search = trim(mysqli_real_escape_string($conn, $_POST['search']['value'] ?? $_POST['pvSearch'] ?? ''));
 if ($search !== '') {
-    $filter = "WHERE ingredients.owner_id = '$userID' AND (ingredients.name LIKE '%$search%' OR ingredients.cas LIKE '%$search%' OR ingredients.einecs LIKE '%$search%' OR ingredients.odor LIKE '%$search%' OR ingredients.INCI LIKE '%$search%')";
+    $filter .= " AND (ingredients.name LIKE '%$search%' 
+                OR ingredients.cas LIKE '%$search%' 
+                OR ingredients.einecs LIKE '%$search%' 
+                OR ingredients.INCI LIKE '%$search%' 
+                OR EXISTS (
+                    SELECT 1 
+                    FROM ingredientLabels 
+                    WHERE ingredientLabels.ingredient_id = ingredients.id 
+                    AND ingredientLabels.label_name LIKE '%$search%'
+                    AND ingredientLabels.owner_id = '$userID'
+                ))";
 }
 
 $extra = "ORDER BY $order_by $order";
 
 $query = "
     SELECT 
-        ingredients.id, ingredients.name, ingredients.INCI, ingredients.cas, ingredients.einecs, ingredients.profile, ingredients.category, 
-        ingredients.odor, $defCatClass, ingredients.allergen, ingredients.usage_type, ingredients.logp, ingredients.formula, 
-        ingredients.flash_point, ingredients.molecularWeight, ingredients.byPassIFRA, ingredients.physical_state, 
-        c.name AS cat_name, c.image AS cat_image
+        ingredients.id, ingredients.name, ingredients.INCI, ingredients.cas, ingredients.einecs, ingredients.profile, ingredients.notes, ingredients.category, 
+        GROUP_CONCAT(ingredientLabels.label_name SEPARATOR ', ') AS labels, $defCatClass, ingredients.allergen, ingredients.usage_type, 
+        ingredients.logp, ingredients.formula, ingredients.flash_point, ingredients.molecularWeight, ingredients.byPassIFRA, 
+        ingredients.physical_state, c.name AS cat_name, c.image AS cat_image
     FROM ingredients 
     LEFT JOIN ingCategory c ON ingredients.category = c.id
+    LEFT JOIN ingredientLabels ON ingredients.id = ingredientLabels.ingredient_id
     $filter
+    GROUP BY ingredients.id
     $extra
     LIMIT $row, $limit
 ";
@@ -92,7 +104,7 @@ while ($ingredient = mysqli_fetch_assoc($result)) {
     $r['cas'] = $ingredient['cas'] ?: '-';
     $r['einecs'] = $ingredient['einecs'] ?: '-';
     $r['profile'] = $ingredient['profile'] ?: null;
-    $r['odor'] = $ingredient['odor'] ?: '-';
+    $r['notes'] = htmlspecialchars($ingredient['notes'], ENT_QUOTES, 'UTF-8') ?: '-';
     $r['allergen'] = (int)$ingredient['allergen'] ?: 0;
     $r['physical_state'] = (int)$ingredient['physical_state'] ?: 0;
     $r['techData']['LogP'] = (float)$ingredient['logp'] ?: 0;

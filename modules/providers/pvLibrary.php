@@ -52,7 +52,6 @@ if (isset($output->ingredients) && is_array($output->ingredients)) {
             'id' => (int) $ingredient->id,
             'name' => (string) filter_var($ingredient->name, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'cas' => (string) ($ingredient->cas ?: '-'),
-            'odor' => (string) ($ingredient->odor ?: '-'),
             'profile' => (string) ($ingredient->profile ?: 'Unknown'),
             'physical_state' => (int) ($ingredient->physical_state ?: 1),
             'category' => (int) ($ingredient->category ?: 0),

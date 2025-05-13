@@ -42,7 +42,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = "Create a perfume formula in JSON with ingredient name as ingredient, CAS number as cas, and quantity in grams as quantity. Total formula quantity 100. Description: $notes. Return only JSON.";
+    $prompt = "Create a perfume formula in JSON with ingredient name as 'ingredient', CAS number as 'cas', quantity in grams as 'quantity', dilution percentage as 'dilution', and solvent type as 'solvent'. Total formula quantity 100. Description: $notes. Return only JSON.";
 
     $result = pvAIHelper($prompt);
 
@@ -79,6 +79,8 @@ if ($_POST['action'] === 'addFormulaAI') {
         $ingredient = mysqli_real_escape_string($conn, $row['ingredient'] ?? '');
         $cas = mysqli_real_escape_string($conn, $row['cas'] ?? '');
         $quantity = floatval($row['quantity'] ?? 0);
+        $dilution = floatval($row['dilution'] ?? 100);
+        $solvent = mysqli_real_escape_string($conn, $row['solvent'] ?? 'None');
     
         if ($ingredient && $cas && $quantity > 0) {
             // Check if the ingredient exists
@@ -104,7 +106,7 @@ if ($_POST['action'] === 'addFormulaAI') {
             // Insert into formulas
             mysqli_query($conn, "
                 INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, owner_id)
-                VALUES ('$fid', '$escaped_name', '$ingredient', '$ingredient_id', 100, 'None', '$quantity', '$userID')
+                VALUES ('$fid', '$escaped_name', '$ingredient', '$ingredient_id', '$dilution', '$solvent', '$quantity', '$userID')
             ");
             error_log("Inserted fid: $fid, name: $escaped_name, ingredient: $ingredient with quantity: $quantity, ingredient_id: $ingredient_id, owner_id: $userID");
         }
@@ -142,7 +144,7 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name and description as a JSON.";
+    $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name as 'ingredient', CAS as 'cas', and description as 'description' in JSON format.";
     
     $result = pvAIHelper($prompt);
     

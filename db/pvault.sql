@@ -216,7 +216,6 @@ CREATE TABLE `ingredients` (
   `notes` text  DEFAULT NULL,
   `profile` varchar(255)  DEFAULT NULL,
   `solvent` VARCHAR(255) DEFAULT NULL, 
-  `odor` varchar(255)  DEFAULT NULL,
   `allergen` int(11) DEFAULT NULL,
   `flavor_use` int(10) DEFAULT NULL,
   `soluble` varchar(255)  DEFAULT NULL,
@@ -797,6 +796,15 @@ CREATE TABLE `formulasTags` (
 	`owner_id` VARCHAR(255) NOT NULL,
 	UNIQUE (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE `ingredientLabels` ( 
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `ingredient_id` INT NOT NULL,
+  `label_name` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `owner_id` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB CHARSET=utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE `user_prefs` ( 
 	`pref_name` VARCHAR(255) NOT NULL,

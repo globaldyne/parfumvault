@@ -213,7 +213,7 @@ $(document).on('change', '.set_column_data', function() {
         profile = column_data.profile;
         physical_state = column_data.physical_state;
         allergen = column_data.allergen;
-        odor = column_data.odor;
+        notes = column_data.notes;
         impact_top = column_data.impact_top;
         impact_heart = column_data.impact_heart;
         impact_base = column_data.impact_base;
@@ -238,7 +238,7 @@ $(document).on('click', '#btnImportCSV', function(event) {
             profile,  
             physical_state,
             allergen,
-            odor,  
+            notes,  
             impact_top, 
             impact_heart, 
             impact_base

@@ -131,7 +131,7 @@ if ($_POST['do'] = 'genSDS') {
 	//Section 9
     '%PHYSICAL_STATE%',
     '%COLOR%',
-    '%ODOR%',
+    '%NOTES%',
     '%ODOR_THRESHOLD%',
     '%PH%',
     '%MELTING_POINT%',
@@ -283,7 +283,7 @@ if ($_POST['do'] = 'genSDS') {
   	//Section 9
     $productState,
     $ingSafetyInfo['color'] ?: 'N/A',
-    $ingAllInfo['odor'] ?: 'N/A',
+    $ingAllInfo['notes'] ?: 'N/A',
     $ingSafetyInfo['odor_threshold'] ?: 'N/A',
     $ingSafetyInfo['pH'] ?: 'N/A',
     $ingSafetyInfo['melting_point'] ?: 'N/A',

@@ -173,7 +173,7 @@ func cleanupInactiveUsers(db *sql.DB) {
 		"formula_history", "IFRALibrary", "ingCategory", "ingredients", "ingredient_compounds",
 		"ingredient_safety_data", "ingReplacements", "ingSafetyInfo", "ingSuppliers", "inventory_accessories",
 		"inventory_compounds", "makeFormula", "perfumeTypes", "sds_data", "suppliers", "synonyms",
-		"templates", "user_prefs", "user_settings", "branding", "orders", "order_items",
+		"templates", "user_prefs", "user_settings", "branding", "orders", "order_items", "ingredientLabels",
 	}
 
 	for _, userID := range inactiveUsers {

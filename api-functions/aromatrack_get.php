@@ -28,7 +28,7 @@ function normalize_value($value, $type = 'string', $default = '-') {
 }
 
 // Fetch ingredients data
-$sql = "SELECT id, INCI, name, cas, odor, physical_state, updated_at, created_at FROM ingredients WHERE owner_id = '$userID'";
+$sql = "SELECT id, INCI, name, cas, notes, physical_state, updated_at, created_at FROM ingredients WHERE owner_id = '$userID'";
 $result = mysqli_query($conn, $sql);
 
 $r = [];
