@@ -240,7 +240,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'name', title: 'Name', render: iName },
 			  { data : 'IUPAC', title: 'IUPAC' },
-			  { data : 'notes', title: 'Description'},
+			  { data : 'notes', title: 'Description', render: iDescription },
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
@@ -445,6 +445,12 @@ $(document).ready(function() {
 		return data;
 	};
 	
+	function iDescription(data, type, row){
+	if (data.length > 64) {
+			return data = '<div class="text-wrap" rel="tip" title="' + data + '">' + data.substring(0, 64) + '...</div>';
+		}
+		return data;
+	};
 	
 	function actions(data, type, row, meta){
 		if(meta.settings.json.source == 'PVLibrary'){
