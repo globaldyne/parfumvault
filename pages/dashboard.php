@@ -238,84 +238,93 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE ow
 <script>
 $(document).ready(function() {
 
-	var formulas = document.getElementById('formulasPie');
-	var ingredients = document.getElementById('ingredientsPie');
-	$.ajax({
-		url: "/core/stats_data.php",
-		method: "GET",
-		dataType : 'JSON',
-		success: function(stats) {
-		
-			var formula_label = stats.data.map(function(e) {
-				return e.name;
-			});
-			var formula_data = stats.data.map(function(e) {
-				return e.count;
-			});
-			var formula_bkColor = stats.data.map(function(e) {
-				return e.colorKey;
-			});
-			var formula_brdColor = stats.data.map(function(e) {
-				return e.borderColor;
-			});		
-	
-			var formulasChart = new Chart(formulas, {
-				type: 'pie',
-				data: {
-					labels: formula_label,
-					datasets: [{
-						label: 'Formulas',
-						data: formula_data,
-						backgroundColor: formula_bkColor,
-						borderColor: formula_brdColor,
-						borderWidth: 1
-					}]
-				},
-				options: { 
-					responsive: true,
-					plugins: {
-						legend: {
-							display: true,
-							position: 'right',
-						},
-					} 
-				}
-			});
-		}
-	});
-	
-	var ingredientsChart = new Chart(ingredients, {
-		type: 'pie',
-		data: {
-			labels: ['Aroma Chemicals ', 'Essential Oils', 'Unategorised'],
-			datasets: [{
-				label: 'Ingredients',
-				data: [<?php echo countElement("ingredients","type = 'AC'"); ?>, <?php echo countElement("ingredients", "type = 'EO'"); ?>, <?php echo countElement("ingredients", "type IS NULL"); ?>],
-				backgroundColor: [
-					'rgba(255, 99, 132, 0.8)',
-					'rgba(54, 162, 235, 0.8)',
-					'rgba(255, 206, 86, 0.8)'
-				],
-				borderColor: [
-					'rgba(255, 99, 132, 1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(255, 206, 86, 1)'
-				],
-				borderWidth: 1
-			}]
-		},
-		options: { 
-				responsive: true,
-				plugins: {
-					legend: {
-						display: true,
-						position: 'right',
-					},
-				} 
-		}
-	});
-	
-});
+    var formulas = document.getElementById('formulasPie');
+    var ingredients = document.getElementById('ingredientsPie');
+    $.ajax({
+        url: "/core/stats_data.php",
+        method: "GET",
+        dataType : 'JSON',
+        success: function(stats) {
+        
+            var formula_label = stats.data.map(function(e) {
+                return e.name;
+            });
+            var formula_data = stats.data.map(function(e) {
+                return e.count;
+            });
 
+            // Function to generate random colors
+            function generateRandomColors(count) {
+                let colors = [];
+                for (let i = 0; i < count; i++) {
+                    let r = Math.floor(Math.random() * 256);
+                    let g = Math.floor(Math.random() * 256);
+                    let b = Math.floor(Math.random() * 256);
+                    colors.push(`rgba(${r}, ${g}, ${b}, 0.8)`);
+                }
+                return colors;
+            }
+
+            // Generate colors dynamically
+            var formula_bkColor = generateRandomColors(formula_data.length);
+            var formula_brdColor = formula_bkColor.map(color => color.replace('0.8', '1')); // Adjust opacity for borders
+            
+            var formulasChart = new Chart(formulas, {
+                type: 'pie',
+                data: {
+                    labels: formula_label,
+                    datasets: [{
+                        label: 'Formulas',
+                        data: formula_data,
+                        backgroundColor: formula_bkColor,
+                        borderColor: formula_brdColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: { 
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                        },
+                    } 
+                }
+            });
+        }
+    });
+    
+    var ingredientsChart = new Chart(ingredients, {
+        type: 'pie',
+        data: {
+            labels: ['Aroma Chemicals ', 'Essential Oils', 'Uncategorised'],
+            datasets: [{
+                label: 'Ingredients',
+                data: [<?php echo countElement("ingredients","type = 'AC'"); ?>, <?php echo countElement("ingredients", "type = 'EO'"); ?>, <?php echo countElement("ingredients", "type IS NULL"); ?>],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: { 
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                    },
+                } 
+        }
+    });
+    
+});
 </script>
 <?php } ?>

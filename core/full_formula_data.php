@@ -180,7 +180,7 @@ foreach ($form as $formula){
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
 	}elseif($settings['grp_formula'] == '2'){
-		$r['ingredient']['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
+		$r['ingredient']['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name', $conn)['name']?:'Unknown Notes';
 	}elseif($settings['grp_formula'] == '3'){
 		$r['ingredient']['profile'] = ($ing_q['physical_state'] == 1) ? 'Liquid' : (($ing_q['physical_state'] == 2) ? 'Solid' : 'Unknown');
 	}elseif($settings['grp_formula'] == '0'){
