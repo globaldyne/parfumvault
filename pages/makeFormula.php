@@ -778,7 +778,7 @@ $(document).ready(function() {
 						suggestionsHtml += `<li class="list-group-item">
 							<strong>${suggestion.ingredient}</strong> (CAS: ${suggestion.cas || 'N/A'}) - ${suggestion.description}
 							<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
-							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}" title="Copy to clipboard"></i>
+							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}"></i>
 						</li>`;
 					});
 					suggestionsHtml += '</ul>';
@@ -800,7 +800,16 @@ $(document).ready(function() {
 		const replacementName = $(this).data('name');
 		navigator.clipboard.writeText(replacementName).then(() => {
 			console.log(`Copied to clipboard: ${replacementName}`);
-			alert(`Copied "${replacementName}" to clipboard.`);
+			//alert(`Copied "${replacementName}" to clipboard.`);
+			const $element = $(this);
+			$element.attr('data-bs-original-title', 'Copied!'); // Set tooltip text
+			const tooltip = bootstrap.Tooltip.getInstance($element[0]) || new bootstrap.Tooltip($element[0]);
+			tooltip.show();
+			// Hide tooltip after 4 seconds
+			setTimeout(() => {
+				tooltip.hide();
+				$element.removeAttr('data-bs-original-title'); // Clear tooltip to reset for future use
+			}, 4000);
 		}).catch(err => {
 			console.error('Failed to copy text: ', err);
 		});
