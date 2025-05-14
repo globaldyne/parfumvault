@@ -6214,9 +6214,9 @@ if ($_GET['action'] == 'importCategories') {
         $success = true;
 
         if ($data['ingCategory']) {
-            $stmt = $conn->prepare("INSERT INTO `ingCategory` (`name`, `notes`, `image`, `colorKey`, `owner_id`) VALUES (?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO `ingCategory` (`name`, `notes`, `image`, `owner_id`) VALUES (?, ?, ?, ?)");
             foreach ($data['ingCategory'] as $d) {
-                $stmt->bind_param("sssss", $d['name'], $d['notes'], $d['image'], $d['colorKey'], $userID);
+                $stmt->bind_param("sssss", $d['name'], $d['notes'], $d['image'], $userID);
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error adding category: " . $stmt->error;
@@ -6227,9 +6227,9 @@ if ($_GET['action'] == 'importCategories') {
         }
 
         if ($data['formulaCategories']) {
-            $stmt = $conn->prepare("INSERT INTO `formulaCategories` (`name`, `cname`, `type`, `colorKey`, `owner_id`) VALUES (?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO `formulaCategories` (`name`, `cname`, `type`, `owner_id`) VALUES (?, ?, ?, ?)");
             foreach ($data['formulaCategories'] as $d) {
-                $stmt->bind_param("sssss", $d['name'], $d['cname'], $d['type'], $d['colorKey'], $userID);
+                $stmt->bind_param("sssss", $d['name'], $d['cname'], $d['type'], $userID);
                 if (!$stmt->execute()) {
                     $success = false;
                     $result['error'] = "Error adding formula category: " . $stmt->error;
@@ -6416,8 +6416,7 @@ if ($_GET['action'] == 'exportIngCat') {
         $category = [
             'name' => (string)$resData['name'] ?: "-",
             'notes' => (string)$resData['notes'] ?: "-",
-            'image' => (string)$resData['image'] ?: "-",
-            'colorKey' => (string)$resData['colorKey'] ?: "-"
+            'image' => (string)$resData['image'] ?: "-"
         ];
 
         $data++;
@@ -6462,8 +6461,7 @@ if ($_GET['action'] == 'exportFrmCat') {
         $category = [
             'name' => (string)$resData['name'] ?: "-",
             'cname' => (string)$resData['cname'] ?: "-",
-            'type' => (string)$resData['type'] ?: "-",
-            'colorKey' => (string)$resData['colorKey'] ?: "-"
+            'type' => (string)$resData['type'] ?: "-"
         ];
 
         $data++;

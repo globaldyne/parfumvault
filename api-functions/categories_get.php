@@ -5,7 +5,7 @@ if (!defined('pvault_panel')){ die('Not Found');}
 header('Content-Type: application/json');
 global $conn, $userID;
 
-$sql = mysqli_query($conn, "SELECT id, name, notes, image, colorKey FROM ingCategory WHERE owner_id = '$userID'");
+$sql = mysqli_query($conn, "SELECT id, name, notes, image FROM ingCategory WHERE owner_id = '$userID'");
 
 if (!$sql) {
 	error_log(mysqli_error($conn));
@@ -16,7 +16,6 @@ $rows = array();
 
 // Default image and color key values
 $defaultImagePath = __ROOT__."/img/molecule.png";
-$defaultColorKey = "255, 255, 255";
 
 // Loop through the result set
 while ($r = mysqli_fetch_assoc($sql)) {
@@ -34,7 +33,7 @@ while ($r = mysqli_fetch_assoc($sql)) {
     }
 
     // Ensure colorKey is set to default value if empty
-    $r['colorKey'] = empty($r['colorKey']) ? $defaultColorKey : $r['colorKey'];
+    $r['colorKey'] = sprintf('%d, %d, %d', rand(0, 255), rand(0, 255), rand(0, 255));
 
     // Cast id to integer
     $r['id'] = (int)$r['id'];

@@ -80,7 +80,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
    </thead>
 </table>
 
-<!-- Modal -->
+<!-- EXPORT MODAL -->
 <div class="modal fade" id="export_options_modal" tabindex="-1" aria-labelledby="exportOptionsLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -167,7 +167,7 @@ $(document).ready(function() {
 						<span class="badge rounded-pill d-block p-2 mx-2 badge-primary">
 							${key}: ${value}
 							<span class="ms-1" data-fa-transform="shrink-2"></span>
-							<button type="button" class="btn-close btn-close-white mx-1" aria-label="Remove" data-field="${key}"></button>
+							<button type="button" class="btn-close btn-close-white mt-2 mx-2" aria-label="Remove" data-field="${key}"></button>
 						</span>
 						</span>
 					`);
@@ -240,7 +240,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'name', title: 'Name', render: iName },
 			  { data : 'IUPAC', title: 'IUPAC' },
-			  { data : 'notes', title: 'Description', render: iDescription },
+			  { data : 'labels', title: 'Labels', render: labels },
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
@@ -256,6 +256,30 @@ $(document).ready(function() {
 		displayLength: 20,
 		drawCallback: function( settings ) {
 			extrasShow();
+		},
+		initComplete: function( settings, json ) {
+		
+			$('#tdDataIng').on('click', '[id*=show-all-labels]', function () {
+				const $button = $(this);
+				const labels = $button.data('labels');
+				const $row = $button.closest('tr'); // Find the closest table row
+				const $labelContainer = $row.find('.expanded-labels'); // Check if expanded labels already exist
+
+				if ($labelContainer.length) {
+					// If already expanded, collapse by removing the labels and updating the button text
+					$labelContainer.remove();
+					$button.text(`+${labels.length - 4} more`);
+				} else {
+					// Expand by appending the remaining labels and updating the button text
+					if (Array.isArray(labels)) {
+						const html = labels
+							.map(label => `<span class="badge bg-info text-dark mt-2 mx-1 my-2">${label}</span>`)
+							.join('');
+						$row.find('td').eq(2).append(`<div class="expanded-labels">${html}</div>`);
+					}
+					$button.text('Less');
+				}
+			});
 		},
 		stateSave: true,
 		stateDuration : -1,
@@ -445,13 +469,37 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function iDescription(data, type, row){
-	if (data.length > 64) {
-			return data = '<div class="text-wrap" rel="tip" title="' + data + '">' + data.substring(0, 64) + '...</div>';
+	// Function to handle the display of labels
+	function labels(data, type, row) {
+		if (Array.isArray(data) && data.length > 0) {
+			const maxLabels = 4; // Maximum number of labels to show initially
+			const labelList = data;
+			const labelSummary = labelList.slice(0, maxLabels);
+			let html = '';
+
+			labelSummary.forEach(label => {
+				html += `<span class="badge bg-info text-dark mt-2 mx-1">${label}</span>`;
+			});
+
+			// "+N more" button with data attribute for jQuery handler
+			if (labelList.length > maxLabels) {
+				html += `
+					<button id="show-all-labels" class="btn btn-sm btn-link p-0 mt-2 mx-1 show-all-labels" 
+							type="button" 
+							data-labels='${JSON.stringify(labelList)}'>
+						+${labelList.length - maxLabels} more
+					</button>
+				`;
+			}
+
+			return html;
+		} else {
+			return 'N/A';
 		}
-		return data;
 	};
-	
+
+
+
 	function actions(data, type, row, meta){
 		if(meta.settings.json.source == 'PVLibrary'){
 			data = '<div class="dropdown">' +
@@ -662,7 +710,8 @@ $(document).ready(function() {
 		$('[rel=tip]').tooltip({
 			"html": true,
 			"delay": {"show": 100, "hide": 0},
-		 });
+		});
+
 		$('.popup-link').magnificPopup({
 			type: 'iframe',
 			closeOnContentClick: false,

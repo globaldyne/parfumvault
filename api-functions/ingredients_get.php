@@ -57,7 +57,7 @@ while ($rx = mysqli_fetch_assoc($result)) {
     $gSupN = fetch_assoc($conn, $supplier_name_query);
 
     // Fetch category details
-    $category_query = "SELECT name, notes, colorKey FROM ingCategory WHERE id = '{$rx['category']}' AND owner_id = '$userID'";
+    $category_query = "SELECT name, notes FROM ingCategory WHERE id = '{$rx['category']}' AND owner_id = '$userID'";
     $gCatQ = fetch_assoc($conn, $category_query);
 
     // Calculate defaults
@@ -105,7 +105,7 @@ while ($rx = mysqli_fetch_assoc($result)) {
     $rx['category'] = normalize_value($rx['category'], 'int', 0);
     $rx['category_name'] = normalize_value($gCatQ['name'], 'string', 'Uncategorized');
     $rx['category_notes'] = normalize_value($gCatQ['notes']);
-    $rx['category_identifier'] = rgb_to_hex('rgba(' . ($gCatQ['colorKey'] ?? '239, 239, 250, 0.8') . ')');
+    $rx['category_identifier'] = rgb_to_hex('rgba(' . rand(0, 255) . ',' . rand(0, 255) . ',' . rand(0, 255) . ', 0.8)');
     $rx['supplier'] = normalize_value($gSupN['name']);
     $rx['price'] = normalize_value($price_per_unit, 'float', 0.0);
     $rx['stock'] = normalize_value($gSupQ['stock'], 'float', 0.0);

@@ -22,3 +22,6 @@ WHERE
 -- Remove the odor column from the ingredients table
 ALTER TABLE `ingredients` DROP COLUMN `odor`;
 
+DROP TABLE `colorKey`;
+ALTER TABLE `formulaCategories` DROP `colorKey`;
+ALTER TABLE `ingCategory` DROP `colorKey`;

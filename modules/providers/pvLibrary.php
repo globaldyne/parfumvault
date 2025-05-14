@@ -79,7 +79,8 @@ if (isset($output->ingredients) && is_array($output->ingredients)) {
             'stock' => 0.0, // Stock not available from the PVLibrary source
             'info' => [
                 'byPassIFRA' => 0 // Not available from the PVLibrary source
-            ]
+            ],
+            'labels' => $ingredient->labels ? explode(', ', $ingredient->labels) : null
         ];
 
         $rx[] = $r;

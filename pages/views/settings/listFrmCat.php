@@ -26,7 +26,6 @@ require_once(__ROOT__.'/inc/opendb.php');
         <tr>
           <th>Name</th>
           <th>Type</th>
-          <th>Colour</th>
           <th></th>
         </tr>
       </thead>
@@ -38,7 +37,7 @@ $(document).ready(function() {
 	var frmDataCat = $('#frmDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [2,3] }
+			{ orderable: false, targets: [2] }
         ],
 		dom: 'lfrtip',
 		processing: true,
@@ -54,7 +53,6 @@ $(document).ready(function() {
 		columns: [
 			{ data : 'name', title: 'Name', render: cName },
     		{ data : 'type', title: 'Type', render: cType},
-    		{ data : 'colorKey', title: 'Colour Key', render: fKey},
    			{ data : null, title: '', render: cActions},		   
 		],
         order: [[ 1, 'asc' ]],
@@ -101,9 +99,7 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	function fKey(data, type, row){
-		return '<a href="#" class="colorKey" style="background-color: '+row.colorKey+'" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';    
-	};
+
 	
 	$('#add-fcat').click(function() {
 		$.ajax({ 
@@ -197,41 +193,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	//Change colorKey
-	$('#frmDataCat').editable({
-		pvnoresp: false,
-		highlight: false,
-		selector: 'a.colorKey',
-		emptytext: "",
-		emptyclass: "",
-		url: "/core/core.php?settings=fcat&action=updateFormulaCategory",
-		source: [
-			<?php
-			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC"); //PUBLIC
-			while ($r = mysqli_fetch_array($getCK)){
-				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-			}
-			?>
-		],
-		ajaxOptions: {
-			type: "POST",
-			dataType: 'json'
-		},
-		success: function (data) {
-			if (data.success) {
-				reload_data();
-			} else if (data.error) {
-				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
-				$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				$('.toast').toast('show');
-			}
-		},
-		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
-		}
-	});
 		
 	$('#frmDataCat').on('click', '[id*=catDel]', function () {
 		var cat = {};

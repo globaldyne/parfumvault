@@ -116,6 +116,7 @@ while ($ingredient = mysqli_fetch_assoc($result)) {
     $r['category']['name'] = $ingredient['cat_name'] ?: '-';
     $r['category']['image'] = $ingredient['cat_image'] ?: '/img/pv_molecule.png';
 
+    $r['labels'] = $ingredient['labels'] ? explode(', ', $ingredient['labels']) : null;
     $limit = searchIFRA($ingredient['cas'], $ingredient['name'], null, $defCatClass, 0);
     if ($limit && $ingredient['byPassIFRA'] == 0) {
         $r['usage']['limit'] = (float)$limit['val'];

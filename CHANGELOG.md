@@ -14,6 +14,8 @@
 - Fixed js error when searching in PV library
 - Replaced odor with labels for ingredients
 - Fixed defaultMessage error in AI Chat
+- Replaced Odor column with label in ingredients page
+- Deprecated colorKey
 
 ### Version 12.9
 - Introduced Google Gemini integration.
