@@ -1721,3 +1721,7 @@ th.dt-center, td.dt-center {
   padding: 10px;
   text-align: center;
 }
+
+.text-chat-ai-footer {
+  color: #858796 !important;
+}

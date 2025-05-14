@@ -40,7 +40,7 @@ $(document).ready(function () {
             const timestamp = $(this).find('small').text();
             if (!timestamp) {
                 const newTimestamp = $('<small></small>')
-                    .addClass('text-muted d-block')
+                    .addClass('text-chat-ai-footer d-block')
                     .text(new Date().toLocaleTimeString());
                 $(this).append(newTimestamp);
             }
@@ -101,7 +101,7 @@ $(document).ready(function () {
             const timestamp = new Date().toLocaleTimeString();
             const userMessage = $('<div></div>')
                 .addClass('alert alert-secondary text-end')
-                .html(`<span class="fw-bold fs-6">${message}</span><br><small class="text-muted">${timestamp}</small>`);
+                .html(`<span class="fw-bold fs-6">${message}</span><br><small class="text-chat-ai-footer">${timestamp}</small>`);
             chatBody.append(userMessage);
             input.val('');
             chatBody.scrollTop(chatBody.prop('scrollHeight'));
@@ -205,7 +205,7 @@ $(document).ready(function () {
                 setTimeout(typeChar, 15); // Typing speed
             } else {
                 const timestampElement = $('<small></small>')
-                    .addClass('text-muted d-block')
+                    .addClass('text-chat-ai-footer d-block')
                     .text(timestamp.toLocaleTimeString())
                     .attr('title', timestamp.toLocaleString()); // Add hover with full date
                 botMessageContainer.append(timestampElement);
