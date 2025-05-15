@@ -12,7 +12,7 @@ $meta = isset($_GET['meta']) ? (int)$_GET['meta'] : 0;
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 
-$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'ingredient';
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
 $order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
 $extra = "ORDER BY toAdd DESC, $order_by $order_as";
 
