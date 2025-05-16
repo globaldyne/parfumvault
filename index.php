@@ -285,30 +285,7 @@ $(document).ready(function() {
   ?>
 
 <?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1') { ?>
-  <!-- Chatbot -->
-  <div id="chatbot">
-    <div id="chatbot-icon">
-        <i class="fa fa-robot"></i>
-    </div>
-
-    <div id="chatbot-modal">
-      <div id="chatbot-modal-header">
-        Chat with Perfumers AI (BETA)
-        <span style="float: right; cursor: pointer;" id="chatbot-close">×</span>
-      </div>
-      <div id="chatbot-modal-body">
-        <?php 
-        $fullNameParts = explode(' ', $user['fullName']);
-        $firstName = $fullNameParts[0];
-        ?>
-        <p>Hi <?php echo htmlspecialchars($firstName) ?>, how can I assist you today?</p>
-      </div>
-      <div id="chatbot-modal-footer" class="d-flex align-items-center">
-        <input type="text" id="chatbot-input" class="me-2" placeholder="Ask perfumers AI...">
-        <button id="chatbot-send" class="btn btn-primary">Ask me...</button>
-      </div>
-    </div>
-  </div>
+  <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 
 
