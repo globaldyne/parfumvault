@@ -42,7 +42,7 @@ if($_GET['replacementsOnly']){
 	return;
 }
 
-$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes,odor FROM ingredients WHERE id  = '$id' AND owner_id = '$userID'"));
+$genIng = mysqli_fetch_array(mysqli_query($conn, "SELECT name,cas,notes FROM ingredients WHERE id  = '$id' AND owner_id = '$userID'"));
 $getIFRA = mysqli_fetch_array(mysqli_query($conn, "SELECT image,amendment,cas_comment,formula,synonyms,cat4,risk FROM IFRALibrary WHERE cas = '".$genIng['cas']."' AND owner_id = '$userID'"));
 
 $reps = mysqli_query($conn,"SELECT ing_rep_name,ing_rep_id FROM ingReplacements WHERE ing_name = '".$genIng['name']."' AND owner_id = '$userID'");
@@ -64,7 +64,6 @@ while($replacements = mysqli_fetch_array($reps)){
     <?php } ?>
     <div class="card-body">
         <p><strong>Description: </strong><?=$genIng['notes']?></p>
-        <p><strong>Odor: </strong><?=$genIng['odor']?></p>
         <p></p>
         <strong>Possible replacements: </strong><?php 
 		if ($replacement){ 

@@ -40,7 +40,7 @@ $(document).ready(function () {
             const timestamp = $(this).find('small').text();
             if (!timestamp) {
                 const newTimestamp = $('<small></small>')
-                    .addClass('text-muted d-block')
+                    .addClass('text-chat-ai-footer d-block')
                     .text(new Date().toLocaleTimeString());
                 $(this).append(newTimestamp);
             }
@@ -65,21 +65,30 @@ $(document).ready(function () {
         //const defaultMessage = $('<p></p>')
          //   .text("What are you blending today?")
          //   .addClass('text-secondary');
-        chatBody.append(defaultMessage);
+        //chatBody.append(defaultMessage);
         localStorage.setItem('chatMessages', chatBody.html());
     }
 
     function toggleChatbotModal() {
         const modal = $('#chatbot-modal');
-        modal.css('display', modal.css('display') === 'block' ? 'none' : 'block');
+        const input = $('#chatbot-input');
+        const isModalOpen = modal.css('display') === 'block';
+
+        if (isModalOpen) {
+            modal.css('display', 'none');
+            modal.css('z-index', '2000'); // Reset z-index when closed
+        } else {
+            modal.css('display', 'block');
+            modal.css('z-index', '2000'); // Ensure it appears above other modals
+            input.focus(); // Focus on the input field when opened
+        }
 
         // Dynamically apply Bootstrap theme classes
         const isDarkTheme = $('body').hasClass('bg-dark');
         modal.toggleClass('bg-dark text-light', isDarkTheme);
         modal.toggleClass('bg-light text-dark', !isDarkTheme);
 
-        const isModalOpen = modal.css('display') === 'block';
-        localStorage.setItem('chatBoxState', isModalOpen ? 'open' : 'closed');
+        localStorage.setItem('chatBoxState', isModalOpen ? 'closed' : 'open');
     }
 
     function sendMessage() {
@@ -92,7 +101,7 @@ $(document).ready(function () {
             const timestamp = new Date().toLocaleTimeString();
             const userMessage = $('<div></div>')
                 .addClass('alert alert-secondary text-end')
-                .html(`<span class="fw-bold fs-6">${message}</span><br><small class="text-muted">${timestamp}</small>`);
+                .html(`<span class="fw-bold fs-6">${message}</span><br><small class="text-chat-ai-footer">${timestamp}</small>`);
             chatBody.append(userMessage);
             input.val('');
             chatBody.scrollTop(chatBody.prop('scrollHeight'));
@@ -126,7 +135,13 @@ $(document).ready(function () {
                         const data = response.success;
                         if (Array.isArray(data) && data.length > 0) {
                             data.forEach(item => {
-                                simulateTypingEffect(item.description, chatBody);
+                                if (item.description && item.description.trim() !== "") {
+                                    simulateTypingEffect(item.description, chatBody);
+                                } else if (item.answer && item.answer.trim() !== "") {
+                                    simulateTypingEffect(item.answer, chatBody);
+                                } else {
+                                    simulateTypingEffect("No relevant information found.", chatBody);
+                                }
                             });
                         } else if (response.error) {
                             const errorDiv = $('<div></div>')
@@ -167,7 +182,7 @@ $(document).ready(function () {
     function simulateTypingEffect(text, chatBody) {
         const botMessageContainer = $('<div></div>')
             .addClass('alert alert-primary bot-message-container');
-        const timestamp = new Date().toLocaleTimeString();
+        const timestamp = new Date();
         const botMessage = $('<p></p>')
             .addClass('bot-message fw-bold'); // Add fw-bold class
         const copyIcon = $('<i></i>')
@@ -175,10 +190,13 @@ $(document).ready(function () {
             .attr('title', 'Copy to clipboard')
             .on('click', function () {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('Response copied to clipboard!');
+                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Response copied to clipboard!');
+                    $('.toast-header').removeClass().addClass('toast-header alert-success');
                 }).catch(err => {
-                    alert('Failed to copy: ' + err);
+                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> Failed to copy:' + err);
+                    $('.toast-header').removeClass().addClass('toast-header alert-danger');
                 });
+                $('.toast').toast('show');
             });
 
         botMessageContainer.append(botMessage).append(copyIcon);
@@ -193,8 +211,9 @@ $(document).ready(function () {
                 setTimeout(typeChar, 15); // Typing speed
             } else {
                 const timestampElement = $('<small></small>')
-                    .addClass('text-muted d-block')
-                    .text(timestamp);
+                    .addClass('text-chat-ai-footer d-block')
+                    .text(timestamp.toLocaleTimeString())
+                    .attr('title', timestamp.toLocaleString()); // Add hover with full date
                 botMessageContainer.append(timestampElement);
                 chatBody.scrollTop(chatBody.prop('scrollHeight'));
 

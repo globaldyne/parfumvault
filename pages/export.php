@@ -85,7 +85,7 @@ if ($_GET['kind'] === 'user-data') {
         'ingSafetyInfo', 'ingSuppliers', 'ingredient_compounds', 
         'ingredient_safety_data', 'ingredients', 'inventory_accessories', 'inventory_compounds', 
         'makeFormula', 'order_items', 'orders', 'perfumeTypes', 'sdsSettings', 'sds_data', 
-        'suppliers', 'synonyms', 'templates', 'user_prefs', 'user_settings'
+        'suppliers', 'synonyms', 'templates', 'user_prefs', 'user_settings', 'ingredientLabels'
     ];
 
     $result = [];
@@ -526,7 +526,7 @@ if ($_GET['format'] === 'csv' && $_GET['kind'] === 'ingredients') {
     $ingredientQuery = "
         SELECT 
             name, INCI, cas, FEMA, type, strength, profile, physical_state, 
-            allergen, odor, impact_top, impact_heart, impact_base
+            allergen, impact_top, impact_heart, impact_base
         FROM ingredients
         WHERE owner_id = '$userID'
     ";
@@ -535,7 +535,7 @@ if ($_GET['format'] === 'csv' && $_GET['kind'] === 'ingredients') {
     // Prepare CSV headers
     $csvHeaders = [
         'Name', 'INCI', 'CAS', 'FEMA', 'Type', 'Strength', 
-        'Profile', 'Physical State', 'Allergen', 'Odor Description', 
+        'Profile', 'Physical State', 'Allergen', 
         'Top Note Impact', 'Heart Note Impact', 'Base Note Impact'
     ];
 
@@ -620,7 +620,6 @@ if ($_GET['format'] == 'json' && $_GET['kind'] == 'ingredients') {
             'profile' => (string) $res['profile'],
             'physical_state' => (int) $res['physical_state'],
             'allergen' => (int) $res['allergen'],
-            'odor' => (string) $res['odor'],
             'impact_top' => (int) $res['impact_top'],
             'impact_heart' => (int) $res['impact_heart'],
             'impact_base' => (int) $res['impact_base'],
@@ -826,7 +825,6 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'single-ingredient' && isset
             'profile'        => (string)$row['profile'],
             'physical_state' => (int)$row['physical_state'],
             'allergen'       => (int)$row['allergen'],
-            'odor'           => (string)$row['odor'],
             'impact_top'     => (int)$row['impact_top'],
             'impact_heart'   => (int)$row['impact_heart'],
             'impact_base'    => (int)$row['impact_base'],
@@ -1035,7 +1033,7 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'supplier-materials' && isse
 
     // Fetch ingredients data
     $ingredientQuery = "
-        SELECT i.id, i.name, i.cas, i.created_at, i.odor
+        SELECT i.id, i.name, i.cas, i.created_at
         FROM suppliers s
         JOIN ingredients i ON s.ingID = i.id
         WHERE s.ingSupplierID = '$supplierID' AND s.owner_id = '$userID' AND i.owner_id = '$userID'
@@ -1047,7 +1045,6 @@ if ($_GET['format'] === 'json' && $_GET['kind'] === 'supplier-materials' && isse
         $ingredients[] = [
             'name' => (string)$row['name'],
             'cas' => (string)($row['cas'] ?: '-'),
-            'odor' => (string)($row['odor'] ?: '-'),
             'created_at' => (string)($row['created_at'] ?: '-'),
         ];
     }

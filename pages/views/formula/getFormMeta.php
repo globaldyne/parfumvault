@@ -81,83 +81,102 @@ while($qTags = mysqli_fetch_array($tagsQ)){
   
    <div class="form-row">
      <div class="form-group col-md-6">
-    	<label class="control-label col-auto" for="customer">Customer</label>
-        <select name="customer" id="customer" class="form-control selectpicker" data-live-search="true">
-      	  <option value="0">Internal use</option>
-		  <?php foreach ($customer as $c) {?>
-          <option value="<?=$c['id'];?>" <?php echo ($info['customer_id']==$c['id'])?"selected=\"selected\"":""; ?>><?php echo $c['name'];?></option>
-          <?php }   ?>
-    	</select>
+        <div class="form-floating mb-3">
+            <select class="form-select" id="customer" name="customer">
+                <option value="0">Internal use</option>
+                <?php foreach ($customer as $c) { ?>
+                    <option value="<?=$c['id'];?>" <?php echo ($info['customer_id'] == $c['id']) ? "selected=\"selected\"" : ""; ?>><?php echo $c['name']; ?></option>
+                <?php } ?>
+            </select>
+            <label for="customer">Customer</label>
+        </div>
     </div>
     <div class="form-group col-md-6">
-        <label class="control-label col-auto" for="defView">Default view</label>
-        <select name="defView" id="defView" class="form-control selectpicker" data-live-search="false">
-          <option value="1" <?php if($info['defView']=="1") echo 'selected="selected"'; ?> >Ingredient Properties</option>
-          <option value="2" <?php if($info['defView']=="2") echo 'selected="selected"'; ?> >Ingredient Notes</option>
-          <option value="3" <?php if($info['defView']=="3") echo 'selected="selected"'; ?> >None</option>
-        </select>
+        <div class="form-floating mb-3">
+            <select class="form-select" id="defView" name="defView">
+                <option value="1" <?php if ($info['defView'] == "1") echo 'selected="selected"'; ?>>Ingredient Properties</option>
+                <option value="2" <?php if ($info['defView'] == "2") echo 'selected="selected"'; ?>>Ingredient Notes</option>
+                <option value="3" <?php if ($info['defView'] == "3") echo 'selected="selected"'; ?>>None</option>
+            </select>
+            <label for="defView">Default view</label>
+        </div>
     </div>
  </div>  
   
    <div class="form-row">
      <div class="form-group col-md-6">
-        <label class="control-label col-auto" for="profile">Category</label>
-        <select name="profile" id="profile" class="form-control selectpicker" data-live-search="true">
-        <?php foreach ($fcat as $cat) { if($cat['type'] == 'profile'){?>        
-            <option value="<?=$cat['cname'];?>" <?php echo ($info['profile']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
-        <?php } } ?>
-        </select>   
+        <div class="form-floating mb-3">
+            <select class="form-select" id="profile" name="profile">
+                <?php foreach ($fcat as $cat) { if ($cat['type'] == 'profile') { ?>
+                    <option value="<?=$cat['cname'];?>" <?php echo ($info['profile'] == $cat['cname']) ? "selected=\"selected\"" : ""; ?>><?php echo $cat['name']; ?></option>
+                <?php } } ?>
+            </select>
+            <label for="profile">Category</label>
+        </div>   
     </div>  
   
     <div class="form-group col-md-6">
-    	<label class="control-label col-auto" for="tagsinput">Tags</label>
-        <input type="text" class="form-control control-label" id="tagsinput" data-role="tagsinput" />
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="tagsinput" placeholder="Start typing to add a label..." data-role="tagsinput" value="<?= implode(",", $tagsData) ?>">
+        </div>
     </div>
     
  </div>
 
  <div class="form-row">
    <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="catClass">Purpose</label>
-        <select name="catClass" id="catClass" class="form-control selectpicker" data-live-search="true">
-            <option></option>
-            <?php foreach ($cats as $IFRACategories) {?>
-            <option value="cat<?php echo $IFRACategories['name'];?>" <?php echo ($info['catClass']=='cat'.$IFRACategories['name'])?"selected=\"selected\"":""; ?>><?php echo 'Cat'.$IFRACategories['name'].' - '.$IFRACategories['description'];?></option>
-            <?php } ?>
-        </select>
+        <div class="form-floating mb-3">
+            <select class="form-select" id="catClass" name="catClass">
+                <option></option>
+                <?php foreach ($cats as $IFRACategories) { ?>
+                    <option value="cat<?php echo $IFRACategories['name']; ?>" <?php echo ($info['catClass'] == 'cat' . $IFRACategories['name']) ? "selected=\"selected\"" : ""; ?>>
+                        <?php echo 'Cat' . $IFRACategories['name'] . ' - ' . $IFRACategories['description']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+            <label for="catClass">Purpose</label>
+        </div>
   </div>
    
   <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="finalType">Final type</label>
-        <select name="finalType" id="finalType" class="form-control selectpicker" data-live-search="true">  
-            <option value="100">Concentrated (100%)</option>
-            <?php foreach ($fTypes as $fType) {?>
-            <option value="<?php echo $fType['concentration'];?>" <?php echo ($info['finalType']==$fType['concentration'])?"selected=\"selected\"":""; ?>><?php echo $fType['name'].' ('.$fType['concentration'];?>%)</option>
-            <?php } ?>  
-        </select>
+        <div class="form-floating mb-3">
+            <select class="form-select" id="finalType" name="finalType">
+                <option value="100">Concentrated (100%)</option>
+                <?php foreach ($fTypes as $fType) { ?>
+                    <option value="<?php echo $fType['concentration']; ?>" <?php echo ($info['finalType'] == $fType['concentration']) ? "selected=\"selected\"" : ""; ?>>
+                        <?php echo $fType['name'] . ' (' . $fType['concentration']; ?>%)
+                    </option>
+                <?php } ?>
+            </select>
+            <label for="finalType">Final type</label>
+        </div>
    </div>
  </div>
 
  <div class="form-row">
    <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="finalType">Status</label>
-        <select name="status" id="status" class="form-control selectpicker" data-live-search="false">  
-            <option value="0" <?php if($info['status'] == "0"){ echo 'selected';}?>>Scheduled</option>
-            <option value="1" <?php if($info['status'] == "1"){ echo 'selected';}?>>Under Developent</option>
-            <option value="2" <?php if($info['status'] == "2"){ echo 'selected';}?>>Under Evaluation</option>
-            <option value="3" <?php if($info['status'] == "3"){ echo 'selected';}?>>In Production</option>
-            <option value="4" <?php if($info['status'] == "4"){ echo 'selected';}?>>To be reformulated</option>
-            <option value="5" <?php if($info['status'] == "5"){ echo 'selected';}?>>Failure</option>
-        </select>
+        <div class="form-floating mb-3">
+            <select class="form-select" id="status" name="status">
+                <option value="0" <?php if ($info['status'] == "0") echo 'selected'; ?>>Scheduled</option>
+                <option value="1" <?php if ($info['status'] == "1") echo 'selected'; ?>>Under Development</option>
+                <option value="2" <?php if ($info['status'] == "2") echo 'selected'; ?>>Under Evaluation</option>
+                <option value="3" <?php if ($info['status'] == "3") echo 'selected'; ?>>In Production</option>
+                <option value="4" <?php if ($info['status'] == "4") echo 'selected'; ?>>To be reformulated</option>
+                <option value="5" <?php if ($info['status'] == "5") echo 'selected'; ?>>Failure</option>
+            </select>
+            <label for="status">Status</label>
+        </div>
     </div>
 
  <div class="form-group col-md-6">
-    <label class="control-label col-auto" for="gender">Gender</label>
-    <select name="gender" id="gender" class="form-control selectpicker" data-live-search="false">
-    <?php foreach ($fcat as $cat) { if($cat['type'] == 'gender'){?>
-        <option value="<?=$cat['cname'];?>" <?php echo ($info['gender']==$cat['cname'])?"selected=\"selected\"":""; ?>><?php echo $cat['name'];?></option>
-    <?php } }?>
-    </select>
+    <div class="form-floating mb-3">
+        <select class="form-select" id="gender" name="gender">
+            <?php foreach ($fcat as $cat) { if ($cat['type'] == 'gender') { ?>
+                <option value="<?=$cat['cname'];?>" <?php echo ($info['gender'] == $cat['cname']) ? "selected=\"selected\"" : ""; ?>><?php echo $cat['name']; ?></option>
+            <?php } } ?>
+        </select>
+        <label for="gender">Gender</label>
+    </div>
     </div>
  </div>
  
@@ -376,7 +395,7 @@ $(document).ready(function(){
 				set: 'catClass',
 				val: $("#catClass").find(":selected").val(),
 			},
-			dataType: 'json',
+		 dataType: 'json',
 			success: function (response) {
 				if(response.success){
 					msg = '<div class="alert alert-success alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a><strong><i class="fa-solid fa-circle-check mx-2"></i>' + response.success + '</strong></div>';
@@ -518,7 +537,7 @@ $(document).ready(function(){
 			url: '/core/core.php', 
 			type: 'POST',
 			data: {
-				do: "tagadd",
+				action: "tagadd",
 				fid: '<?=$info['id']?>',
 				tag: tag
 			},
@@ -536,42 +555,42 @@ $(document).ready(function(){
 	});
 	$('.selectpicker').selectpicker('refresh');
 	
-}); //END DOC
-//$('#tagsinput').tagsinput();
-$('#tagsinput').val('<?= implode(",", $tagsData) ?>');
-$('#tagsinput').tagsinput('refresh');
+	//$('#tagsinput').tagsinput();
+	$('#tagsinput').val('<?= implode(",", $tagsData) ?>');
+	$('#tagsinput').tagsinput('refresh');
 
-$('#tagsinput').on('beforeItemRemove', function(event) {
-   var tag = event.item;
+	$('#tagsinput').on('beforeItemRemove', function(event) {
+	var tag = event.item;
 
-   $.ajax({ 
-		url: '/core/core.php', 
-		type: 'POST',
-		data: {
-			do: "tagremove",
-			fid: '<?= $info['id'] ?>',
-			tag: tag
-		},
-		dataType: 'json',
-		success: function (data) {
-		  	if (data.error) {
-				$('#tagsinput').tagsinput('add', tag, { preventPost: true });
-				$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> ' + data.error + '</div>');
+	$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: "tagremove",
+				fid: '<?= $info['id'] ?>',
+				tag: tag
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.error) {
+					$('#tagsinput').tagsinput('add', tag, { preventPost: true });
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> ' + data.error + '</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred.';
+				if (xhr.responseText) {
+					errorMessage += 'Server response: ' + xhr.responseText;
+				} else {
+					errorMessage += error;
+				}
+				errorMessage += '</div>';
+				$('#set_msg').html(errorMessage);
 			}
-		},
-		error: function (xhr, status, error) {
-			let errorMessage = '<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i>An error occurred.';
-			if (xhr.responseText) {
-				errorMessage += 'Server response: ' + xhr.responseText;
-			} else {
-				errorMessage += error;
-			}
-			errorMessage += '</div>';
-			$('#set_msg').html(errorMessage);
-		}
+		});
 	});
-});
 
+}); //END DOC
 
 </script>
 

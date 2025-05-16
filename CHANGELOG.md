@@ -1,4 +1,24 @@
 # CHANGELOG
+### Version 13.0
+- Fixed ingredients CSV redeclarations
+- Replaced alert box with toast message when copying AI response
+- Added a realtime advisory count badge
+- Cosmetic changes for formulas labels
+- Added BS5 floating elements for formula properties
+- Extend formulas search in labels
+- Rename tags to labels
+- Added ingredient replacement suggestion in formula making using Perfumers AI
+- Added full date in AI chat repsonse
+- Added CAS in ingrdeient suggestions
+- Updated AI formula generation to include dilution and solvent
+- Fixed js error when searching in PV library
+- Replaced odor with labels for ingredients
+- Fixed defaultMessage error in AI Chat
+- Replaced Odor column with label in ingredients page
+- Deprecated colorKey
+- Added makeformula API 
+- Improved Perfumers AI Chat
+
 ### Version 12.9
 - Introduced Google Gemini integration.
 - Introduced OpenAI integration.

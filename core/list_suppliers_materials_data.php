@@ -15,7 +15,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 while ($res = $result->fetch_assoc()) {
-    $ingredientStmt = $conn->prepare("SELECT id, name, cas, created_at, odor FROM ingredients WHERE id = ? AND owner_id = ?");
+    $ingredientStmt = $conn->prepare("SELECT id, name, cas, created_at, notes FROM ingredients WHERE id = ? AND owner_id = ?");
     $ingredientStmt->bind_param("is", $res['ingID'],$userID);
     $ingredientStmt->execute();
     $ingredientResult = $ingredientStmt->get_result();
@@ -25,7 +25,7 @@ while ($res = $result->fetch_assoc()) {
         $r['material'] = (string)$i['name'];
         $r['cas'] = (string)($i['cas'] ?? '-');
         $r['created'] = (string)($i['created_at'] ?? '-');
-        $r['odor'] = (string)($i['odor'] ?? '-');
+        $r['notes'] = (string)($i['notes'] ?? '-');
         $r['supplier_link'] = (string)$res['supplierLink'];
         $r['price'] = (float)$res['price'];
         $r['size'] = (float)$res['size'];

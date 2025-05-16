@@ -120,7 +120,11 @@ if(!$fid){
 			<li class="nav-item" role="presentation"><a href="#timeline" id="timeline_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-timeline mx-2"></i>History</a></li>
 			
 			<li class="nav-item" role="presentation">
-				<a href="#advisory" id="advisory_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="bi bi-app-indicator mx-2"></i>Advisory</a>
+				<a href="#advisory" id="advisory_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab">
+					<i class="bi bi-app-indicator mx-2"></i>
+				Advisory
+				<span class="badge badge-danger badge-counter" id="advisory-badge-counter" style="position: relative; top: -5px;"><div id="adv_count_total"></div></span>
+			</a>
 			</li>
 
           	<li class="nav-item" role="presentation"><a href="#formula_settings" id="formula_settings_tab" class="nav-link" aria-selected="false" role="tab" data-bs-toggle="tab"><i class="fa fa-cogs mx-2"></i>Settings</a></li>
@@ -317,6 +321,7 @@ $(document).ready(function() {
 	
 	$('#formula_name').click(function() {
 		reload_formula_data();
+		fetchAdvisorData();
 	});
 		
 	$('#add_ing').hide();
@@ -413,6 +418,7 @@ function fetch_formula(){
 		dataType: 'html',
 			success: function (data) {
 				$('#fetch_formula').html(data);
+				fetchAdvisorData();
 			},
 			error: function (xhr, status, error) {
 				$('#fetch_formula').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error + '</div>');
@@ -613,5 +619,28 @@ function fetch_advisory(){
 	});
 };
 
+function fetchAdvisorData() {
+	$.ajax({
+		url: '/core/list_formula_advisor_data.php',
+		type: 'POST',
+		data: { 
+			fid: "<?=$fid?>", 
+		},
+		dataType: 'json',
+		success: function (data) {
+			if (data.total_items) {
+				$('#adv_count_total').text(data.total_items);
+				$('#advisory-badge-counter').show();
+			} else {
+				$('#advisory-badge-counter').hide();
+			}
+		},
+		error: function (xhr, status, error) {
+			console.error('Error fetching advisor data:', error);
+		}
+	});
+}
+
+fetchAdvisorData();
 </script>
 <script src="/js/formula.tabs.js"></script>
