@@ -42,9 +42,42 @@ switch ($action) {
         
         foreach ($rs as $rq) {
             $ingredient = mysqli_fetch_assoc(mysqli_query($conn, "SELECT cas, notes FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $rq['ingredient']) . "' AND owner_id = '$userID'"));
-            $inventory = mysqli_fetch_assoc(mysqli_query($conn, "SELECT ingSupplierID, SUM(stock) OVER() AS stock, mUnit FROM suppliers WHERE ingID = '" . (int)$rq['ingredient_id'] . "' AND owner_id = '$userID'"));
-            $supplier = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, name FROM ingSuppliers WHERE id = '" . (int)$inventory['ingSupplierID'] . "' AND owner_id = '$userID'"));
             $replacement = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '" . (int)$rq['replacement_id'] . "' AND owner_id = '$userID'"));
+
+            // Fetch all suppliers for this ingredient
+            $sup = [];
+            $q = mysqli_query($conn, "SELECT * FROM suppliers WHERE ingID='" . (int)$rq['ingredient_id'] . "' AND owner_id = '$userID'");
+            while ($res = mysqli_fetch_array($q)) {
+                $sup[] = $res;
+            }
+
+            $suppliers = [];
+            $total_supplier_stock = 0;
+            $preferred_munit = null;
+            foreach ($sup as $supplierRow) {
+                $supplierNameRow = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingSuppliers WHERE id = '" . (int)$supplierRow['ingSupplierID'] . "' AND owner_id = '$userID'"));
+                $stock = isset($supplierRow['stock']) ? (float)$supplierRow['stock'] : 0;
+                $suppliers[] = [
+                    'id' => (string)$supplierRow['ingSupplierID'],
+                    'ingID' => (string)$supplierRow['ingID'],
+                    'name' => isset($supplierNameRow['name']) ? (string)$supplierNameRow['name'] : '',
+                    'price' => (float)$supplierRow['price'],
+                    'mUnit' => (string)$supplierRow['mUnit'],
+                    'size' => (string)$supplierRow['size'],
+                    'supplierLink' => (string)$supplierRow['supplierLink'],
+                    'stock' => $stock,
+                    'preferred' => (int)$supplierRow['preferred']
+                ];
+                $total_supplier_stock += $stock;
+                if ((int)$supplierRow['preferred'] === 1 && !$preferred_munit) {
+                    $preferred_munit = (string)$supplierRow['mUnit'];
+                }
+            }
+
+            // Fallback to first supplier's mUnit if no preferred found
+            if (!$preferred_munit && isset($suppliers[0]['mUnit'])) {
+                $preferred_munit = $suppliers[0]['mUnit'];
+            }
 
             $r = [
                 'id' => (int)$rq['id'],
@@ -58,16 +91,13 @@ switch ($action) {
                 'notes' => (string)($ingredient['notes'] ?? '-'),
                 'concentration' => (float)$rq['concentration'],
                 'dilutant' => (string)($rq['dilutant'] ?? 'None'),
-                'quantity' => number_format((float)$rq['quantity'], $settings['qStep'], '.', '') ?: 0,
-                'originalQuantity' => number_format((float)$rq['originalQuantity'], $settings['qStep'], '.', '') ?: 0,
-                'overdose' => number_format((float)$rq['overdose'], $settings['qStep'], '.', '') ?: 0,
+                'quantity' => (float)$rq['quantity'],
+                'originalQuantity' => (float)$rq['originalQuantity'],
+                'overdose' => (float)$rq['overdose'],
                 'inventory' => [
-                    'stock' => (float)($inventory['stock'] ?? 0),
-                    'mUnit' => (string)($inventory['mUnit'] ?? $settings['mUnit'] ?: 'ml'),
-                    'supplier' => [
-                        'name' => (string)$supplier['name'],
-                        'id' => (string)$supplier['id'],
-                    ]
+                    'suppliers' => $suppliers,
+                    'total_supplier_stock' => $total_supplier_stock,
+                    'mUnit' => $preferred_munit ?: ($settings['mUnit'] ?? 'ml')
                 ],
                 'toAdd' => (int)$rq['toAdd'],
                 'toSkip' => (int)$rq['skip'],
@@ -98,6 +128,86 @@ switch ($action) {
         
         $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE fid = '$fid' AND owner_id = '$userID'"));
         $filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE fid = '$fid' $filter"));
+        break;
+
+    case 'updatequantity':
+        if (empty($_GET['quantity_added']) || empty($_GET['ingID'])) {
+            echo json_encode(['error' => 'Missing required parameters']);
+            return;
+        }
+        if (!is_numeric($_GET['quantity_added']) || !is_numeric($_GET['quantity_requested'])) {
+            echo json_encode(['error' => 'Invalid amount value']);
+            return;
+        }
+        $quantity_added = (float)$_GET['quantity_added'];
+        $quantity_requested = (float)$_GET['quantity_requested'];
+        $id = (int)$_GET['id'];
+
+        if ($_GET['repID']) {
+            $repID = $_GET['repID'];
+            $ingID = $_GET['repID'];
+        } else {
+            $repID = 0;
+            $ingID = $_GET['ingID'];
+        }
+
+        $ingredient = mysqli_real_escape_string($conn, $_GET['repName'] ?: $_GET['ingredient_name']);
+        $notes = mysqli_real_escape_string($conn, $_GET['notes']) ?: "-";
+
+        if ($_GET['update_stock'] == "true") {
+            if (!($_GET['supplier_id'])) {
+                echo json_encode(['error' => 'Please select a supplier']);
+                return;
+            }
+            $supplier_id = (int)$_GET['supplier_id'];
+            $ing_supplier_id = (int)$_GET['ing_supplier_id'];
+            $getStock = mysqli_fetch_array(mysqli_query($conn, "SELECT stock, mUnit FROM suppliers WHERE ingID = '$ing_supplier_id' AND ingSupplierID = '" . $supplier_id . "' AND owner_id = '$userID'"));
+           /*
+            if ($getStock['stock'] < $quantity_requested) {
+                echo json_encode(['success' => "Amount exceeds quantity available in stock (" . $getStock['stock'] . $getStock['mUnit'] . ")."]);
+                return;
+            }
+         */
+            mysqli_query($conn, "UPDATE suppliers SET stock = stock - $quantity_added WHERE ingID = '$ing_supplier_id' AND ingSupplierID = '" . $supplier_id . "' AND owner_id = '$userID'");
+        }
+
+        if ($quantity_added == $quantity_requested) {
+            if (mysqli_query($conn, "UPDATE makeFormula SET replacement_id = '$repID', toAdd = 0, notes = '$notes' WHERE fid = '$fid' AND id = '$id' AND owner_id = '$userID'")) {
+                error_log("UPDATE makeFormula SET replacement_id = '$repID', toAdd = 0, notes = '$notes' WHERE fid = '$fid' AND id = '$id' AND owner_id = '$userID'");
+                echo json_encode(['success' => $ingredient . ' added in the formula']);
+            } else {
+                echo json_encode(['error' => mysqli_error($conn)]);
+            }
+            return;
+        } else {
+            $sub_tot =  $quantity_requested - $quantity_added;
+            if (mysqli_query($conn, "UPDATE makeFormula SET  replacement_id = '$repID', quantity='$sub_tot', notes = '$notes' WHERE fid = '$fid' AND id = '$id' AND owner_id = '$userID'")) {
+                error_log("UPDATE makeFormula SET  replacement_id = '$repID', quantity='$sub_tot', notes = '$notes' WHERE fid = '$fid' AND id = '$id' AND owner_id = '$userID'");
+                echo json_encode(['success' => 'Formula updated with ' . $ingredient . ' and ' . $sub_tot . ' left']);
+            } else {
+                echo json_encode(['error' => mysqli_error($conn)]);
+            }
+            return;
+        }
+
+        if ($quantity_added < $quantity_requested) {
+            if (mysqli_query($conn, "UPDATE makeFormula SET overdose = '$quantity_requested' WHERE fid = '$fid' AND id = '$id' AND owner_id = '$userID'")) {
+                echo json_encode(['success' => $_POST['ing'] . ' is overdosed, ' . $quantity_requested . ' added']);
+            } else {
+                echo json_encode(['error' => mysqli_error($conn)]);
+            }
+            return;
+        }
+
+        if (!mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = 1 AND owner_id = '$userID'"))) {
+            echo json_encode(['success' => 'All materials added. You should mark formula as complete now']);
+            return;
+        }
+
+        // fallback error
+        echo json_encode(['error' => 'Unknown error']);
+        return;
+
         break;
 
     case 'delete':
