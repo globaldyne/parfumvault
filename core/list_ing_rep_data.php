@@ -41,7 +41,7 @@ if ($_POST['view'] == 'formula') {
 		$ingredient_id = (int)$res['ingredient_id'];
 		
 		$q2 = mysqli_query($conn, "SELECT id, ing_name, ing_rep_name, ing_rep_id, ing_rep_cas, notes FROM ingReplacements WHERE ing_name = '$ingredient' AND owner_id = '$userID'");
-		$q3 = mysqli_fetch_array(mysqli_query($conn, "SELECT notes, odor FROM ingredients WHERE id = '$ingredient_id'"));
+		$q3 = mysqli_fetch_array(mysqli_query($conn, "SELECT notes FROM ingredients WHERE id = '$ingredient_id'"));
 		
 		while ($reps = mysqli_fetch_array($q2)) {
 			$reps['ingredient_id'] = $ingredient_id;
@@ -55,7 +55,6 @@ if ($_POST['view'] == 'formula') {
 		$r['ing_name'] = (string)$get_rep_ing['ing_name'];
 		$r['ing_rep_name'] = (string)$get_rep_ing['ing_rep_name'];
 		$r['notes'] = (string)$get_rep_ing['notes'] ?: $q3['notes'] ?: 'No information available';
-		$r['odor'] = (string)$q3['odor'] ?: 'No information available';
 		
 		$response['data'][] = $r;
 	}

@@ -176,23 +176,6 @@ $("input[type=file]").on('change', function() {
     }
 });
 
-let total_selection = 0;
-let ingredient_name = '';
-let iupac = '';
-let cas = '';
-let fema = '';
-let type = '';
-let strength = '';
-let profile = '';
-let physical_state = '';
-let allergen = 0;
-let odor = '';
-let impact_top = 0;
-let impact_heart = 0;
-let impact_base = 0;
-
-let column_data = {};
-
 $(document).on('change', '.set_column_data', function() {
     const column_name = $(this).val();
     const column_number = $(this).data('column_number');
@@ -220,6 +203,7 @@ $(document).on('change', '.set_column_data', function() {
     if (total_selection === 13) {
         $('#btnImportCSV').prop("disabled", false).show();
 
+        // Use the existing ingredient_name variable
         ingredient_name = column_data.ingredient_name;
         iupac = column_data.iupac;
         cas = column_data.cas;
@@ -229,7 +213,7 @@ $(document).on('change', '.set_column_data', function() {
         profile = column_data.profile;
         physical_state = column_data.physical_state;
         allergen = column_data.allergen;
-        odor = column_data.odor;
+        notes = column_data.notes;
         impact_top = column_data.impact_top;
         impact_heart = column_data.impact_heart;
         impact_base = column_data.impact_base;
@@ -254,7 +238,7 @@ $(document).on('click', '#btnImportCSV', function(event) {
             profile,  
             physical_state,
             allergen,
-            odor,  
+            notes,  
             impact_top, 
             impact_heart, 
             impact_base

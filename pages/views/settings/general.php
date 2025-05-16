@@ -401,7 +401,7 @@ function get_general(){
             callback: function (result) {
                 if (result) {
                     localStorage.removeItem('chatMessages');
-                    $('#chatbot-modal-body').html('');
+                    location.reload();
                 }
             }
         });

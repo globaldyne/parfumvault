@@ -136,7 +136,8 @@ switch ($do) {
             'suppliers' => '/api-functions/suppliers_get.php',
             'documents' => '/api-functions/documents_get.php',
             'ifra' => '/api-functions/ifra_get.php',
-            'aromatrack' => '/api-functions/aromatrack_get.php'
+            'aromatrack' => '/api-functions/aromatrack_get.php',
+            'makeformulas' => '/api-functions/makeformulas.php'
         ];
         if (isset($apiFileMap[$type])) {
             validateKeyAndExecute($conn, $key, function () use ($type, $apiFileMap) {

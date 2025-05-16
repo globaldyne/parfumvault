@@ -539,7 +539,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
                         <option value="profile">Profile (Top, Heart, Base, Solvent)</option>
                         <option value="physical_state">Physical state (Liquid = 1, Solid = 2)</option>
                         <option value="allergen">Is allergen (Yes = 1, No = 0)</option>
-                        <option value="odor">Odor Description</option>
+                        <option value="notes">Description</option>
                         <option value="impact_top">Impact top note (0 - 100)</option>
                         <option value="impact_heart">Impact heart note (0 - 100)</option>
                         <option value="impact_base">Impact base note (0 - 100)</option>
@@ -582,7 +582,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
         $requiredColumns = [
             'ingredient_name', 'iupac', 'cas', 'fema', 'type', 
             'strength', 'profile', 'physical_state', 'allergen', 
-            'odor', 'impact_top', 'impact_heart', 'impact_base'
+            'notes', 'impact_top', 'impact_heart', 'impact_base'
         ];
 
         foreach ($requiredColumns as $column) {
@@ -613,7 +613,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
                     mysqli_real_escape_string($conn, trim($row[$_POST['profile']] ?? '')),
                     mysqli_real_escape_string($conn, trim($row[$_POST['physical_state']] ?? '')),
                     mysqli_real_escape_string($conn, trim($row[$_POST['allergen']] ?? '')),
-                    mysqli_real_escape_string($conn, trim($row[$_POST['odor']] ?? '')),
+                    mysqli_real_escape_string($conn, trim($row[$_POST['notes']] ?? '')),
                     mysqli_real_escape_string($conn, trim($row[$_POST['impact_top']] ?? '')),
                     mysqli_real_escape_string($conn, trim($row[$_POST['impact_heart']] ?? '')),
                     mysqli_real_escape_string($conn, trim($row[$_POST['impact_base']] ?? '')),
@@ -625,7 +625,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'ingCSVImport') {
 
         // Insert new records into the database
         if (!empty($insertData)) {
-            $query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, profile, physical_state, allergen, odor, impact_top, impact_heart, impact_base, owner_id) VALUES " . implode(", ", $insertData);
+            $query = "INSERT INTO ingredients (name, INCI, cas, FEMA, type, strength, profile, physical_state, allergen, notes, impact_top, impact_heart, impact_base, owner_id) VALUES " . implode(", ", $insertData);
             if (mysqli_query($conn, $query)) {
                 echo json_encode(['success' => $importedCount . ' ingredients imported successfully.']);
             } else {

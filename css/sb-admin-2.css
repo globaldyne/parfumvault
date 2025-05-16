@@ -4807,12 +4807,12 @@ a.badge:hover, a.badge:focus {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
-
+/*
 .badge-primary {
   color: #fff;
   background-color: #4e73df;
 }
-
+*/
 a.badge-primary:hover, a.badge-primary:focus {
   color: #fff;
   background-color: #2653d4;

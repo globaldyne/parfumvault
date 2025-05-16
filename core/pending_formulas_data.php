@@ -12,7 +12,7 @@ $meta = isset($_GET['meta']) ? (int)$_GET['meta'] : 0;
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
 $limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
 
-$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'ingredient';
+$order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
 $order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
 $extra = "ORDER BY toAdd DESC, $order_by $order_as";
 
@@ -40,7 +40,7 @@ if ($meta === 0) {
     $rsL = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid' AND toAdd = '1' AND owner_id = '$userID'"), MYSQLI_ASSOC);
     
     foreach ($rs as $rq) {
-        $ingredient = mysqli_fetch_assoc(mysqli_query($conn, "SELECT cas, odor FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $rq['ingredient']) . "' AND owner_id = '$userID'"));
+        $ingredient = mysqli_fetch_assoc(mysqli_query($conn, "SELECT cas, notes FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $rq['ingredient']) . "' AND owner_id = '$userID'"));
         $inventory = mysqli_fetch_assoc(mysqli_query($conn, "SELECT ingSupplierID, SUM(stock) OVER() AS stock, mUnit FROM suppliers WHERE ingID = '" . (int)$rq['ingredient_id'] . "' AND owner_id = '$userID'"));
         $supplier = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, name FROM ingSuppliers WHERE id = '" . (int)$inventory['ingSupplierID'] . "' AND owner_id = '$userID'"));
         $replacement = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '" . (int)$rq['replacement_id'] . "' AND owner_id = '$userID'"));
@@ -54,7 +54,7 @@ if ($meta === 0) {
             'ingredient' => (string)$rq['ingredient'],
             'ingID' => (int)$rq['ingredient_id'],
             'cas' => (string)($ingredient['cas'] ?? '-'),
-            'odor' => (string)($ingredient['odor'] ?? '-'),
+            'notes' => (string)($ingredient['notes'] ?? '-'),
             'concentration' => (float)$rq['concentration'],
             'dilutant' => (string)($rq['dilutant'] ?? 'None'),
             'quantity' => number_format((float)$rq['quantity'], $settings['qStep'], '.', '') ?: 0,

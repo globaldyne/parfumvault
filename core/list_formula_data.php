@@ -24,9 +24,22 @@ if (!empty($_GET['filter']) && (!empty($_GET['profile']) || !empty($_GET['gender
 }
 
 $s = trim($_POST['search']['value'] ?? '');
+$extendSearchLabels = isset($_POST['extendSearchLabels']) && $_POST['extendSearchLabels'] === 'true';
+
 if ($s !== '') {
     $searchTerm = mysqli_real_escape_string($conn, $s);
-    $filters[] = "(fm.name LIKE '%$searchTerm%' OR fm.product_name LIKE '%$searchTerm%' OR fm.notes LIKE '%$searchTerm%')";
+    $searchFilter = "(fm.name LIKE '%$searchTerm%' OR fm.product_name LIKE '%$searchTerm%' OR fm.notes LIKE '%$searchTerm%')";
+
+    if ($extendSearchLabels) {
+        $tagFilter = "EXISTS (
+            SELECT 1 FROM formulasTags ft 
+            WHERE ft.formula_id = fm.id AND ft.tag_name LIKE '%$searchTerm%' AND ft.owner_id = '$userID'
+        )";
+
+        $filters[] = "($searchFilter OR $tagFilter)";
+    } else {
+        $filters[] = $searchFilter;
+    }
 }
 
 $f = !empty($filters) ? 'AND ' . implode(' AND ', $filters) : '';

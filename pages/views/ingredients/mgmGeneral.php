@@ -14,6 +14,17 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
 $res_ingProfiles = mysqli_query($conn, "SELECT id,name FROM ingProfiles ORDER BY id ASC"); //PUBLIC
 $ing = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
+// Generate array with labels data 
+$labelsData = array(); 
+$labelsQ = mysqli_query($conn,"SELECT label_name FROM ingredientLabels WHERE ingredient_id = '$ingID' AND owner_id = '$userID'");
+while($qlabels = mysqli_fetch_array($labelsQ)){
+	
+	$labels = $qlabels['label_name'];
+	array_push($labelsData, $labels); 
+	error_log("Label: " . $labels);
+}
+
+
 if($_GET["newIngName"]){
 	$newIngName = mysqli_real_escape_string($conn, base64_decode($_GET["newIngName"]));
 
@@ -28,33 +39,33 @@ if($_GET["newIngName"]){
 <div class="row g-3">
   
  <?php if(empty($ingID)){?>
- <div class="mt-3 col-12">
-    <label for="name" class="form-label">Name</label>
-    <input name="name" type="text" class="form-control" id="name" value="<?=$newIngName?>">
- </div>
+ <div class="form-floating mt-3 col-12">
+    <input name="name" type="text" class="form-control" id="name" placeholder="Name" value="<?=$newIngName?>">
+    <label for="name">Name</label>
+</div>
  <?php } ?>
   
-  <div class="mt-3 col-12">
-    <label for="INCI" class="form-label">IUPAC</label>
-    <input name="INCI" type="text" class="form-control" id="INCI" value="<?php echo htmlspecialchars($ing['INCI']); ?>" />
+  <div class="form-floating mt-3 col-12">
+    <input name="INCI" type="text" class="form-control" id="INCI" placeholder="IUPAC" value="<?php echo htmlspecialchars($ing['INCI']); ?>" />
+    <label class="mx-2" for="INCI">IUPAC</label>
   </div>
-  <div class="mt-3 col-md-6">
-    <label for="cas" class="form-label">CAS</label><i class="fa-solid fa-circle-info mx-2 pv_point_gen" rel="tip" title="If your material contains multiple CAS, then use Mixture or Blend instead."></i>
-    <input name="cas" type="text" class="form-control" id="cas" value="<?php echo $ing['cas']; ?>">
+  <div class="form-floating mt-3 col-md-6">
+    <input name="cas" type="text" class="form-control" id="cas" placeholder="CAS" value="<?php echo $ing['cas']; ?>">
+    <label class="mx-2" for="cas">CAS</label>
     
   </div>
-  <div class="mt-3 col-md-6">
-    <label for="einecs" class="form-label">EINECS</label>
-    <input name="einecs" type="text" class="form-control" id="einecs" value="<?php echo $ing['einecs']; ?>">
+  <div class="form-floating mt-3 col-md-6">
+    <input name="einecs" type="text" class="form-control" id="einecs" placeholder="EINECS" value="<?php echo $ing['einecs']; ?>">
+    <label class="mx-2" for="einecs">EINECS</label>
   </div>
-  <div class="mt-3 col-md-6">
-    <label for="reach" class="form-label">REACH</label>
-    <input name="reach" type="text" class="form-control" id="reach" value="<?php echo $ing['reach']; ?>">
+  <div class="form-floating mt-3 col-md-6">
+    <input name="reach" type="text" class="form-control" id="reach" placeholder="REACH" value="<?php echo $ing['reach']; ?>">
+    <label class="mx-2" for="reach">REACH</label>
   </div>
 
-  <div class="mt-3 col-md-6">
-    <label for="fema" class="form-label">FEMA</label>
-    <input name="fema" type="text" class="form-control" id="fema" value="<?php echo $ing['FEMA']; ?>">
+  <div class="form-floating mt-3 col-md-6">
+    <input name="fema" type="text" class="form-control" id="fema" placeholder="FEMA" value="<?php echo $ing['FEMA']; ?>">
+    <label class="mx-2" for="fema">FEMA</label>
   </div>
   
   <div class="mt-3 col-md-6">
@@ -124,14 +135,13 @@ if($_GET["newIngName"]){
         <?php } ?>
     </select>  
   </div>
-  <div class="mt-3 col-md-6">
-  	<label for="odor" class="form-label">Odor</label>
-    <input name="odor" id="odor" type="text" class="form-control" value="<?php echo $ing['odor']; ?>"/>
+  <div class="form-floating mt-3 col-md-6">
+	<input type="text" class="form-control" id="labelsinput" placeholder="Start typing to add a label..." data-role="labelsinput" value="<?= implode(",", $labelsData) ?>">
   </div>
 
-  <div class="mt-3 col-12">
-  	<label for="notes" class="form-label">Notes</label>
-    <textarea name="notes" id="notes" cols="45" rows="3" class="form-control"><?php echo $ing['notes']; ?></textarea>
+  <div class="form-floating mt-3 col-12">
+    <textarea name="notes" id="notes" class="form-control" placeholder="Notes" style="height: 100px;"><?php echo $ing['notes']; ?></textarea>
+    <label class="mx-2" for="notes">Notes</label>
   </div>
   <div class="col-sm dropdown-divider"></div>  
   <div class="mt-3 col-12">
@@ -175,7 +185,6 @@ $(document).ready(function() {
 				strength: $("#strength").val(),
 				category: $("#category").val(),
 				physical_state: $("#physical_state").val(),
-				odor: $("#odor").val(),
 				notes: $("#notes").val(),
 				<?php if($ing['name']){?>
 					ing: '<?=$ing['name'];?>'
@@ -223,5 +232,60 @@ $(document).ready(function() {
 		}
 		$('.selectpicker').selectpicker('refresh');
 	});
+
+	$('#labelsinput').on('beforeItemAdd', function(event) {
+	   var label = event.item;   
+	   $.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: "inglabeladd",
+				id: myIngID,
+				label: label
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.error){
+					$('#labelsinput').tagsinput('remove', label, {preventPost: true});
+					//$('#set_msg').html(data.error);
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		});
+	});
+	
+	$('#labelsinput').val('<?= implode(",", $labelsData) ?>');
+	$('#labelsinput').tagsinput('refresh');
+
+	$('#labelsinput').on('beforeItemRemove', function(event) {
+	var label = event.item;
+
+	$.ajax({ 
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: "inglabelremove",
+				id: myIngID,
+				label: label
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data.error) {
+					$('#labelsinput').tagsinput('add', label, { preventPost: true });
+					$('#set_msg').html('<div class="alert alert-danger mx-2"><i class="fa-solid fa-circle-exclamation mx-2"></i> ' + data.error + '</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+		});
+	});
+
 });//end doc
 </script>

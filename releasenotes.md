@@ -1,15 +1,23 @@
-Whats New in v12.9
+What's New in v13.0
 --------------------------
-- Added AI Chat box
-- Added AI formula generation
-- Added Google Gemini support
-- Added OpenAI formula support
-- Added a login screen template for easier integration with external SSO
-- Added formula advisor
-- Added Windows and macOS executors
-- Localized date across the app
-- Removed time from created and updated fields
-- Removed created and updated timestamps from ingredient suppliers, bottles, customers, and formula documents
-- Removed updated timestamp from HTML templates
-- Overall improved CSV formula import
-- This release may include additional changes; for full details, please refer to the CHANGELOG
+
+- Fixed ingredients CSV redeclarations
+- Replaced alert box with toast message when copying AI response
+- Added a realtime advisory count badge
+- Cosmetic changes for formulas labels
+- Added BS5 floating elements for formula properties
+- Extended formulas search in labels
+- Renamed tags to labels
+- Added ingredient replacement suggestion in formula making using Perfumers AI
+- Added full date in AI chat response
+- Added CAS in ingredient suggestions
+- Updated AI formula generation to include dilution and solvent
+- Fixed JS error when searching in PV library
+- Replaced odor with labels for ingredients
+- Fixed defaultMessage error in AI Chat
+- Replaced Odor column with label in ingredients page
+- Deprecated colorKey
+- Added makeformula API 
+- Improved Perfumers AI Chat
+
+For a complete list of changes and previous versions, please refer to the CHANGELOG.md

@@ -29,10 +29,11 @@
     width: 400px; /* Increased width */
     background: var(--bs-body-bg); /* Bootstrap variable for theme compatibility */
     color: var(--bs-body-color); /* Bootstrap variable for theme compatibility */
-    border: 1px solid var(--bs-border-color); /* Bootstrap variable for theme compatibility */
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10000;
+    border: 3px solid;
+    border-image: linear-gradient(90deg, #ff7e5f, #feb47b, #6dd5ed, #2193b0) 1;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    z-index: 2000; /* Ensure it is above Bootstrap modals */
 }
 
 #chatbot-modal-header {
@@ -46,7 +47,8 @@
 
 #chatbot-modal-body {
     padding: 10px;
-    max-height: 600px; /* Increased height */
+    max-height: 1000px; /* Increased height */
+    min-height: 600px; /* Increased height */
     overflow-y: auto;
 }
 
@@ -64,6 +66,8 @@
     padding: 5px;
     background: var(--bs-body-bg); /* Bootstrap variable for theme compatibility */
     color: var(--bs-body-color); /* Bootstrap variable for theme compatibility */
+    z-index: 2001; /* Ensure input is above other elements */
+    position: relative; /* Ensure stacking context */
 }
 
 #chatbot-modal-footer button {
@@ -76,7 +80,7 @@
 }
 
 #chatbot-modal-footer button:hover {
-    background-color: var(--bs-primary-dark); /* Bootstrap darker primary color */
+    background-color: var(--bs-primary-border-subtle); /* Bootstrap darker primary color */
 }
 
 .copy-button {

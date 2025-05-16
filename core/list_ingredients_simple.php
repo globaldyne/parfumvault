@@ -30,7 +30,7 @@ if ($_POST['isDeepQ'] == "true"){
 }
 
 try {
-	$query = "SELECT ingredients.id,name,INCI,cas,einecs,type,odor,physical_state,profile FROM $t $filter AND ingredients.owner_id = ? ORDER BY name ASC";
+	$query = "SELECT ingredients.id,name,INCI,cas,einecs,type,notes,physical_state,profile FROM $t $filter AND ingredients.owner_id = ? ORDER BY name ASC";
 	$stmt = $conn->prepare($query);
 	$stmt->bind_param("s", $userID);
 	//error_log("Executing query: " . $query);
@@ -57,7 +57,7 @@ foreach ($ingredients as $ingredient) {
 			$r['cas'] = (string)$ingredient['cas']?: '-';
 			$r['einecs'] = (string)$ingredient['einecs']?: '-';
 			$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
-			$r['description'] = (string)$ingredient['odor'] ?: '-';
+			$r['description'] = (string)$ingredient['notes'] ?: '-';
 			$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
 			$r['profile'] = (string)$ingredient['profile'] ?: 'Unknown';
 			$r['stock'] = (float)number_format($supp['stock'], $settings['qStep']) ?: 0;
@@ -73,7 +73,7 @@ foreach ($ingredients as $ingredient) {
 		$r['cas'] = (string)$ingredient['cas']?: '-';
 		$r['einecs'] = (string)$ingredient['einecs']?: '-';
 		$r['type'] = (string)$ingredient['type'] ?: 'Unknown';
-		$r['description'] = (string)$ingredient['odor'] ?: '-';
+		$r['description'] = (string)$ingredient['notes'] ?: '-';
 		$r['physical_state'] = (int)$ingredient['physical_state'] ?: 1;
 		$r['profile'] = (string)$ingredient['profile'] ?: 'Unknown';
 		$r['stock'] = 0; // Default stock value

@@ -639,18 +639,24 @@ $(document).ready(function() {
 	function ingFinalSetConc(data, type, row, meta){
 		return '<div class="final-concentration-details">' + row.final_concentration + '</div>';
 	};
-	
-	function ingNotes(data, type, row, meta){
-		 if(type === 'display'){
-		  <?php if($meta['defView'] == '1'){ $show = 'properties'; }elseif($meta['defView'] == '2'){ $show = 'notes';}?>
-		  <?php if($meta['isProtected'] == FALSE){?>
-		  data = '<i data-name="<?=$show?>" class="pv_point_gen text-wrap <?=$show?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
-		  <?php } ?>
-		 }
+
+	function ingNotes(data, type, row, meta) {
+		if (type === 'display') {
+			let ingNotes = '';
+			<?php 
+			$show = ($meta['defView'] == '1') ? 'properties' : (($meta['defView'] == '2') ? 'notes' : '');
+			if ($meta['isProtected'] == FALSE) { ?>
+				ingNotes = '<i data-name="<?= $show ?>" class="pv_point_gen text-wrap <?= $show ?>" data-type="textarea" data-pk="' + row.formula_ingredient_id + '">' + data + '</i>';
+			<?php } ?>
+
+			if (data && data.length > 64) {
+				return '<div class="text-wrap" rel="tip" title="' + data + '">' + data.substring(0, 64) + '...</div>';
+			}
+			return ingNotes || data;
+		}
 		return data;
 	};
-	  
-	  
+	
 	function ingInv(data, type, row, meta){
 		if (row.ingredient.physical_state == 1){
 			var mUnit = 'ml';
@@ -934,6 +940,7 @@ function reload_formula_data() {
     $('#formula').DataTable().ajax.reload(null, true);
 	update_bar();
 	reset_solv();
+	fetchAdvisorData();
 };
 
 

@@ -27,7 +27,6 @@ require_once(__ROOT__.'/inc/opendb.php');
       <thead>
         <tr>
           <th>Image</th>
-          <th>Colour Key</th>
           <th>Name</th>
           <th>Description</th>
           <th></th>
@@ -41,7 +40,7 @@ $(document).ready(function() {
 	var tdDataCat = $('#tdDataCat').DataTable( {
 		columnDefs: [
 			{ className: 'text-center', targets: '_all' },
-			{ orderable: false, targets: [0,1,4] }
+			{ orderable: false, targets: [0,3] }
         ],
 		dom: 'lfrtip',
 		processing: true,
@@ -56,7 +55,6 @@ $(document).ready(function() {
     	ajax: {	url: '/core/list_ingCat_data.php' },
 		columns: [
 			   { data : 'image', title: 'Image', render: ciImage },
-    		   { data : 'colorKey', title: 'Colour Key', render: ciKey},
 			   { data : 'name', title: 'Name', render: ciName},
 			   { data : 'notes', title: 'Description', render: ciNotes},
    			   { data : null, title: '', render: ciActions},		   
@@ -65,7 +63,7 @@ $(document).ready(function() {
 		lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
         pageLength: 20,
 		displayLength: 20,
-			drawCallback: function( settings ) {
+		drawCallback: function( settings ) {
 			extrasShow();
     	},
 		stateSave: true,
@@ -100,9 +98,6 @@ $(document).ready(function() {
 		return '<a href="#" data-id="'+row.id+'" data-bs-toggle="modal" data-bs-target="#editCategory">' + cimg + '</a>';    
 	};
 	
-	function ciKey(data, type, row){
-		return '<a href="#" class="colorKey" style="background-color: rgb('+row.colorKey+')" id="colorKey" data-name="colorKey" data-type="select" data-pk="'+row.id+'" data-title="Choose Colour Key for '+row.name+'"></a>';
-	};
 	
 	function ciName(data, type, row){
 		return '<a class="name pv_point_gen" data-name="name" data-type="text" data-pk="'+row.id+'">'+row.name+'</a>';    
@@ -207,43 +202,7 @@ $(document).ready(function() {
 			$('.toast').toast('show');
 		},
 	});
-	
-	//Change colorKey
-	$('#tdDataCat').editable({
-		pvnoresp: false,
-		highlight: false,
-		selector: 'a.colorKey',
-		emptytext: "",
-		emptyclass: "",
-		url: "/core/core.php?action=ingredientCategories",
-		source: [
-		 <?php
-			$getCK = mysqli_query($conn, "SELECT name,rgb FROM colorKey ORDER BY name ASC"); //PUBLIC
-			while ($r = mysqli_fetch_array($getCK)){
-				echo '{value: "'.$r['rgb'].'", text: "'.$r['name'].'", ck: "color: rgb('.$r['rgb'].')"},';
-			}
-		?>
-		],
-		ajaxOptions: {
-			type: "POST",
-			dataType: 'json'
-		},
-		success: function (data) {
-			if (data.success) {
-				reload_data();
-			} else if (data.error) {
-				$('#toast-title').html('<i class="fa-solid fa-warning mx-2"></i>' + data.error);
-				$('.toast-header').removeClass().addClass('toast-header alert-danger');
-				$('.toast').toast('show');
-			}
-		},
-		error: function (xhr, status, error) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An error occurred, check server logs for more info. '+ error);
-			$('.toast-header').removeClass().addClass('toast-header alert-danger');
-			$('.toast').toast('show');
-		},
-	});
-	
+
 		
 	$('#tdDataCat').on('click', '[id*=catDel]', function () {
 		var cat = {};
