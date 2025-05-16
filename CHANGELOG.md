@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 13.1
+
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
 - Replaced alert box with toast message when copying AI response
