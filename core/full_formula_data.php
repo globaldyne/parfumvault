@@ -141,7 +141,7 @@ if(isset($_GET['stats_only'])){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, category, physical_state,usage_type AS classification, type, byPassIFRA, notes FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1' AND owner_id = '$userID'"));
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
@@ -180,7 +180,7 @@ foreach ($form as $formula){
 	if($settings['grp_formula'] == '1'){
 		$r['ingredient']['profile'] = (string)$ing_q['profile'] ?: 'Unknown';
 	}elseif($settings['grp_formula'] == '2'){
-		$r['ingredient']['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name,colorKey', $conn)['name']?:'Unknown Notes';
+		$r['ingredient']['profile'] = (string)getCatByIDRaw($ing_q['category'], 'name', $conn)['name']?:'Unknown Notes';
 	}elseif($settings['grp_formula'] == '3'){
 		$r['ingredient']['profile'] = ($ing_q['physical_state'] == 1) ? 'Liquid' : (($ing_q['physical_state'] == 2) ? 'Solid' : 'Unknown');
 	}elseif($settings['grp_formula'] == '0'){
@@ -245,7 +245,7 @@ foreach ($form as $formula){
 	}
 	
 	if($meta['defView'] == '1'){
-		$desc = $ing_q['odor'];
+		$desc = $ing_q['notes'];
 	}elseif($meta['defView'] == '2'){
 		$desc = $formula['notes'];
 	}

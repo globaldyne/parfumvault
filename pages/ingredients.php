@@ -78,8 +78,8 @@ $res_ingCategory = mysqli_query($conn, "SELECT id,image,name,notes FROM ingCateg
           </div>
           <div class="mb-3 row">
             <div class="col-sm">
-              <label for="ing_odor" class="col-form-label">Odor</label>
-              <input type="text" class="form-control" id="ing_odor" placeholder="Any">
+              <label for="ing_notes" class="col-form-label">Notes</label>
+              <input type="text" class="form-control" id="ing_notes" placeholder="Any">
             </div>
           </div>
           <div class="mb-3 row">
@@ -219,7 +219,7 @@ $(document).ready(function() {
 		var name = $('#ing_name').val();
 		var cas = $('#ing_cas').val();
 		var einecs = $('#ing_einecs').val();
-		var odor = $('#ing_odor').val();
+		var notes = $('#ing_notes').val();
 		var profile = $('#ing_profile').val();
 		var cat = $('#ing_category').val();
 		var synonym = $('#ing_synonym').val();
@@ -233,7 +233,7 @@ $(document).ready(function() {
 				"name": name,
 				"cas": cas,
 				"einecs": einecs,
-				"odor": odor,
+				"notes": notes,
 				"profile": profile,
 				"cat": cat,
 				"synonym": synonym
@@ -272,5 +272,3 @@ $(document).ready(function() {
 });
 
 </script>
-
-<script src="/js/ingredients.js"></script>

@@ -102,7 +102,7 @@ while ($formula = mysqli_fetch_array($formula_q)){
 
 foreach ($form as $formula){
 	
-	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, odor, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, notes, category, physical_state,usage_type AS classification, type, byPassIFRA FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
 	
 	$new_quantity = $formula['quantity'] / $mg['total_mg'] * $new_conc;
 

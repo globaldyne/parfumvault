@@ -74,7 +74,7 @@ while ($res = mysqli_fetch_assoc($result)) {
 }
 
 // Prepare response data
-$response = ['data' => []];
+$response = ['data' => [], 'total_items' => count($get_data_ings)];
 $ingredientIds = [];
 
 foreach ($get_data_ings as $get_data_ing) {

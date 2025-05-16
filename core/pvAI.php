@@ -42,7 +42,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = "Create a perfume formula in JSON with ingredient name as ingredient, CAS number as cas, and quantity in grams as quantity. Total formula quantity 100. Description: $notes. Return only JSON.";
+    $prompt = "Create a perfume formula in JSON with ingredient name as 'ingredient', CAS number as 'cas', quantity in grams as 'quantity', dilution percentage as 'dilution', and solvent type as 'solvent'. Total formula quantity 100. Description: $notes. Return only JSON.";
 
     $result = pvAIHelper($prompt);
 
@@ -79,6 +79,8 @@ if ($_POST['action'] === 'addFormulaAI') {
         $ingredient = mysqli_real_escape_string($conn, $row['ingredient'] ?? '');
         $cas = mysqli_real_escape_string($conn, $row['cas'] ?? '');
         $quantity = floatval($row['quantity'] ?? 0);
+        $dilution = floatval($row['dilution'] ?? 100);
+        $solvent = mysqli_real_escape_string($conn, $row['solvent'] ?? 'None');
     
         if ($ingredient && $cas && $quantity > 0) {
             // Check if the ingredient exists
@@ -104,7 +106,7 @@ if ($_POST['action'] === 'addFormulaAI') {
             // Insert into formulas
             mysqli_query($conn, "
                 INSERT INTO formulas (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, owner_id)
-                VALUES ('$fid', '$escaped_name', '$ingredient', '$ingredient_id', 100, 'None', '$quantity', '$userID')
+                VALUES ('$fid', '$escaped_name', '$ingredient', '$ingredient_id', '$dilution', '$solvent', '$quantity', '$userID')
             ");
             error_log("Inserted fid: $fid, name: $escaped_name, ingredient: $ingredient with quantity: $quantity, ingredient_id: $ingredient_id, owner_id: $userID");
         }
@@ -132,6 +134,47 @@ if ($_POST['action'] === 'addFormulaAI') {
     }
 
     echo json_encode(['success' => $result['success']]);
+
+} else if ($_POST['action'] === 'getAIReplacementSuggestions') {
+
+    $ingredient = $_POST['ingredient'] ?? '';
+    
+    if (empty($ingredient)) {
+        echo json_encode(['error' => 'Ingredient is required.']);
+        return;
+    }
+
+    $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name as 'ingredient', CAS as 'cas', and description as 'description' in JSON format.";
+    
+    $result = pvAIHelper($prompt);
+    
+    error_log("AI Replacement Prompt: $prompt");
+    error_log("AI Replacement Result: " . json_encode($result));
+    
+    if (isset($result['error'])) {
+        echo json_encode(['error' => $result['error']]);
+        return;
+    }
+
+    $suggestions = $result['success'];
+    foreach ($suggestions as &$suggestion) {
+        $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
+        $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$safe_ingredient' AND owner_id = '$userID' LIMIT 1"));
+
+        if ($ingredient_data) {
+            $ingredient_id = (int)$ingredient_data['id'];
+            $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
+                SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
+                FROM suppliers 
+                WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
+            "));
+            $suggestion['inventory'] = $inventory;
+        } else {
+            $suggestion['inventory'] = 0;
+        }
+    }
+
+    echo json_encode(['success' => $suggestions]);
 } else {
     echo json_encode(['error' => 'Invalid action']);
 }

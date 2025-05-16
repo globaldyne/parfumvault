@@ -66,7 +66,6 @@ if ($_REQUEST['action'] == 'generateDOC' && $_REQUEST['kind'] == 'ingredient'){
 		'einecs' => (string)$res['einecs'] ?: '-',
 		'reach' => (string)$res['reach'] ?: '-',
 		'notes' => (string)$res['notes'] ?: '-',
-		'odor' => (string)$res['odor'] ?: '-',
 		'physical_state' => $res['physical_state'] === 1 ? 'Liquid' : ($res['physical_state'] === 2 ? 'Solid' : 'Unknown')
 	];
 	

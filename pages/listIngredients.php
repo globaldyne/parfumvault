@@ -38,7 +38,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
 	<div class="text-right">
         <div class="pv_input_grp">   
           <div class="btn-group input-group-btn">
-          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS, odor..">
+          	<input name="ing_search" type="text" class="form-control input-sm pv_input_sm" id="ing_search" value="<?=$_GET['search']?>" placeholder="Ingredient name, CAS...">
             <button class="btn btn-search btn-primary col" id="pv_search_btn" data-provider="local">
             	<span class="label-icon">
                     <i class="fas fa-database mx-2"></i>
@@ -80,7 +80,7 @@ $cIngredients = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients 
    </thead>
 </table>
 
-<!-- Modal -->
+<!-- EXPORT MODAL -->
 <div class="modal fade" id="export_options_modal" tabindex="-1" aria-labelledby="exportOptionsLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -156,7 +156,6 @@ $(document).ready(function() {
 				"Ingredient name": $('#ing_name').val(),
 				"CAS#": $('#ing_cas').val(),
 				"EINECS": $('#ing_einecs').val(),
-				"Odor": $('#ing_odor').val(),
 				"Profile": $('#ing_profile').val(),
 				"Category": $('#ing_category').find('option:selected').data('text'),
 				"Synonym": $('#ing_synonym').val()
@@ -168,7 +167,7 @@ $(document).ready(function() {
 						<span class="badge rounded-pill d-block p-2 mx-2 badge-primary">
 							${key}: ${value}
 							<span class="ms-1" data-fa-transform="shrink-2"></span>
-							<button type="button" class="btn-close btn-close-white mx-1" aria-label="Remove" data-field="${key}"></button>
+							<button type="button" class="btn-close btn-close-white mt-2 mx-2" aria-label="Remove" data-field="${key}"></button>
 						</span>
 						</span>
 					`);
@@ -187,9 +186,6 @@ $(document).ready(function() {
 						break;
 					case "EINECS":
 						$('#ing_einecs').val('');
-						break;
-					case "Odor":
-						$('#ing_odor').val('');
 						break;
 					case "Profile":
 						$('#ing_profile').val('').trigger('change');
@@ -218,7 +214,7 @@ $(document).ready(function() {
 			processing: 'Blending...',
 			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
 			search: 'Quick Search:',
-			searchPlaceholder: 'Name, CAS, EINECS, IUPAC, odor..',
+			searchPlaceholder: 'Name, CAS, EINECS, IUPAC...',
 		},
 		ajax: {	
 			url: '/core/list_ingredients_data.php',
@@ -231,9 +227,9 @@ $(document).ready(function() {
 				d.name = '<?=htmlspecialchars($_POST['name']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.cas = '<?=htmlspecialchars($_POST['cas']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.einecs = '<?=htmlspecialchars($_POST['einecs']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.odor = '<?=htmlspecialchars($_POST['odor']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.cat = '<?=htmlspecialchars($_POST['cat']?:null, ENT_QUOTES, 'UTF-8')?>'
 				d.synonym = '<?=htmlspecialchars($_POST['synonym']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.notes = '<?=htmlspecialchars($_POST['notes']?:null, ENT_QUOTES, 'UTF-8')?>'
 				if (d.order.length>0){
 					d.order_by = d.columns[d.order[0].column].data
 					d.order_as = d.order[0].dir
@@ -244,7 +240,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'name', title: 'Name', render: iName },
 			  { data : 'IUPAC', title: 'IUPAC' },
-			  { data : 'odor', title: 'Description'},
+			  { data : 'labels', title: 'Labels', render: labels },
 			  { data : 'profile', title: 'Profile', render: iProfile },
 			  { data : 'category', title: 'Category', render: iCategory },
 			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
@@ -260,6 +256,30 @@ $(document).ready(function() {
 		displayLength: 20,
 		drawCallback: function( settings ) {
 			extrasShow();
+		},
+		initComplete: function( settings, json ) {
+		
+			$('#tdDataIng').on('click', '[id*=show-all-labels]', function () {
+				const $button = $(this);
+				const labels = $button.data('labels');
+				const $row = $button.closest('tr'); // Find the closest table row
+				const $labelContainer = $row.find('.expanded-labels'); // Check if expanded labels already exist
+
+				if ($labelContainer.length) {
+					// If already expanded, collapse by removing the labels and updating the button text
+					$labelContainer.remove();
+					$button.text(`+${labels.length - 4} more`);
+				} else {
+					// Expand by appending the remaining labels and updating the button text
+					if (Array.isArray(labels)) {
+						const html = labels
+							.map(label => `<span class="badge bg-info text-dark mt-2 mx-1 my-2">${label}</span>`)
+							.join('');
+						$row.find('td').eq(2).append(`<div class="expanded-labels">${html}</div>`);
+					}
+					$button.text('Less');
+				}
+			});
 		},
 		stateSave: true,
 		stateDuration : -1,
@@ -449,7 +469,37 @@ $(document).ready(function() {
 		return data;
 	};
 	
-	
+	// Function to handle the display of labels
+	function labels(data, type, row) {
+		if (Array.isArray(data) && data.length > 0) {
+			const maxLabels = 4; // Maximum number of labels to show initially
+			const labelList = data;
+			const labelSummary = labelList.slice(0, maxLabels);
+			let html = '';
+
+			labelSummary.forEach(label => {
+				html += `<span class="badge bg-info text-dark mt-2 mx-1">${label}</span>`;
+			});
+
+			// "+N more" button with data attribute for jQuery handler
+			if (labelList.length > maxLabels) {
+				html += `
+					<button id="show-all-labels" class="btn btn-sm btn-link p-0 mt-2 mx-1 show-all-labels" 
+							type="button" 
+							data-labels='${JSON.stringify(labelList)}'>
+						+${labelList.length - maxLabels} more
+					</button>
+				`;
+			}
+
+			return html;
+		} else {
+			return 'N/A';
+		}
+	};
+
+
+
 	function actions(data, type, row, meta){
 		if(meta.settings.json.source == 'PVLibrary'){
 			data = '<div class="dropdown">' +
@@ -649,7 +699,9 @@ $(document).ready(function() {
 			$("#advanced_search").html('<span><hr /><a href="#" class="advanced_search_box" data-bs-toggle="modal" data-bs-target="#adv_search">Advanced Search</a></span>');
 		}else{
 			$("#advanced_search").html('');
-			tdDataIng.settings()[0].language.emptyTable = '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try a different term instead? You can search for ingredient name or CAS number</strong></div>';
+			tdDataIng.language = {
+    			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
+			};
 		}
 		
 	});
@@ -658,7 +710,8 @@ $(document).ready(function() {
 		$('[rel=tip]').tooltip({
 			"html": true,
 			"delay": {"show": 100, "hide": 0},
-		 });
+		});
+
 		$('.popup-link').magnificPopup({
 			type: 'iframe',
 			closeOnContentClick: false,
