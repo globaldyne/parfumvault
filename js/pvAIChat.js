@@ -135,7 +135,13 @@ $(document).ready(function () {
                         const data = response.success;
                         if (Array.isArray(data) && data.length > 0) {
                             data.forEach(item => {
-                                simulateTypingEffect(item.description, chatBody);
+                                if (item.description && item.description.trim() !== "") {
+                                    simulateTypingEffect(item.description, chatBody);
+                                } else if (item.answer && item.answer.trim() !== "") {
+                                    simulateTypingEffect(item.answer, chatBody);
+                                } else {
+                                    simulateTypingEffect("No relevant information found.", chatBody);
+                                }
                             });
                         } else if (response.error) {
                             const errorDiv = $('<div></div>')

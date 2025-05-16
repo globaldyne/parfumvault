@@ -16,6 +16,8 @@
 - Fixed defaultMessage error in AI Chat
 - Replaced Odor column with label in ingredients page
 - Deprecated colorKey
+- Added makeformula API 
+- Improved Perfumers AI Chat
 
 ### Version 12.9
 - Introduced Google Gemini integration.
