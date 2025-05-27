@@ -33,6 +33,7 @@ require_once(__ROOT__.'/inc/settings.php');
                         <select name="ai_service_provider" id="ai_service_provider" class="form-control">
                             <option value="openai" <?= $user_settings['ai_service_provider'] == 'openai' ? 'selected' : '' ?>>OpenAI</option>
                             <option value="google_gemini" <?= $user_settings['ai_service_provider'] == 'google_gemini' ? 'selected' : '' ?>>Google Gemini</option>
+                            <option value="pedro_perfumer" <?= $user_settings['ai_service_provider'] == 'pedro_perfumer' ? 'selected' : '' ?>>Pedro Perfumer</option>
                         </select>
                     </div>
 
@@ -74,6 +75,14 @@ require_once(__ROOT__.'/inc/settings.php');
                                 <option value="gemini-2.0-flash" <?= $user_settings['google_gemini_model'] == 'gemini-2.0-flash' ? 'selected' : '' ?>>Gemini 2.0 Flash</option>
                                 <option value="gemini-1.5-pro" <?= $user_settings['google_gemini_model'] == 'gemini-1.5-pro' ? 'selected' : '' ?>>Gemini 1.5 Pro</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div id="pedro-perfumer-fields" class="provider-fields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="pedro_perfumer_api_key" class="form-label">Pedro Perfumer API Key</label>
+                            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Pedro Perfumer API key here"></a>
+                            <input name="pedro_perfumer_api_key" type="text" class="form-control" id="pedro_perfumer_api_key" value="<?= $user_settings['pedro_perfumer_api_key'] ?? '' ?>" />
                         </div>
                     </div>
                     
@@ -126,6 +135,12 @@ require_once(__ROOT__.'/inc/settings.php');
                     <li><strong>Gemini 1.5 Pro:</strong> A robust model offering balanced performance and versatility, ideal for a wide range of applications.</li>
                 </ul>
             </div>
+            <div id="pedro-perfumer-help" class="provider-help" style="display: none;">
+                <h5>Pedro Perfumer Settings</h5>
+                <div class="mb-2">
+                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances. Enter your Pedro Perfumer API key to enable tailored assistance for all your perfumery formulation needs.
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -143,12 +158,15 @@ $(document).ready(function() {
         const provider = $("#ai_service_provider").val();
         let apiKeyField, modelField;
 
+        
         if (provider === 'openai') {
             apiKeyField = $("#openai_api_key");
             modelField = $("#openai_model");
         } else if (provider === 'google_gemini') {
             apiKeyField = $("#google_gemini_api_key");
             modelField = $("#google_gemini_model");
+        } else if (provider === 'pedro_perfumer') {
+            apiKeyField = $("#pedro_perfumer_api_key");
         }
 
         // Validate API key is not empty
@@ -174,6 +192,8 @@ $(document).ready(function() {
         } else if (provider === 'google_gemini') {
             data.google_gemini_api_key = apiKeyField.val();
             data.google_gemini_model = modelField.val();
+        } else if (provider === 'pedro_perfumer') {
+            data.pedro_perfumer_api_key = apiKeyField.val();
         }
 
         $.ajax({
@@ -230,6 +250,9 @@ $(document).ready(function() {
         } else if (provider === 'google_gemini') {
             $('#google-gemini-fields').show();
             $('#google-gemini-help').show();
+        } else if (provider === 'pedro_perfumer') {
+            $('#pedro-perfumer-fields').show();
+            $('#pedro-perfumer-help').show();
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 	

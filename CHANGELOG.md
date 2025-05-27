@@ -1,6 +1,7 @@
 # CHANGELOG
 ### Version 13.1
 - Dashboard pie color is retained in local storage
+- Added Pedro Perfumer in AI providers
 
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
