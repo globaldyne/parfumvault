@@ -138,7 +138,10 @@ require_once(__ROOT__.'/inc/settings.php');
             <div id="pedro-perfumer-help" class="provider-help" style="display: none;">
                 <h5>Pedro Perfumer Settings</h5>
                 <div class="mb-2">
-                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances. Enter your Pedro Perfumer API key to enable tailored assistance for all your perfumery formulation needs.
+                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances. 
+                    Enter your Pedro Perfumer API key to enable tailored assistance for all your perfumery formulation needs.
+                    <br>
+                    <a href="https://www.perfumersvault.com/pedro" target="_blank" class="link-info">Register for a Pedro Perfumer API key here</a>.
                 </div>
             </div>
         </div>
@@ -244,6 +247,14 @@ $(document).ready(function() {
         const provider = $(this).val();
         $('.provider-fields').hide();
         $('.provider-help').hide();
+        $('#pedro-status-badge').remove(); // Remove any previous badge
+
+        // Clear interval if switching away from Pedro
+        if (window.pedroStatusInterval) {
+            clearInterval(window.pedroStatusInterval);
+            window.pedroStatusInterval = null;
+        }
+
         if (provider === 'openai') {
             $('#openai-fields').show();
             $('#openai-help').show();
@@ -253,6 +264,44 @@ $(document).ready(function() {
         } else if (provider === 'pedro_perfumer') {
             $('#pedro-perfumer-fields').show();
             $('#pedro-perfumer-help').show();
+
+            // Function to check Pedro Perfumer service status
+            function checkPedroStatus() {
+                $('#pedro-status-badge').remove();
+                $.ajax({
+                    url: '/components/pedro_status.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp && resp.status && resp.status.toLowerCase() === 'ok') {
+                            $('#pedro-perfumer-help h5').append(
+                                ' <span id="pedro-status-badge" class="badge bg-success align-middle ms-2">Service Available</span>'
+                            );
+                        } else {
+                            let msg = (resp && resp.message) ? resp.message : 'Service Unavailable';
+                            $('#pedro-perfumer-help h5').append(
+                                ' <span id="pedro-status-badge" class="badge bg-danger align-middle ms-2">' + msg + '</span>'
+                            );
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#pedro-perfumer-help h5').append(
+                            ' <span id="pedro-status-badge" class="badge bg-danger align-middle ms-2">Error: ' + error + '</span>'
+                        );
+                    }
+                });
+            }
+
+            checkPedroStatus();
+            window.pedroStatusInterval = setInterval(function() {
+                // Only poll if Pedro is still selected
+                if ($('#ai_service_provider').val() === 'pedro_perfumer') {
+                    checkPedroStatus();
+                } else if (window.pedroStatusInterval) {
+                    clearInterval(window.pedroStatusInterval);
+                    window.pedroStatusInterval = null;
+                }
+            }, 5000);
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 	
