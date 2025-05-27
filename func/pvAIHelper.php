@@ -35,7 +35,7 @@ function pvAIHelper($prompt) {
     
     // Validate the provider
     $provider = strtolower($user_settings['ai_service_provider'] ?? 'openai');
-    if (!in_array($provider, ['openai', 'google_gemini'])) {
+    if (!in_array($provider, ['openai', 'google_gemini', 'pedro_perfumer'])) {
         return ['error' => 'Unsupported AI provider'];
     }
 
@@ -143,6 +143,55 @@ function pvAIHelper($prompt) {
         }
 
         return ['success' => $decoded];
+
+    } elseif ($provider === 'pedro_perfumer') {
+        $api_key = $user_settings['pedro_perfumer_api_key'] ?? '';
+        if (empty($api_key)) {
+            return ['error' => 'Pedro Perfumer API key is not set'];
+        }
+
+        $postFields = http_build_query([
+            "prompt" => $prompt,
+            "api_key" => $api_key
+        ]);
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://pedro.perfumersvault.com/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
+            CURLOPT_POSTFIELDS => $postFields
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+
+        if ($error) {
+            return ['error' => 'Pedro Perfumer API request failed: ' . $error];
+        }
+
+        $data = json_decode($response, true);
+
+        if (!$data || !is_array($data) || !isset($data['response'])) {
+            error_log("Pedro Perfumer error: " . $response);
+            return ['error' => 'Invalid response from Pedro Perfumer'];
+        }
+
+        // Extract and clean the JSON string from the "response" field
+        $json = trim($data['response']);
+        $json = preg_replace('/^```json\s*/', '', $json); // Remove ```json at the start
+        $json = preg_replace('/```$/', '', $json);        // Remove ``` at the end
+
+        $descriptions = json_decode($json, true);
+
+        if (!is_array($descriptions)) {
+            error_log("Pedro Perfumer returned invalid JSON: " . $json);
+            return ['error' => 'Pedro Perfumer returned malformed JSON.'];
+        }
+
+        return ['success' => $descriptions];
     }
 
     return ['error' => 'Unsupported AI provider'];
