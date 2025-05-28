@@ -816,7 +816,7 @@ $(document).ready(function() {
 	});
 	</script>
 <?php } ?>
-<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1') { ?>
+<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1' && $user_settings['making_ai_chat'] == '1') { ?>
   <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
