@@ -16,10 +16,23 @@
 
 if (!defined('pvault_panel')){ die('Not Found');}
 
+function getUserSettings($userID) {
+    global $conn;
+    $settings = [];
+    $q = mysqli_query($conn, "SELECT key_name, value FROM user_settings WHERE owner_id = '$userID'");
+    while ($row = mysqli_fetch_assoc($q)) {
+        $settings[$row['key_name']] = $row['value'];
+    }
+    return $settings;
+}
+
 function pvAIHelper($prompt) {
 
-    global $user_settings, $system_settings;
 
+    global $system_settings, $user_settings, $userID;
+    if (empty($user_settings) && isset($userID)) {
+        $user_settings = getUserSettings($userID);
+    }
     // Check if AI service is enabled
     /* TODO: Uncomment to check system settings (PV Online)
     if ($system_settings['ai_service'] !== '1') {
