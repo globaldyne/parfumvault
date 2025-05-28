@@ -38,7 +38,7 @@ switch ($action) {
         }
 
         $rsq = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid' AND owner_id = '$userID'"), MYSQLI_ASSOC);
-        $rsL = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid' AND toAdd = '1' AND owner_id = '$userID'"), MYSQLI_ASSOC);
+        $rsL = mysqli_fetch_all(mysqli_query($conn, "SELECT quantity FROM $table WHERE fid = '$fid' AND toAdd = 1 AND skip = 0 AND owner_id = '$userID'"), MYSQLI_ASSOC);
         
         foreach ($rs as $rq) {
             $ingredient = mysqli_fetch_assoc(mysqli_query($conn, "SELECT cas, notes FROM ingredients WHERE name = '" . mysqli_real_escape_string($conn, $rq['ingredient']) . "' AND owner_id = '$userID'"));
@@ -210,6 +210,61 @@ switch ($action) {
 
         break;
 
+    case 'skipMaterial':
+
+        if (empty($_GET['id'])) {
+            echo json_encode(['error' => 'Missing required parameters']);
+            return;
+        }
+        $id = mysqli_real_escape_string($conn, $_GET['id']);
+        $notes = mysqli_real_escape_string($conn, $_GET['notes']) ?: "-";
+        $skipQuery = "UPDATE makeFormula SET skip = '1', notes = '$notes' WHERE id = '$id' AND fid = '$fid' AND owner_id = '$userID'";
+        if(mysqli_query($conn, $skipQuery)){
+            echo json_encode(['success' => ($_POST['ing'] ?? 'Ingredient').' skipped from the formulation']);
+            return;
+        } else {
+            echo json_encode(['error' => 'Error skipping the ingredient']);
+            return;
+        }
+        // No meta/data in skipMaterial response
+        break;
+
+    case 'undoMaterial':
+        // Required: id, originalQuantity, ingID, repName, resetStock, supplier, repID
+        if (empty($_GET['id']) || !isset($_GET['originalQuantity'])) {
+            echo json_encode(['error' => 'Missing required parameters']);
+            return;
+        }
+
+        $id = mysqli_real_escape_string($conn, $_GET['id']);
+        $ingID = mysqli_real_escape_string($conn, $_GET['ingID']);
+
+        $originalQuantity = (float)$_GET['originalQuantity'];
+        $resetStock = $_GET['resetStock'] ?? '';
+        $supplier = $_GET['supplier_id'] ?? '';
+
+        // Reset the formula row
+        $update = mysqli_query($conn, "UPDATE makeFormula SET replacement_id = 0, toAdd = 1, skip = 0, overdose = 0, quantity = '$originalQuantity' WHERE id = '$id' AND fid = '$fid' AND owner_id = '$userID'");
+        if ($update) {
+            $msg =  "Ingredient's quantity reset.";
+            $response = ['success' => $msg];
+
+            // Optionally reset stock
+            if ($resetStock === "true") {
+                if (!$supplier) {
+                    echo json_encode(['error' => 'Please select a supplier']);
+                    return;
+                }
+                $nIngID = $repID ?: $ingID;
+                mysqli_query($conn, "UPDATE suppliers SET stock = stock + $originalQuantity WHERE ingID = '$nIngID' AND ingSupplierID = '$supplier' AND owner_id = '$userID'");
+                $response['success'] .= " Stock increased by ".$originalQuantity.($settings['mUnit'] ?? 'ml');
+            }
+            echo json_encode($response);
+        } else {
+            echo json_encode(['error' => 'Failed to reset material.']);
+        }
+        return;
+
     case 'delete':
         // Ensure 'fid' is provided
         if (empty($fid)) {
@@ -239,7 +294,7 @@ switch ($action) {
                 'fid' => (string)$res['fid'],
                 'name' => (string)$res['name'],
                 'total_ingredients' => (int)countElement("$table","fid = '" . mysqli_real_escape_string($conn, $res['fid']) . "'"),
-                'total_ingredients_left' => (int)countElement("$table", "fid = '" . mysqli_real_escape_string($conn, $res['fid']) . "' AND toAdd = '1' AND skip = '0'"),
+                'total_ingredients_left' => (int)countElement("$table", "fid = '" . mysqli_real_escape_string($conn, $res['fid']) . "' AND toAdd = 1 AND skip = 0"),
                 'toAdd' => (int)$res['toAdd'],
                 'scheduledOn' => (string)$res['scheduledOn'],
                 'madeOn' => (string)($res['madeOn'] ?? 'In progress')
