@@ -10,7 +10,7 @@ require_once(__ROOT__.'/func/countElement.php');
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'meta';
 $row = isset($_POST['start']) ? (int)$_POST['start'] : 0;
-$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10;
+$limit = isset($_POST['length']) ? (int)$_POST['length'] : 10000;
 
 $order_by = isset($_POST['order_by']) ? mysqli_real_escape_string($conn, $_POST['order_by']) : 'name';
 $order_as = isset($_POST['order_as']) ? mysqli_real_escape_string($conn, $_POST['order_as']) : 'ASC';
@@ -263,6 +263,47 @@ switch ($action) {
         } else {
             echo json_encode(['error' => 'Failed to reset material.']);
         }
+        return;
+
+    case 'getAIReplacementSuggestions':
+        if (empty($_GET['ingredient'])) {
+            echo json_encode(['error' => 'Missing required parameters']);
+            return;
+        }
+
+        $ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
+        $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name as 'ingredient', CAS as 'cas', and description as 'description' in JSON format.";
+
+        require_once(__ROOT__.'/func/pvAIHelper.php');
+        $result = pvAIHelper($prompt);
+
+        error_log("AI Replacement Prompt: $prompt");
+        error_log("AI Replacement Result: " . json_encode($result));
+
+        if (isset($result['error'])) {
+            echo json_encode(['error' => $result['error']]);
+            return;
+        }
+
+        $suggestions = $result['success'];
+        foreach ($suggestions as &$suggestion) {
+            $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
+            $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$safe_ingredient' AND owner_id = '$userID' LIMIT 1"));
+
+            if ($ingredient_data) {
+                $ingredient_id = (int)$ingredient_data['id'];
+                $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
+                    SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
+                    FROM suppliers 
+                    WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
+                "));
+                $suggestion['inventory'] = $inventory;
+            } else {
+                $suggestion['inventory'] = 0;
+            }
+        }
+
+        echo json_encode(['success' => $suggestions]);
         return;
 
     case 'delete':

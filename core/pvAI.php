@@ -51,6 +51,12 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
+    // Fix: If AI returns a success with an embedded error, treat as error
+    if (isset($result['success']['error'])) {
+        echo json_encode(['error' => is_array($result['success']['error']) ? json_encode($result['success']['error']) : $result['success']['error']]);
+        return;
+    }
+
     $ingredients = $result['success'];
     error_log("Decoded JSON: " . json_encode($ingredients));
 
@@ -130,6 +136,12 @@ if ($_POST['action'] === 'addFormulaAI') {
     
     if (isset($result['error'])) {
         echo json_encode(['error' => $result['error']]);
+        return;
+    }
+
+    // Fix: If AI returns a success with an embedded error, treat as error
+    if (isset($result['success']['error'])) {
+        echo json_encode(['error' => is_array($result['success']['error']) ? json_encode($result['success']['error']) : $result['success']['error']]);
         return;
     }
 
