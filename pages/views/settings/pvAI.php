@@ -265,36 +265,41 @@ $(document).ready(function() {
             $('#pedro-perfumer-fields').show();
             $('#pedro-perfumer-help').show();
 
-            // Function to check Pedro Perfumer service status
             function checkPedroStatus() {
-                $('#pedro-status-badge').remove();
+                let $badge = $('#pedro-status-badge');
                 $.ajax({
                     url: '/components/pedro_status.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(resp) {
+                        let newBadge;
                         if (resp && resp.status && resp.status.toLowerCase() === 'ok') {
-                            $('#pedro-perfumer-help h5').append(
-                                ' <span id="pedro-status-badge" class="badge bg-success align-middle ms-2">Service Available</span>'
-                            );
+                            newBadge = '<span id="pedro-status-badge" class="badge bg-success align-middle ms-2">Service Available</span>';
                         } else {
                             let msg = (resp && resp.message) ? resp.message : 'Service Unavailable';
-                            $('#pedro-perfumer-help h5').append(
-                                ' <span id="pedro-status-badge" class="badge bg-danger align-middle ms-2">' + msg + '</span>'
-                            );
+                            newBadge = '<span id="pedro-status-badge" class="badge bg-danger align-middle ms-2" data-bs-toggle="tooltip" title="' + $('<div>').text(msg).html() + '">Unavailable</span>';
+                        }
+                        // Only update if different
+                        if ($badge.length === 0 || $badge.prop('outerHTML') !== newBadge) {
+                            $badge.remove();
+                            $('#pedro-perfumer-help h5').append(newBadge);
+                            $('[data-bs-toggle="tooltip"]').tooltip();
                         }
                     },
                     error: function(xhr, status, error) {
-                        $('#pedro-perfumer-help h5').append(
-                            ' <span id="pedro-status-badge" class="badge bg-danger align-middle ms-2">Error: ' + error + '</span>'
-                        );
+                        let $badge = $('#pedro-status-badge');
+                        let newBadge = '<span id="pedro-status-badge" class="badge bg-danger align-middle ms-2" data-bs-toggle="tooltip" title="' + $('<div>').text(error).html() + '">Unavailable</span>';
+                        if ($badge.length === 0 || $badge.prop('outerHTML') !== newBadge) {
+                            $badge.remove();
+                            $('#pedro-perfumer-help h5').append(newBadge);
+                            $('[data-bs-toggle="tooltip"]').tooltip();
+                        }
                     }
                 });
             }
 
             checkPedroStatus();
             window.pedroStatusInterval = setInterval(function() {
-                // Only poll if Pedro is still selected
                 if ($('#ai_service_provider').val() === 'pedro_perfumer') {
                     checkPedroStatus();
                 } else if (window.pedroStatusInterval) {
