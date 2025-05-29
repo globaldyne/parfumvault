@@ -138,11 +138,48 @@ require_once(__ROOT__.'/inc/settings.php');
             <div id="pedro-perfumer-help" class="provider-help" style="display: none;">
                 <h5>Pedro Perfumer Settings</h5>
                 <div class="mb-2">
-                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances. 
+                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances.
                     Enter your Pedro Perfumer API key to enable tailored assistance for all your perfumery formulation needs.
                     <br>
-                    <a href="https://www.perfumersvault.com/pedro" target="_blank" class="link-info">Register for a Pedro Perfumer API key here</a>.
+                    <span class="text-warning fw-semibold d-block mt-2">
+                        Note: This service is currently <strong>experimental</strong> and comes without any warranty.
+                    </span>
+                    <span class="text-danger d-block mt-1" style="font-size: 0.95em;">
+                        Important: All user prompts and interactions with Pedro Perfumer may be used for model training and service improvement.
+                    </span>
+                    <button id="pedro-create-api-key-btn" type="button" class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#pedroApiKeyModal">
+                        Create Pedro Perfumer API Key
+                    </button>
                 </div>
+            </div>
+
+            <!-- Modal for Pedro API Key creation -->
+            <div class="modal fade" id="pedroApiKeyModal" tabindex="-1" aria-labelledby="pedroApiKeyModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form id="pedro-api-key-form" autocomplete="off">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="pedroApiKeyModalLabel">Create Pedro Perfumer API Key</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="pedro-user-email" name="user" placeholder="user@example.com" required>
+                        <label for="pedro-user-email">Your Email</label>
+                      </div>
+                      <div id="pedro-api-key-result" class="alert d-none"></div>
+                    </div>
+                    <div class="modal-footer flex-column">
+                      <button type="submit" class="btn btn-primary mb-2">Request API Key</button>
+                      <small>
+                        <a href="https://www.perfumersvault.com/privacy" target="_blank" class="link-secondary me-3">Privacy Policy</a>
+                        <a href="https://www.perfumersvault.com/terms" target="_blank" class="link-secondary me-3">Terms of Service</a>
+                        <a href="https://www.perfumersvault.com/pedro-ai" target="_blank" class="link-secondary">Find more about Pedro AI</a>
+                      </small>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
         </div>
     </div>
@@ -152,6 +189,7 @@ require_once(__ROOT__.'/inc/settings.php');
         </div>
     </div>
 </div>
+
 
 <script>
 $(document).ready(function() {
@@ -323,7 +361,75 @@ $(document).ready(function() {
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 
+    // Pedro API Key Modal logic
+$('#pedro-api-key-form').on('submit', function(e) {
+    e.preventDefault();
+    var $result = $('#pedro-api-key-result');
+    $result.removeClass('alert-success alert-danger').addClass('d-none').text('');
+    var email = $('#pedro-user-email').val().trim();
+
+    if (!email) {
+        $result.removeClass('d-none').addClass('alert alert-danger').text('Please enter your email.');
+        return;
+    }
+
+    $result.removeClass('d-none').addClass('alert alert-info').text('Requesting API key...');
+
+        $.ajax({
+            url: '/components/pedro_api_proxy.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ user: email }),
+            dataType: 'json',
+            success: function(resp) {
+                if (resp.success && resp.api_key) {
+                    $result
+                        .removeClass('alert-info alert-danger')
+                        .addClass('alert alert-success')
+                        .html(
+                            'Your API Key: <code id="pedro-api-key-value">' + resp.api_key + '</code>' +
+                            '<button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copy-pedro-api-key">Copy</button>' +
+                            '<button type="button" class="btn btn-outline-primary btn-sm ms-2" id="fill-pedro-api-key">Auto Fill</button>'
+                        );
+                    // Copy button logic
+                    $('#copy-pedro-api-key').off('click').on('click', function() {
+                        const apiKey = $('#pedro-api-key-value').text();
+                        navigator.clipboard.writeText(apiKey).then(function() {
+                            $('#copy-pedro-api-key').text('Copied!').removeClass('btn-outline-secondary').addClass('btn-success');
+                            setTimeout(function() {
+                                $('#copy-pedro-api-key').text('Copy').removeClass('btn-success').addClass('btn-outline-secondary');
+                            }, 1500);
+                        });
+                    });
+                    // Auto fill button logic
+                    $('#fill-pedro-api-key').off('click').on('click', function() {
+                        $('#pedro_perfumer_api_key').val(resp.api_key).focus();
+                    });
+                } else {
+                    $result.removeClass('alert-info alert-success').addClass('alert alert-danger')
+                        .text(resp.error || 'Failed to create API key.');
+                }
+            },
+            error: function(xhr, status, error) {
+                $result.removeClass('alert-info alert-success').addClass('alert alert-danger')
+                    .text('Error: ' + error);
+            }
+        });
+    });
 });
 
-
+// Prevent Pedro API Key modal if service is unavailable
+$('#pedro-create-api-key-btn').on('click', function(e) {
+    // Check if the badge is present and is not green
+    var $badge = $('#pedro-status-badge');
+    if ($badge.length && $badge.hasClass('bg-danger')) {
+        e.preventDefault();
+        // Optionally show a toast or alert
+        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Pedro Perfumer service is unavailable. Please try again later.');
+        $('.toast-header').removeClass().addClass('toast-header alert-danger');
+        $('.toast').toast('show');
+        return false;
+    }
+    // Otherwise, allow modal to open
+});
 </script>
