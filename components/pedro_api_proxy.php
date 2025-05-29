@@ -1,7 +1,4 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Allow JS from anywhere, or restrict to your domain
-
 // Forward the POST body
 $body = file_get_contents('php://input');
 
