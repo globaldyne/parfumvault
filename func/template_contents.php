@@ -28,31 +28,34 @@ function generateContent($conn) {
     if ($conn->query("SELECT id FROM users LIMIT 1")->num_rows == 0) {
         return <<<HTML
 <!-- Registration HTML -->
+ <div class="row">
+
 <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
-<div class="col-lg-6">
-    <div class="p-5">
-        <div class="text-center">
-            <h1 class="h4 text-gray-900 mb-4">{$lang['register_user_title']}</h1>
-        </div>
-        <div id="msg"></div>
-        <div class="user" id="reg_form">
-            <hr>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="fullName" placeholder="{$lang['full_name_placeholder']}">
-                <label for="fullName">{$lang['full_name_label']}</label>
+    <div class="col-lg-6">
+        <div class="p-5">
+            <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">{$lang['register_user_title']}</h1>
             </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" placeholder="{$lang['email_placeholder']}">
-                <label for="email">{$lang['email_label']}</label>
+            <div id="msg"></div>
+            <div class="user" id="reg_form">
+                <hr>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="fullName" placeholder="{$lang['full_name_placeholder']}">
+                    <label for="fullName">{$lang['full_name_label']}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="{$lang['email_placeholder']}">
+                    <label for="email">{$lang['email_label']}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control password-input" id="password" placeholder="{$lang['password_placeholder']}">
+                    <label for="password">{$lang['password_label']}</label>
+                    <i class="toggle-password fa fa-eye"></i>
+                </div>
+                <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
+                    {$lang['register_button']}
+                </button>
             </div>
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control password-input" id="password" placeholder="{$lang['password_placeholder']}">
-                <label for="password">{$lang['password_label']}</label>
-                <i class="toggle-password fa fa-eye"></i>
-            </div>
-            <button class="btn btn-primary btn-user btn-block" id="registerSubmit">
-                {$lang['register_button']}
-            </button>
         </div>
     </div>
 </div>
