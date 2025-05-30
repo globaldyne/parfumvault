@@ -3,6 +3,7 @@
 - Dashboard pie color is retained in local storage
 - Added Pedro Perfumer in AI providers
 - Fixed incorrect reload trigger for make formula page
+- Fixed user registration form
 
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
