@@ -224,10 +224,38 @@ $(document).ready(function() {
 				if (data.toAdd == 0 || data.toSkip == 1) {
 					$(row).addClass('d-none');
 				}
+				let showAdded = localStorage.getItem('pv_showAdded') === 'true';
+
+				// Toggle handler
 				$('#toggleAdded').click(function() {
-					if (data.toAdd == 0 || data.toSkip == 1) {
-						$(row).toggleClass('d-none');
-					}
+				    showAdded = !showAdded;
+				    localStorage.setItem('pv_showAdded', showAdded);
+				    toggleAddedRows();
+				});
+
+				// Function to show/hide added/skipped rows based on toggle state
+				function toggleAddedRows() {
+				    $('#tdDataPending tbody tr').each(function() {
+				        const rowData = $('#tdDataPending').DataTable().row(this).data();
+				        if (!rowData) return;
+				        if (rowData.toAdd == 0 || rowData.toSkip == 1) {
+				            if (showAdded) {
+				                $(this).removeClass('d-none');
+				            } else {
+				                $(this).addClass('d-none');
+				            }
+				        }
+				    });
+				}
+
+				// After every table draw, re-apply toggle state
+				$('#tdDataPending').on('draw.dt', function() {
+				    toggleAddedRows();
+				});
+
+				// On page load, apply the toggle state
+				$(document).ready(function() {
+				    toggleAddedRows();
 				});
 			},
 			drawCallback: function( settings ) {
