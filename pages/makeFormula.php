@@ -812,29 +812,37 @@ $(document).ready(function() {
 		// Update modal title with the ingredient name
 		$('#ai_replacement .modal-title').text(`AI Replacement Suggestions for ${ingredient}`);
 
-		$.ajax({
-			url: '/core/core.php',
-			type: 'POST',
-			data: { 
-				action: 'getAIReplacementSuggestions',
-				ingredient: ingredient 
-			},
-			dataType: 'json',
-			success: function (response) {
-				$('#aiReplacementLoading').hide();
-				if (response.success) {
-					let suggestionsHtml = '<ul class="list-group">';
-					response.success.forEach(function (suggestion) {
-						const inventory = suggestion.inventory || {};
-						const stock = parseFloat(inventory.stock || 0);
-						const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
-						const badgeText = stock > 0 ? `In Stock: ${stock} ${inventory.mUnit || ''}` : 'Out of Stock';
-						suggestionsHtml += `<li class="list-group-item">
-							<strong>${suggestion.ingredient}</strong> (CAS: ${suggestion.cas || 'N/A'}) - ${suggestion.description}
-							<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
-							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}"></i>
-						</li>`;
-					});
+			$.ajax({
+				url: '/core/core.php',
+				type: 'POST',
+				data: { 
+					action: 'getAIReplacementSuggestions',
+					ingredient: ingredient 
+				},
+				dataType: 'json',
+				success: function (response) {
+					$('#aiReplacementLoading').hide();
+					if (
+			response.success &&
+			response.type === 'replacements' &&
+			Array.isArray(response.success.description)
+		) {
+			let suggestionsHtml = '<ul class="list-group">';
+			response.success.description.forEach(function (suggestion) {
+				const inventory = suggestion.inventory || {};
+				const stock = parseFloat(inventory.stock || 0);
+				const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
+				const badgeText = stock > 0
+					? `In Stock: ${stock} ${inventory.mUnit || ''}`
+					: 'Out of Stock';
+				suggestionsHtml += `<li class="list-group-item">
+					<strong>${suggestion.ingredient} - ( CAS: ${suggestion.cas}) </strong>
+					<div>${suggestion.properties || ''}</div>
+					<div>${suggestion.description || ''}</div>
+					<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
+					<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}"></i>
+				</li>`;
+			});
 					suggestionsHtml += '</ul>';
 					$('#aiReplacementSuggestions').html(suggestionsHtml);
 					$('#aiReplacementContent').show();

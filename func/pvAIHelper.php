@@ -187,24 +187,64 @@ function pvAIHelper($prompt) {
 
         $data = json_decode($response, true);
 
+        // Expecting: {"response":"..."}
         if (!$data || !is_array($data) || !isset($data['response'])) {
             error_log("Pedro Perfumer error: " . $response);
             return ['error' => 'Invalid response from Pedro Perfumer'];
         }
 
-        // Extract and clean the JSON string from the "response" field
-        $json = trim($data['response']);
-        $json = preg_replace('/^```json\s*/', '', $json); // Remove ```json at the start
-        $json = preg_replace('/```$/', '', $json);        // Remove ``` at the end
+        $raw_response = $data['response'];
 
-        $descriptions = json_decode($json, true);
-
-        if (!is_array($descriptions)) {
-            error_log("Pedro Perfumer returned invalid JSON: " . $json);
-            return ['error' => 'Pedro Perfumer returned malformed JSON.'];
+        // If response is already an array/object (not a string), use it directly
+        if (is_array($raw_response)) {
+            $decoded = $raw_response;
+        } else {
+            $cleaned = trim($raw_response);
+            $cleaned = preg_replace('/^```(json)?/i', '', $cleaned);
+            $cleaned = preg_replace('/```$/', '', $cleaned);
+            $cleaned = preg_replace('/^[^{\[].*?({|\[)/s', '$1', $cleaned);
+            $decoded = json_decode($cleaned, true);
         }
 
-        return ['success' => $descriptions];
+        // Determine type: ingredient, formula, general, replacements, or unknown
+        $type = 'unknown';
+        if (is_array($decoded)) {
+            if (isset($decoded['formula']) || (isset($decoded[0]) && isset($decoded[0]['formula']))) {
+                $type = 'formula';
+            } elseif (isset($decoded['replacements']) && is_array($decoded['replacements'])) {
+                $type = 'replacements';
+            } elseif (isset($decoded['description']) || (isset($decoded[0]) && isset($decoded[0]['description']))) {
+                $type = 'ingredient';
+            } elseif (isset($decoded['type']) && $decoded['type'] === 'general') {
+                $type = 'general';
+            }
+        }
+
+        if ($decoded !== null && is_array($decoded)) {
+            $decoded['type'] = $type;
+            if ($type === 'general' && isset($decoded['description'])) {
+                return [
+                    'success' => $decoded['description'],
+                    'type' => $type
+                ];
+            }
+            if ($type === 'replacements') {
+                return [
+                    'success' => $decoded,
+                    'type' => $type
+                ];
+            }
+            return [
+                'success' => $decoded,
+                'type' => $type
+            ];
+        }
+
+        // If not JSON/object, return as string with type unknown
+        return [
+            'success' => $raw_response,
+            'type' => $type
+        ];
     }
 
     return ['error' => 'Unsupported AI provider'];
