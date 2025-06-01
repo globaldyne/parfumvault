@@ -272,7 +272,7 @@ switch ($action) {
         }
 
         $ingredient = mysqli_real_escape_string($conn, $_GET['ingredient']);
-        $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name as 'ingredient', CAS as 'cas', and description as 'description' in JSON format.";
+        $prompt = "Suggest 5 replacements for the ingredient $ingredient";
 
         require_once(__ROOT__.'/func/pvAIHelper.php');
         $result = pvAIHelper($prompt);
@@ -285,10 +285,22 @@ switch ($action) {
             return;
         }
 
-        $suggestions = $result['success'];
-        foreach ($suggestions as &$suggestion) {
+        // Expecting: $result['success']['replacements'] is an array, $result['type'] === 'replacements'
+        $replacements = [];
+        if (
+            isset($result['success']['replacements']) &&
+            is_array($result['success']['replacements']) &&
+            isset($result['type']) && $result['type'] === 'replacements'
+        ) {
+            $replacements = $result['success']['replacements'];
+        }
+
+        // Enrich each suggestion with inventory info
+        foreach ($replacements as &$suggestion) {
             $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
-            $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$safe_ingredient' AND owner_id = '$userID' LIMIT 1"));
+            // Try to extract just the name if ingredient is like "Davana Oil (CAS ...)"
+            $ingredient_name = trim(preg_replace('/\s*\(CAS.*$/i', '', $safe_ingredient));
+            $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient_name' AND owner_id = '$userID' LIMIT 1"));
 
             if ($ingredient_data) {
                 $ingredient_id = (int)$ingredient_data['id'];
@@ -303,7 +315,13 @@ switch ($action) {
             }
         }
 
-        echo json_encode(['success' => $suggestions]);
+        echo json_encode([
+            'success' => [
+                'replacements' => $replacements,
+                'type' => 'replacements'
+            ],
+            'type' => 'replacements'
+        ]);
         return;
 
     case 'delete':
