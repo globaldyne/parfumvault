@@ -42,7 +42,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = $notes;
+    $prompt = $notes. ', type formula';
     $result = pvAIHelper($prompt);
 
     if (isset($result['error'])) {
@@ -141,10 +141,10 @@ if ($_POST['action'] === 'addFormulaAI') {
 } else if ($_POST['action'] === 'aiChat') {
     $prompt = $_POST['message'] ?? '';
     $result = pvAIHelper($prompt);
-    
+
     error_log("AI Chat Prompt: $prompt");
     error_log("AI Chat Result: " . json_encode($result));
-    
+
     if (isset($result['error'])) {
         echo json_encode(['error' => $result['error']]);
         return;
@@ -156,8 +156,16 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    echo json_encode(['success' => $result['success']]);
-
+    // Standardise output: always include type at top level and inside success
+    $type = $result['type'] ?? ($result['success']['type'] ?? 'unknown');
+    if (is_array($result['success'])) {
+        $result['success']['type'] = $type;
+    }
+    echo json_encode([
+        'success' => $result['success'],
+        'type' => $type
+    ]);
+    return;
 } else if ($_POST['action'] === 'getAIReplacementSuggestions') {
 
     $ingredient = $_POST['ingredient'] ?? '';
@@ -179,25 +187,15 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    // Accept both legacy and new upstream formats
-    $replacements = [];
+    // Expecting: $result['success']['replacements'] is an array, $result['type'] === 'replacements'
     if (
         isset($result['success']['replacements']) &&
-        is_array($result['success']['replacements'])
+        is_array($result['success']['replacements']) &&
+        isset($result['type']) && $result['type'] === 'replacements'
     ) {
-        $replacements = $result['success']['replacements'];
-    } elseif (
-        isset($result['success']['response']['replacements']) &&
-        is_array($result['success']['response']['replacements'])
-    ) {
-        $replacements = $result['success']['response']['replacements'];
-    }
-
-    if (!empty($replacements) && isset($result['type']) && $result['type'] === 'replacements') {
         // Enrich each suggestion with inventory info
-        foreach ($replacements as &$suggestion) {
-            $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
-            // Try to extract just the name if ingredient is like "Vertenex (CAS ...)"
+        foreach ($result['success']['replacements'] as &$suggestion) {
+            $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['name'] ?? $suggestion['ingredient'] ?? $suggestion['cas'] ??'');
             $ingredient_name = trim(preg_replace('/\s*\(CAS.*$/i', '', $safe_ingredient));
             $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient_name' AND owner_id = '$userID' LIMIT 1"));
 
@@ -208,15 +206,21 @@ if ($_POST['action'] === 'addFormulaAI') {
                     FROM suppliers 
                     WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
                 "));
-                $suggestion['inventory'] = $inventory;
+                // Fix: Ensure inventory is always an object with stock and mUnit, even if null
+                $suggestion['inventory'] = [
+                    'stock' => isset($inventory['stock']) ? (float)$inventory['stock'] : 0,
+                    'mUnit' => $inventory['mUnit'] ?? ''
+                ];
             } else {
-                $suggestion['inventory'] = 0;
+                $suggestion['inventory'] = [
+                    'stock' => 0,
+                    'mUnit' => ''
+                ];
             }
         }
         echo json_encode([
             'success' => [
-                'description' => $replacements,
-                'type' => 'replacements'
+                'replacements' => $result['success']['replacements'],
             ],
             'type' => 'replacements'
         ]);

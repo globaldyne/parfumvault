@@ -147,7 +147,39 @@ $(document).ready(function () {
                         chatBody.find('.thinking-message').remove();
 
                         const data = response.success;
-                        const type = (data && typeof data === 'object' && data.type) ? data.type : (response.type || 'unknown');
+                        let type = (data && typeof data === 'object' && data.type) ? data.type : (response.type || 'unknown');
+
+                        // If type is unknown, try to determine context from common fields
+                        if (!type || type === 'unknown') {
+                            // Check for common fields in the returned JSON
+                            if (data && typeof data === 'object') {
+                                if (data.response) {
+                                    // If response is an object, check for description/content/text
+                                    if (typeof data.response === 'object') {
+                                        if (data.response.description) {
+                                            type = 'ingredient';
+                                        } else if (data.response.content) {
+                                            type = 'general';
+                                        } else if (data.response.text) {
+                                            type = 'general';
+                                        }
+                                    } else if (typeof data.response === 'string') {
+                                        type = 'general';
+                                    }
+                                } else if (data.description) {
+                                    // If description is an array, treat as replacements, else ingredient/general
+                                    if (Array.isArray(data.description)) {
+                                        type = 'replacements';
+                                    } else {
+                                        type = 'ingredient';
+                                    }
+                                } else if (data.content) {
+                                    type = 'general';
+                                } else if (data.text) {
+                                    type = 'general';
+                                }
+                            }
+                        }
 
                         // Handle formula type: show as a simple table
                         if (type === 'formula' && data && typeof data === 'object' && Array.isArray(data.formula)) {
@@ -178,6 +210,14 @@ $(document).ready(function () {
                         else if (type === 'ingredient' && data && typeof data === 'object' && data.description) {
                             let html = `<div>${data.description}</div>`;
                             let details = [];
+                            // Add CAS number if present
+                            if (data.cas) {
+                                details.push(`<li><i class="bi bi-flask me-2"></i><strong>CAS:</strong> ${data.cas}</li>`);
+                            }
+                            // Add IFRA limit if present
+                            if (data.ifra_limit) {
+                                details.push(`<li><i class="bi bi-exclamation-triangle me-2"></i><strong>IFRA Limit:</strong> ${data.ifra_limit}</li>`);
+                            }
                             if (data.physical_state) {
                                 details.push(`<li><i class="bi bi-droplet-half me-2"></i><strong>Physical State:</strong> ${data.physical_state}</li>`);
                             }
@@ -220,6 +260,112 @@ $(document).ready(function () {
                             (typeof data === 'object' && data !== null && data.response && typeof data.response === 'string' && data.response.match(/clarify.*ingredient.*formula|are you asking.*ingredient.*formula|do you want a formula/i))
                         ) {
                             simulateTypingEffect("Could you clarify your request? Are you asking about a perfume ingredient or do you want a formula generated?", chatBody);
+                        }
+                        // Handle multi-section object with numeric keys (AI summary, formula, replacements, general, etc.)
+                        else if (
+                            data && typeof data === 'object' &&
+                            Object.keys(data).some(k => !isNaN(k))
+                        ) {
+                            // Sort keys numerically
+                            const keys = Object.keys(data).filter(k => !isNaN(k)).sort((a, b) => a - b);
+                            keys.forEach(k => {
+                                const section = data[k];
+                                if (!section || typeof section !== 'object') return;
+                                // Ingredient section
+                                if (section.type === 'ingredient') {
+                                    let html = `<div class="fw-bold mb-2">${section.ingredient || 'Ingredient'}</div>`;
+                                    if (section.cas) {
+                                        html += `<div><span class="text-muted">CAS: ${section.cas}</span></div>`;
+                                    }
+                                    html += `<div>${section.description || ''}</div>`;
+                                    if (section.properties && typeof section.properties === 'object') {
+                                        html += `<ul class="mb-1 mt-2">`;
+                                        for (const prop in section.properties) {
+                                            html += `<li><strong>${prop.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong> ${section.properties[prop]}</li>`;
+                                        }
+                                        html += `</ul>`;
+                                    }
+                                    simulateTypingEffect(html, chatBody, true);
+                                }
+                                // Formula section
+                                else if (section.type === 'formula') {
+                                    let html = `<div class="fw-bold mb-2">${section.formula || 'Formula'}</div>`;
+                                    html += `<div>${section.description || ''}</div>`;
+                                    if (section.examples && Array.isArray(section.examples)) {
+                                        html += `<ul class="mb-1 mt-2">`;
+                                        section.examples.forEach(ex => html += `<li>${ex}</li>`);
+                                        html += `</ul>`;
+                                    }
+                                    if (section.concentration) {
+                                        html += `<div><strong>Concentration:</strong> ${section.concentration}</div>`;
+                                    }
+                                    simulateTypingEffect(html, chatBody, true);
+                                }
+                                // Replacements section
+                                else if (section.type === 'replacements') {
+                                    let html = `<div class="fw-bold mb-2">${section.replacements || 'Replacements'}</div>`;
+                                    html += `<div>${section.description || ''}</div>`;
+                                    if (section.replacements_list && Array.isArray(section.replacements_list)) {
+                                        html += `<ul class="mb-1 mt-2">`;
+                                        section.replacements_list.forEach(rep => html += `<li>${rep}</li>`);
+                                        html += `</ul>`;
+                                    }
+                                    if (section.considerations) {
+                                        html += `<div><strong>Considerations:</strong> ${section.considerations}</div>`;
+                                    }
+                                    simulateTypingEffect(html, chatBody, true);
+                                }
+                                // General section
+                                else if (section.type === 'general') {
+                                    let html = `<div class="fw-bold mb-2">${section.general || 'General'}</div>`;
+                                    html += `<div>${section.description || ''}</div>`;
+                                    if (section.safety) {
+                                        html += `<div><strong>Safety:</strong> ${section.safety}</div>`;
+                                    }
+                                    if (section.storage) {
+                                        html += `<div><strong>Storage:</strong> ${section.storage}</div>`;
+                                    }
+                                    simulateTypingEffect(html, chatBody, true);
+                                }
+                            });
+                        }
+                        // Handle formula object with nested ingredients array (e.g. data.formula.ingredients)
+                        else if (
+                            type === 'formula' &&
+                            data && typeof data === 'object' &&
+                            data.formula && typeof data.formula === 'object' &&
+                            Array.isArray(data.formula.ingredients)
+                        ) {
+                            const formula = data.formula;
+                            let html = `<div class="fw-bold mb-2">${formula.name ? 'Formula: ' + formula.name : 'Formula'}</div>`;
+                            if (formula.description) {
+                                html += `<div class="mb-2">${formula.description}</div>`;
+                            }
+                            html += `<table class="table table-bordered table-sm mb-2"><thead><tr>
+                                <th>Ingredient</th>
+                                <th>CAS</th>
+                                <th>Quantity</th>
+                                <th>Dilution (%)</th>
+                                <th>Solvent</th>
+                                <th>Properties</th>
+                                <th>Olfactory Type</th>
+                            </tr></thead><tbody>`;
+                            formula.ingredients.forEach(row => {
+                                html += `<tr>
+                                    <td>${row.ingredient || ''}</td>
+                                    <td>${row.cas || ''}</td>
+                                    <td>${row.quantity || ''}</td>
+                                    <td>${row.dilution || ''}</td>
+                                    <td>${row.solvent || ''}</td>
+                                    <td>${Array.isArray(row.properties) ? row.properties.join(', ') : (row.properties || '')}</td>
+                                    <td>${row.olfactory_type || ''}</td>
+                                </tr>`;
+                            });
+                            html += `</tbody></table>`;
+                            if (formula.total_quantity) {
+                                html += `<div class="mb-2"><strong>Total Quantity:</strong> ${formula.total_quantity}</div>`;
+                            }
+                            simulateTypingEffect(html, chatBody, true);
                         }
                         // Handle array of objects (fallback)
                         else if (Array.isArray(data) && data.length > 0) {

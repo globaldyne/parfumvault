@@ -46,7 +46,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
       <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
       <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
       <title><?php echo $meta['name'];?></title>
-      <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+      <link href="/css/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
 
       <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -823,38 +823,39 @@ $(document).ready(function() {
 				success: function (response) {
 					$('#aiReplacementLoading').hide();
 					if (
-			response.success &&
-			response.type === 'replacements' &&
-			Array.isArray(response.success.description)
-		) {
-			let suggestionsHtml = '<ul class="list-group">';
-			response.success.description.forEach(function (suggestion) {
-				const inventory = suggestion.inventory || {};
-				const stock = parseFloat(inventory.stock || 0);
-				const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
-				const badgeText = stock > 0
-					? `In Stock: ${stock} ${inventory.mUnit || ''}`
-					: 'Out of Stock';
-				suggestionsHtml += `<li class="list-group-item">
-					<strong>${suggestion.ingredient} - ( CAS: ${suggestion.cas}) </strong>
-					<div>${suggestion.properties || ''}</div>
-					<div>${suggestion.description || ''}</div>
-					<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
-					<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}"></i>
-				</li>`;
-			});
-					suggestionsHtml += '</ul>';
-					$('#aiReplacementSuggestions').html(suggestionsHtml);
-					$('#aiReplacementContent').show();
-				} else {
-					$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
+						response.success &&
+						response.type === 'replacements' &&
+						Array.isArray(response.success.replacements)
+					) {
+					let suggestionsHtml = '<ul class="list-group">';
+					response.success.replacements.forEach(function (suggestion) {
+						// Support both 'name' and 'ingredient' keys for display
+						const displayName = suggestion.name || suggestion.ingredient || '';
+						const stock = suggestion.inventory && suggestion.inventory.stock ? parseFloat(suggestion.inventory.stock) : 0;
+						const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
+						const badgeText = stock > 0
+							? `In Stock: ${stock} ${suggestion.inventory.mUnit || ''}`
+							: 'Out of Stock';
+						suggestionsHtml += `<li class="list-group-item">
+							<strong>${displayName}${suggestion.cas ? ` <span class="text-muted">(CAS: ${suggestion.cas})</span>` : ''}</strong>
+							<div>${Array.isArray(suggestion.properties) ? suggestion.properties.join(', ') : (suggestion.properties || '')}</div>
+							<div>${suggestion.description || ''}</div>
+							${suggestion.inventory ? `<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>` : ''}
+							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${displayName}"></i>
+						</li>`;
+						});
+						suggestionsHtml += '</ul>';
+						$('#aiReplacementSuggestions').html(suggestionsHtml);
+						$('#aiReplacementContent').show();
+					} else {
+						$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
+					}
+				},
+				error: function (xhr, status, error) {
+					$('#aiReplacementLoading').hide();
+					$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
+					console.error('Error fetching AI suggestions:', error);
 				}
-			},
-			error: function (xhr, status, error) {
-				$('#aiReplacementLoading').hide();
-				$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
-				console.error('Error fetching AI suggestions:', error);
-			}
 		});
 	});
 
