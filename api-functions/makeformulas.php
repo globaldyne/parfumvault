@@ -297,22 +297,42 @@ switch ($action) {
 
         // Enrich each suggestion with inventory info
         foreach ($replacements as &$suggestion) {
-            $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
-            // Try to extract just the name if ingredient is like "Davana Oil (CAS ...)"
+            // Support both 'name' and 'ingredient' keys for compatibility
+            $ingredient_raw = $suggestion['name'] ?? $suggestion['ingredient'] ?? '';
+            $safe_ingredient = mysqli_real_escape_string($conn, $ingredient_raw);
+            // Remove any "(CAS ...)" from the name
             $ingredient_name = trim(preg_replace('/\s*\(CAS.*$/i', '', $safe_ingredient));
             $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient_name' AND owner_id = '$userID' LIMIT 1"));
 
             if ($ingredient_data) {
                 $ingredient_id = (int)$ingredient_data['id'];
-                $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
-                    SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
+                $inventory = mysqli_query($conn, "
+                    SELECT ingSupplierID, stock, mUnit 
                     FROM suppliers 
                     WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
-                "));
-                $suggestion['inventory'] = $inventory;
+                ");
+                $total_supplier_stock = 0;
+                $mUnit = '';
+                while ($inv = mysqli_fetch_assoc($inventory)) {
+                    $total_supplier_stock += (float)$inv['stock'];
+                    if (!$mUnit && !empty($inv['mUnit'])) {
+                        $mUnit = $inv['mUnit'];
+                    }
+                }
+                $suggestion['inventory'] = [
+                    'stock' => $total_supplier_stock,
+                    'mUnit' => $mUnit
+                ];
+                $suggestion['total_supplier_stock'] = $total_supplier_stock;
             } else {
-                $suggestion['inventory'] = 0;
+                $suggestion['inventory'] = [
+                    'stock' => 0,
+                    'mUnit' => ''
+                ];
+                $suggestion['total_supplier_stock'] = 0;
             }
+            // Always set 'name' for frontend display
+            $suggestion['name'] = $ingredient_raw;
         }
 
         echo json_encode([
