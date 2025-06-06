@@ -5,6 +5,8 @@
 - Fixed incorrect reload trigger for make formula page
 - Fixed incorrect reload trigger for users page
 - Fixed user registration form
+- Fixed error message when deleting a formula
+- Updated BS5 Icons
 
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
