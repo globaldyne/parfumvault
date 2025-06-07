@@ -4,7 +4,6 @@ define('__ROOT__', dirname(dirname(dirname(dirname(__FILE__)))));
 require_once(__ROOT__.'/inc/sec.php');
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
-
 ?>
 <div class="card-body row">
     <div class="row">
@@ -163,9 +162,22 @@ require_once(__ROOT__.'/inc/settings.php');
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="pedro-user-email" name="user" placeholder="user@example.com" required>
-                        <label for="pedro-user-email">Your Email</label>
+                      <div class="mb-3">
+                        <div class="form-text">
+                            The API key will be registered to your email: <strong><?php echo htmlspecialchars($user['email']); ?></strong>
+                        </div>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="pedro-accept-logging" required>
+                        <label class="form-check-label" for="pedro-accept-logging">
+                          I understand all prompts and responses will be logged and used for training purposes.
+                        </label>
+                      </div>
+                      <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="pedro-accept-experimental" required>
+                        <label class="form-check-label" for="pedro-accept-experimental">
+                          I understand this is an experimental service and may not be reliable.
+                        </label>
                       </div>
                       <div id="pedro-api-key-result" class="alert d-none"></div>
                     </div>
@@ -366,7 +378,13 @@ $('#pedro-api-key-form').on('submit', function(e) {
     e.preventDefault();
     var $result = $('#pedro-api-key-result');
     $result.removeClass('alert-success alert-danger').addClass('d-none').text('');
-    var email = $('#pedro-user-email').val().trim();
+    var email = "<?php echo htmlspecialchars($user['email']); ?>";
+
+    // Check both checkboxes
+    if (!$('#pedro-accept-logging').is(':checked') || !$('#pedro-accept-experimental').is(':checked')) {
+        $result.removeClass('d-none').addClass('alert alert-danger').text('You must accept both conditions to request an API key.');
+        return;
+    }
 
     if (!email) {
         $result.removeClass('d-none').addClass('alert alert-danger').text('Please enter your email.');
