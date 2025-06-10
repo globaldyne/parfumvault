@@ -883,42 +883,8 @@ $(document).ready(function() {
   <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
+<script src="/js/pvMakingApp.js"></script>
 
 </body>
 </html>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    function getMobileOS() {
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            return "ios";
-        }
-        return null;
-    }
-    var os = getMobileOS();
-    if (os) {
-        var appUrl = "https://apps.apple.com/app/6746516633"; // iOS app link only
 
-        var bar = document.createElement("div");
-        bar.style.background = "#007bff";
-        bar.style.color = "#fff";
-        bar.style.padding = "10px";
-        bar.style.textAlign = "center";
-        bar.style.position = "fixed";
-        bar.style.top = "0";
-        bar.style.left = "0";
-        bar.style.right = "0";
-        bar.style.zIndex = "9999";
-        bar.innerHTML = `📱 For a better experience, <a href="${appUrl}" style="color:#fff;text-decoration:underline;font-weight:bold;" target="_blank">download our iOS app</a>! <span id="closeAppBar" style="margin-left:20px;cursor:pointer;">&times;</span>`;
-
-        document.body.prepend(bar);
-
-        document.getElementById("closeAppBar").onclick = function() {
-            bar.style.display = "none";
-        };
-
-        // Push page content down so bar doesn't cover it
-        document.body.style.paddingTop = "48px";
-    }
-});
-</script>
