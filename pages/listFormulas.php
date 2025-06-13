@@ -1016,11 +1016,17 @@ $(document).ready(function() {
 			<div class="modal-footer">
 				<small class="text-muted me-auto" id="msg_settings_info">
 					Powered by <strong>
-						<?php 
-						echo $user_settings['ai_service_provider'] === 'openai' 
-							? 'OpenAI' 
-							: ($user_settings['ai_service_provider'] === 'google_gemini' ? 'Google Gemini' : 'Unknown Provider'); 
-						?>
+					<?php 
+						if ($user_settings['ai_service_provider'] === 'openai') {
+							echo 'OpenAI';
+						} else if ($user_settings['ai_service_provider'] === 'google_gemini') {
+							echo 'Google Gemini';
+						} else if ($user_settings['ai_service_provider'] === 'pedro_ai' || $user_settings['ai_service_provider'] === 'pedro_perfumer') {
+							echo 'Pedro Perfumer';
+						} else {
+							echo 'Unknown Provider';
+						}
+					?>
 					</strong>
 				</small>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

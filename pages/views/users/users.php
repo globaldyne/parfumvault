@@ -474,13 +474,25 @@ $(document).ready(function() {
 
     function reload_data() {
         var table = $('#tdUsers').DataTable();
+        // Always compare the full, unsorted, unpaginated data from the backend
         $.ajax({
-            url: '/core/users_data.php',
-            type: 'POST',
+            url: '/core/users_data.php?full=1',
+            type: 'GET',
             dataType: 'json',
             success: function(data) {
-                var localData = table.ajax.json().data;
-                if (JSON.stringify(localData) !== JSON.stringify(data.data)) {
+                // Get all current table data, ignoring order and pagination
+                var localData = [];
+                table.rows().every(function() {
+                    localData.push(this.data());
+                });
+                // Sort both arrays by a unique key (e.g. id) for reliable comparison
+                function sortById(a, b) {
+                    return (a.id > b.id) ? 1 : (a.id < b.id) ? -1 : 0;
+                }
+                var localSorted = localData.slice().sort(sortById);
+                var remoteSorted = data.data.slice().sort(sortById);
+
+                if (JSON.stringify(localSorted) !== JSON.stringify(remoteSorted)) {
                     table.ajax.reload(null, true);
                     console.log('Changes detected, data reloaded');
                 }
