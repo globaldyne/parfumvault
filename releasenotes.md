@@ -1,4 +1,4 @@
-What's New in v13.1
+What's New in v13.2
 - Introduced integration with the Pedro Perfumer AI model, specifically trained to assist perfumers.
 - Dashboard pie color is retained in local storage
 - Added Pedro Perfumer in AI providers
