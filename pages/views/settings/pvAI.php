@@ -32,7 +32,7 @@ require_once(__ROOT__.'/inc/settings.php');
                         <select name="ai_service_provider" id="ai_service_provider" class="form-control">
                             <option value="openai" <?= $user_settings['ai_service_provider'] == 'openai' ? 'selected' : '' ?>>OpenAI</option>
                             <option value="google_gemini" <?= $user_settings['ai_service_provider'] == 'google_gemini' ? 'selected' : '' ?>>Google Gemini</option>
-                       <!--     <option value="pedro_perfumer" <?= $user_settings['ai_service_provider'] == 'pedro_perfumer' ? 'selected' : '' ?>>Pedro Perfumer</option> -->
+                            <option value="pedro_perfumer" <?= $user_settings['ai_service_provider'] == 'pedro_perfumer' ? 'selected' : '' ?>>Pedro Perfumer</option>
                         </select>
                     </div>
 
