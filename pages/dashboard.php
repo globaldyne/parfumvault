@@ -236,6 +236,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE ow
 <script src="/js/Chart.min.js"></script>
 <link href="/css/Chart.css" rel="stylesheet">
 <script>
+
 $(document).ready(function() {
 
     var formulas = document.getElementById('formulasPie');
@@ -245,7 +246,7 @@ $(document).ready(function() {
         method: "GET",
         dataType : 'JSON',
         success: function(stats) {
-        
+
             var formula_label = stats.data.map(function(e) {
                 return e.name;
             });
@@ -253,22 +254,34 @@ $(document).ready(function() {
                 return e.count;
             });
 
-            // Function to generate random colors
-            function generateRandomColors(count) {
-                let colors = [];
-                for (let i = 0; i < count; i++) {
-                    let r = Math.floor(Math.random() * 256);
-                    let g = Math.floor(Math.random() * 256);
-                    let b = Math.floor(Math.random() * 256);
-                    colors.push(`rgba(${r}, ${g}, ${b}, 0.8)`);
+            // Try to load colors from localStorage
+            var storedColors = localStorage.getItem('formulasPieColors');
+            var formula_bkColor, formula_brdColor;
+
+            if (storedColors) {
+                try {
+                    var parsed = JSON.parse(storedColors);
+                    if (Array.isArray(parsed.background) && Array.isArray(parsed.border) && parsed.background.length === formula_data.length) {
+                        formula_bkColor = parsed.background;
+                        formula_brdColor = parsed.border;
+                    } else {
+                        throw new Error("Color arrays do not match data length");
+                    }
+                } catch (e) {
+                    formula_bkColor = generateRandomColors(formula_data.length);
+                    formula_brdColor = formula_bkColor.map(color => color.replace('0.8', '1'));
                 }
-                return colors;
+            } else {
+                formula_bkColor = generateRandomColors(formula_data.length);
+                formula_brdColor = formula_bkColor.map(color => color.replace('0.8', '1'));
             }
 
-            // Generate colors dynamically
-            var formula_bkColor = generateRandomColors(formula_data.length);
-            var formula_brdColor = formula_bkColor.map(color => color.replace('0.8', '1')); // Adjust opacity for borders
-            
+            // Store colors in localStorage for persistence
+            localStorage.setItem('formulasPieColors', JSON.stringify({
+                background: formula_bkColor,
+                border: formula_brdColor
+            }));
+
             var formulasChart = new Chart(formulas, {
                 type: 'pie',
                 data: {
@@ -325,6 +338,15 @@ $(document).ready(function() {
         }
     });
     
+    function generateRandomColors(count) {
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+            // Generate pastel-like random colors
+            const hue = Math.floor(Math.random() * 360);
+            colors.push(`hsla(${hue}, 70%, 70%, 0.8)`);
+        }
+        return colors;
+    }
 });
 </script>
 <?php } ?>

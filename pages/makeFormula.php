@@ -46,7 +46,7 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
       <meta name="description" content="<?php echo trim($product).' - '.trim($ver);?>">
       <meta name="author" content="<?php echo trim($product).' - '.trim($ver);?>">
       <title><?php echo $meta['name'];?></title>
-      <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+      <link href="/css/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
 
       <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link href="/css/sb-admin-2.css" rel="stylesheet">
@@ -224,10 +224,38 @@ $(document).ready(function() {
 				if (data.toAdd == 0 || data.toSkip == 1) {
 					$(row).addClass('d-none');
 				}
+				let showAdded = localStorage.getItem('pv_showAdded') === 'true';
+
+				// Toggle handler
 				$('#toggleAdded').click(function() {
-					if (data.toAdd == 0 || data.toSkip == 1) {
-						$(row).toggleClass('d-none');
-					}
+				    showAdded = !showAdded;
+				    localStorage.setItem('pv_showAdded', showAdded);
+				    toggleAddedRows();
+				});
+
+				// Function to show/hide added/skipped rows based on toggle state
+				function toggleAddedRows() {
+				    $('#tdDataPending tbody tr').each(function() {
+				        const rowData = $('#tdDataPending').DataTable().row(this).data();
+				        if (!rowData) return;
+				        if (rowData.toAdd == 0 || rowData.toSkip == 1) {
+				            if (showAdded) {
+				                $(this).removeClass('d-none');
+				            } else {
+				                $(this).addClass('d-none');
+				            }
+				        }
+				    });
+				}
+
+				// After every table draw, re-apply toggle state
+				$('#tdDataPending').on('draw.dt', function() {
+				    toggleAddedRows();
+				});
+
+				// On page load, apply the toggle state
+				$(document).ready(function() {
+				    toggleAddedRows();
 				});
 			},
 			drawCallback: function( settings ) {
@@ -321,44 +349,70 @@ $(document).ready(function() {
 	};
 	**/
 	function reload_data() {
-		var table = $('#tdDataPending').DataTable();
-		$.ajax({
-			url: '/core/pending_formulas_data.php?meta=0&fid=' + fid,
-			type: 'GET',
-			dataType: 'json',
-			success: function(data) {
-				var localData = table.ajax.json().data;
-				var reloadNeeded = false;
-				var changeLog = [];
-				for (var i = 0; i < Math.min(localData.length, data.data.length); i++) {
-					if (localData[i].ingredient !== data.data[i].ingredient) {
-						reloadNeeded = true;
-						changeLog.push('Ingredient changed: ' + localData[i].ingredient + ' to ' + data.data[i].ingredient);
-					}
-					if (localData[i].quantity !== data.data[i].quantity) {
-						reloadNeeded = true;
-						changeLog.push('Quantity changed for ' + localData[i].ingredient + ': ' + localData[i].quantity + ' to ' + data.data[i].quantity);
-					}
-					if (localData[i].toAdd !== data.data[i].toAdd) {
-						reloadNeeded = true;
-						changeLog.push('toAdd changed for ' + localData[i].ingredient + ': ' + localData[i].toAdd + ' to ' + data.data[i].toAdd);
-					}
-					if (localData[i].toSkip !== data.data[i].toSkip) {
-						reloadNeeded = true;
-						changeLog.push('toSkip changed for ' + localData[i].ingredient + ': ' + localData[i].toSkip + ' to ' + data.data[i].toSkip);
-					}
-				}
-				if (reloadNeeded) {
-					table.ajax.reload(null, true);
-					console.log('Changes detected, data reloaded');
-				//	console.log('Change log:', changeLog);
-				}
-			},
-			error: function(xhr, status, error) {
-				console.error('Error checking data:', error);
-			}
-		});
-	};
+    var table = $('#tdDataPending').DataTable();
+    $.ajax({
+        url: '/core/pending_formulas_data.php?meta=0&fid=' + fid + '&full=1',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var localData = table.ajax.json().data;
+            var remoteData = data.data;
+
+            // Build maps by id for fast lookup
+            var localMap = {};
+            localData.forEach(function(item) { localMap[item.id] = item; });
+            var remoteMap = {};
+            remoteData.forEach(function(item) { remoteMap[item.id] = item; });
+
+            var reloadNeeded = false;
+            var changeLog = [];
+
+            // Check for changes and missing/extra items
+            Object.keys(remoteMap).forEach(function(id) {
+                var local = localMap[id];
+                var remote = remoteMap[id];
+                if (!local) {
+                    reloadNeeded = true;
+                    changeLog.push('New ingredient: ' + remote.ingredient);
+                    return;
+                }
+                if (local.ingredient !== remote.ingredient) {
+                    reloadNeeded = true;
+                    changeLog.push('Ingredient changed: ' + local.ingredient + ' to ' + remote.ingredient);
+                }
+                if (local.quantity !== remote.quantity) {
+                    reloadNeeded = true;
+                    changeLog.push('Quantity changed for ' + local.ingredient + ': ' + local.quantity + ' to ' + remote.quantity);
+                }
+                if (local.toAdd !== remote.toAdd) {
+                    reloadNeeded = true;
+                    changeLog.push('toAdd changed for ' + local.ingredient + ': ' + local.toAdd + ' to ' + remote.toAdd);
+                }
+                if (local.toSkip !== remote.toSkip) {
+                    reloadNeeded = true;
+                    changeLog.push('toSkip changed for ' + local.ingredient + ': ' + local.toSkip + ' to ' + remote.toSkip);
+                }
+            });
+
+            // Check for removed items
+            Object.keys(localMap).forEach(function(id) {
+                if (!remoteMap[id]) {
+                    reloadNeeded = true;
+                    changeLog.push('Ingredient removed: ' + localMap[id].ingredient);
+                }
+            });
+
+            if (reloadNeeded) {
+                table.ajax.reload(null, true);
+                console.log('Changes detected, data reloaded');
+                console.log('Change log:', changeLog);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error checking data:', error);
+        }
+    });
+};
 
     setInterval(reload_data, 5000); // Check for updates every 5 seconds
 
@@ -758,41 +812,50 @@ $(document).ready(function() {
 		// Update modal title with the ingredient name
 		$('#ai_replacement .modal-title').text(`AI Replacement Suggestions for ${ingredient}`);
 
-		$.ajax({
-			url: '/core/core.php',
-			type: 'POST',
-			data: { 
-				action: 'getAIReplacementSuggestions',
-				ingredient: ingredient 
-			},
-			dataType: 'json',
-			success: function (response) {
-				$('#aiReplacementLoading').hide();
-				if (response.success) {
+			$.ajax({
+				url: '/core/core.php',
+				type: 'POST',
+				data: { 
+					action: 'getAIReplacementSuggestions',
+					ingredient: ingredient 
+				},
+				dataType: 'json',
+				success: function (response) {
+					$('#aiReplacementLoading').hide();
+					if (
+						response.success &&
+						response.type === 'replacements' &&
+						Array.isArray(response.success.replacements)
+					) {
 					let suggestionsHtml = '<ul class="list-group">';
-					response.success.forEach(function (suggestion) {
-						const inventory = suggestion.inventory || {};
-						const stock = parseFloat(inventory.stock || 0);
+					response.success.replacements.forEach(function (suggestion) {
+						// Support both 'name' and 'ingredient' keys for display
+						const displayName = suggestion.name || suggestion.ingredient || '';
+						const stock = suggestion.inventory && suggestion.inventory.stock ? parseFloat(suggestion.inventory.stock) : 0;
 						const badgeClass = stock > 0 ? 'badge-success' : 'badge-danger';
-						const badgeText = stock > 0 ? `In Stock: ${stock} ${inventory.mUnit || ''}` : 'Out of Stock';
+						const badgeText = stock > 0
+							? `In Stock: ${stock} ${suggestion.inventory.mUnit || ''}`
+							: 'Out of Stock';
 						suggestionsHtml += `<li class="list-group-item">
-							<strong>${suggestion.ingredient}</strong> (CAS: ${suggestion.cas || 'N/A'}) - ${suggestion.description}
-							<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>
-							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${suggestion.ingredient}"></i>
+							<strong>${displayName}${suggestion.cas ? ` <span class="text-muted">(CAS: ${suggestion.cas})</span>` : ''}</strong>
+							<div>${Array.isArray(suggestion.properties) ? suggestion.properties.join(', ') : (suggestion.properties || '')}</div>
+							<div>${suggestion.description || ''}</div>
+							${suggestion.inventory ? `<span class="badge ${badgeClass} float-end mx-2">${badgeText}</span>` : ''}
+							<i class="bi bi-clipboard float-end mx-2 copy-replacement" data-name="${displayName}"></i>
 						</li>`;
-					});
-					suggestionsHtml += '</ul>';
-					$('#aiReplacementSuggestions').html(suggestionsHtml);
-					$('#aiReplacementContent').show();
-				} else {
-					$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
+						});
+						suggestionsHtml += '</ul>';
+						$('#aiReplacementSuggestions').html(suggestionsHtml);
+						$('#aiReplacementContent').show();
+					} else {
+						$('#aiReplacementError').removeClass('d-none').html('<i class="bi bi-exclamation-circle-fill mx-2"></i>' + (response.error || 'No suggestions available.'));
+					}
+				},
+				error: function (xhr, status, error) {
+					$('#aiReplacementLoading').hide();
+					$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
+					console.error('Error fetching AI suggestions:', error);
 				}
-			},
-			error: function (xhr, status, error) {
-				$('#aiReplacementLoading').hide();
-				$('#aiReplacementError').removeClass('d-none').text('Unable to fetch suggestions. Please try again later.');
-				console.error('Error fetching AI suggestions:', error);
-			}
 		});
 	});
 
@@ -816,10 +879,12 @@ $(document).ready(function() {
 	});
 	</script>
 <?php } ?>
-<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1') { ?>
+<?php if( $user_settings['use_ai_service'] == '1' && $user_settings['use_ai_chat'] == '1' && $user_settings['making_ai_chat'] == '1') { ?>
   <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
+<script src="/js/pvMakingApp.js"></script>
 
 </body>
 </html>
+

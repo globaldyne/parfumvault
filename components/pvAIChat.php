@@ -31,7 +31,7 @@
       </p>
     </div>
     <div id="chatbot-modal-footer" class="d-flex align-items-center">
-        <input type="text" id="chatbot-input" class="form-control form-control-lg me-2 flex-grow-1" placeholder="Type your message..." aria-label="Chat input" />
+        <input type="text" id="chatbot-input" class="form-control form-control-lg me-2 flex-grow-1" placeholder="Ask Perfumers AI..." aria-label="Chat input" />
         <button id="chatbot-send" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center p-0" type="button" title="Send" style="width: 48px; height: 48px;">
             <i class="fas fa-arrow-up"></i>
         </button>

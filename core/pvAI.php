@@ -42,8 +42,7 @@ if ($_POST['action'] === 'addFormulaAI') {
     $customer_id = (int)($_POST['customer'] ?? 0);
     $fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
 
-    $prompt = "Create a perfume formula in JSON with ingredient name as 'ingredient', CAS number as 'cas', quantity in grams as 'quantity', dilution percentage as 'dilution', and solvent type as 'solvent'. Total formula quantity 100. Description: $notes. Return only JSON.";
-
+    $prompt = $notes. ', type formula';
     $result = pvAIHelper($prompt);
 
     if (isset($result['error'])) {
@@ -51,7 +50,26 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    $ingredients = $result['success'];
+    // Fix: If AI returns a success with an embedded error, treat as error
+    if (isset($result['success']['error'])) {
+        echo json_encode(['error' => is_array($result['success']['error']) ? json_encode($result['success']['error']) : $result['success']['error']]);
+        return;
+    }
+
+    // --- Begin: decode formula from AI result ---
+    $ingredients = [];
+    if (isset($result['success']['formula']) && is_array($result['success']['formula'])) {
+        $ingredients = $result['success']['formula'];
+    } elseif (is_array($result['success'])) {
+        // fallback for legacy or unexpected structure
+        $ingredients = $result['success'];
+    } else {
+        error_log("Invalid ingredient format: " . json_encode($result['success']));
+        echo json_encode(['error' => 'Invalid ingredient format from AI']);
+        return;
+    }
+    // --- End: decode formula from AI result ---
+
     error_log("Decoded JSON: " . json_encode($ingredients));
 
     if (!is_array($ingredients)) {
@@ -73,7 +91,6 @@ if ($_POST['action'] === 'addFormulaAI') {
 
     $last_id = mysqli_insert_id($conn);
     mysqli_query($conn, "INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES ('$last_id','AI Generated','$userID')");
-    //mysqli_query($conn, "UPDATE formulasMetaData SET isProtected='1' WHERE id='$last_id' AND owner_id='$userID'");
 
     foreach ($ingredients as $row) {
         $ingredient = mysqli_real_escape_string($conn, $row['ingredient'] ?? '');
@@ -123,18 +140,32 @@ if ($_POST['action'] === 'addFormulaAI') {
 
 } else if ($_POST['action'] === 'aiChat') {
     $prompt = $_POST['message'] ?? '';
-    $result = pvAIHelper($prompt." \n\nAnswer in JSON format with only the answer in the property description . No other text. \n\n");
-    
+    $result = pvAIHelper($prompt);
+
     error_log("AI Chat Prompt: $prompt");
     error_log("AI Chat Result: " . json_encode($result));
-    
+
     if (isset($result['error'])) {
         echo json_encode(['error' => $result['error']]);
         return;
     }
 
-    echo json_encode(['success' => $result['success']]);
+    // Fix: If AI returns a success with an embedded error, treat as error
+    if (isset($result['success']['error'])) {
+        echo json_encode(['error' => is_array($result['success']['error']) ? json_encode($result['success']['error']) : $result['success']['error']]);
+        return;
+    }
 
+    // Standardise output: always include type at top level and inside success
+    $type = $result['type'] ?? ($result['success']['type'] ?? 'unknown');
+    if (is_array($result['success'])) {
+        $result['success']['type'] = $type;
+    }
+    echo json_encode([
+        'success' => $result['success'],
+        'type' => $type
+    ]);
+    return;
 } else if ($_POST['action'] === 'getAIReplacementSuggestions') {
 
     $ingredient = $_POST['ingredient'] ?? '';
@@ -144,7 +175,7 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    $prompt = "Suggest 5 replacements for the ingredient $ingredient. Return only ingredient name as 'ingredient', CAS as 'cas', and description as 'description' in JSON format.";
+    $prompt = "Suggest 5 replacements for the ingredient $ingredient";
     
     $result = pvAIHelper($prompt);
     
@@ -156,25 +187,48 @@ if ($_POST['action'] === 'addFormulaAI') {
         return;
     }
 
-    $suggestions = $result['success'];
-    foreach ($suggestions as &$suggestion) {
-        $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['ingredient']);
-        $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$safe_ingredient' AND owner_id = '$userID' LIMIT 1"));
+    // Expecting: $result['success']['replacements'] is an array, $result['type'] === 'replacements'
+    if (
+        isset($result['success']['replacements']) &&
+        is_array($result['success']['replacements']) &&
+        isset($result['type']) && $result['type'] === 'replacements'
+    ) {
+        // Enrich each suggestion with inventory info
+        foreach ($result['success']['replacements'] as &$suggestion) {
+            $safe_ingredient = mysqli_real_escape_string($conn, $suggestion['name'] ?? $suggestion['ingredient'] ?? $suggestion['cas'] ??'');
+            $ingredient_name = trim(preg_replace('/\s*\(CAS.*$/i', '', $safe_ingredient));
+            $ingredient_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredient_name' AND owner_id = '$userID' LIMIT 1"));
 
-        if ($ingredient_data) {
-            $ingredient_id = (int)$ingredient_data['id'];
-            $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
-                SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
-                FROM suppliers 
-                WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
-            "));
-            $suggestion['inventory'] = $inventory;
-        } else {
-            $suggestion['inventory'] = 0;
+            if ($ingredient_data) {
+                $ingredient_id = (int)$ingredient_data['id'];
+                $inventory = mysqli_fetch_assoc(mysqli_query($conn, "
+                    SELECT ingSupplierID, SUM(stock) AS stock, mUnit 
+                    FROM suppliers 
+                    WHERE ingID = '$ingredient_id' AND owner_id = '$userID'
+                "));
+                // Fix: Ensure inventory is always an object with stock and mUnit, even if null
+                $suggestion['inventory'] = [
+                    'stock' => isset($inventory['stock']) ? (float)$inventory['stock'] : 0,
+                    'mUnit' => $inventory['mUnit'] ?? ''
+                ];
+            } else {
+                $suggestion['inventory'] = [
+                    'stock' => 0,
+                    'mUnit' => ''
+                ];
+            }
         }
+        echo json_encode([
+            'success' => [
+                'replacements' => $result['success']['replacements'],
+            ],
+            'type' => 'replacements'
+        ]);
+        return;
     }
 
-    echo json_encode(['success' => $suggestions]);
+    // fallback: if not in expected format, return as error
+    echo json_encode(['error' => 'AI did not return replacement suggestions in the expected format.']);
 } else {
     echo json_encode(['error' => 'Invalid action']);
 }

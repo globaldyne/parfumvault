@@ -19,6 +19,7 @@ $extra = "ORDER BY toAdd DESC, $order_by $order_as";
 $search = isset($_POST['search']['value']) ? trim(mysqli_real_escape_string($conn, $_POST['search']['value'])) : '';
 $table = "makeFormula";
 $fid = isset($_GET['fid']) ? mysqli_real_escape_string($conn, $_GET['fid']) : '';
+$full = isset($_GET['full']) ? (int)$_GET['full'] : 0;
 
 if (isset($_GET['qStep'])) {
     $settings['qStep'] = $_GET['qStep'];
@@ -31,7 +32,12 @@ $mg = ['total_mg' => 0, 'total_mg_left' => 0];
 $rx = [];
 
 if ($meta === 0) {
-    $q = mysqli_query($conn, "SELECT * FROM $table WHERE fid = '$fid' $filter $extra LIMIT $row, $limit");
+    // If full=1, ignore paging and search, return all rows for this fid
+    if ($full === 1) {
+        $q = mysqli_query($conn, "SELECT * FROM $table WHERE fid = '$fid' AND owner_id = '$userID' $extra");
+    } else {
+        $q = mysqli_query($conn, "SELECT * FROM $table WHERE fid = '$fid' $filter $extra LIMIT $row, $limit");
+    }
     while ($res = mysqli_fetch_assoc($q)) {
         $rs[] = $res;
     }

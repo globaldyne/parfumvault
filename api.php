@@ -168,6 +168,20 @@ switch ($do) {
         }
         break;
 
+    // Add version endpoint (no auth required)
+    case 'version':
+        header('Content-Type: application/json; charset=utf-8');
+        $versionFile = __ROOT__ . '/VERSION.md';
+        $version = 'unknown';
+        if (file_exists($versionFile)) {
+            $version = trim(file_get_contents($versionFile));
+        }
+        echo json_encode([
+            'status' => 'ok',
+            'version' => $version
+        ]);
+        return;
+
     default:
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([

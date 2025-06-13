@@ -31,9 +31,9 @@
     color: var(--bs-body-color); /* Bootstrap variable for theme compatibility */
     border: 3px solid;
     border-image: linear-gradient(90deg, #ff7e5f, #feb47b, #6dd5ed, #2193b0) 1;
-    border-radius: 16px;
+    border-radius: 10px !important; /* Ensures rounded corners */
     box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-    z-index: 2000; /* Ensure it is above Bootstrap modals */
+    z-index: 2000 !important; /* Ensure it is above Bootstrap modals */
 }
 
 #chatbot-modal-header {

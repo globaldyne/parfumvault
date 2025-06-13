@@ -1,23 +1,10 @@
-What's New in v13.0
---------------------------
-
-- Fixed ingredients CSV redeclarations
-- Replaced alert box with toast message when copying AI response
-- Added a realtime advisory count badge
-- Cosmetic changes for formulas labels
-- Added BS5 floating elements for formula properties
-- Extended formulas search in labels
-- Renamed tags to labels
-- Added ingredient replacement suggestion in formula making using Perfumers AI
-- Added full date in AI chat response
-- Added CAS in ingredient suggestions
-- Updated AI formula generation to include dilution and solvent
-- Fixed JS error when searching in PV library
-- Replaced odor with labels for ingredients
-- Fixed defaultMessage error in AI Chat
-- Replaced Odor column with label in ingredients page
-- Deprecated colorKey
-- Added makeformula API 
-- Improved Perfumers AI Chat
-
+What's New in v13.1
+- Introduced integration with the Pedro Perfumer AI model, specifically trained to assist perfumers.
+- Dashboard pie color is retained in local storage
+- Added Pedro Perfumer in AI providers
+- Fixed incorrect reload trigger for make formula page
+- Fixed incorrect reload trigger for users page
+- Fixed user registration form
+- Fixed error message when deleting a formula
+- Updated BS5 Icons
 For a complete list of changes and previous versions, please refer to the CHANGELOG.md
