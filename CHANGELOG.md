@@ -1,4 +1,13 @@
 # CHANGELOG
+### Version 13.1
+- Dashboard pie color is retained in local storage
+- Added Pedro Perfumer in AI providers
+- Fixed incorrect reload trigger for make formula page
+- Fixed incorrect reload trigger for users page
+- Fixed user registration form
+- Fixed error message when deleting a formula
+- Updated BS5 Icons
+
 ### Version 13.0
 - Fixed ingredients CSV redeclarations
 - Replaced alert box with toast message when copying AI response

@@ -37,7 +37,7 @@ if ($role === 1) {
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
   
-  <link href="/css/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet" type="text/css">
   <link href="/css/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="/css/sb-admin-2.css" rel="stylesheet">
   <link href="/css/bootstrap-select.min.css" rel="stylesheet">
