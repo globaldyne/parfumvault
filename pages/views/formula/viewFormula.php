@@ -899,10 +899,10 @@ $(document).ready(function() {
 						dataType: 'json',
 						success: function (data) {
 							if(data.success) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 								$('.toast-header').removeClass().addClass('toast-header alert-success');
 							}else{
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 								$('.toast-header').removeClass().addClass('toast-header alert-danger');
 							}
 							$('.toast').toast('show');
