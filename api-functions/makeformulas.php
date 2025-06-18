@@ -1,6 +1,6 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
-global $conn, $userID;
+global $conn, $userID , $settings, $user_settings, $system_settings;
 
 
 require_once(__ROOT__.'/inc/settings.php');
@@ -264,6 +264,43 @@ switch ($action) {
             echo json_encode(['error' => 'Failed to reset material.']);
         }
         return;
+
+    case 'markComplete':
+        if( empty($_GET['fid']) ){
+            echo json_encode(['error' => 'Missing fid parameter']);
+            return;
+        }
+        require_once(__ROOT__.'/libs/fpdf.php');
+        require_once(__ROOT__.'/func/genBatchID.php');
+        require_once(__ROOT__.'/func/genBatchPDF.php');
+        require_once(__ROOT__.'/func/ml2L.php');
+
+        $fid = mysqli_real_escape_string($conn, $_GET['fid']);
+        $total_quantity = mysqli_real_escape_string($conn, $_GET['totalQuantity'] ?: 100);
+
+        define('FPDF_FONTPATH',__ROOT__.'/fonts');
+        // Ensure defCatClass is never null
+        $defCatClass = isset($settings['defCatClass']) && $settings['defCatClass'] !== null && $settings['defCatClass'] !== '' ? $settings['defCatClass'] : 'cat4';
+
+        //error_log("Marking formula $fid as complete with total quantity $total_quantity - $defCatClass");
+        // Check if already marked as made
+        $meta = mysqli_fetch_assoc(mysqli_query($conn, "SELECT isMade FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+        if ($meta && $meta['isMade'] == '1') {
+            echo json_encode(['error' => 'Formula is already marked as complete']);
+            return;
+        }
+
+        if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1' AND skip = '0' AND owner_id = '$userID'"))){
+            echo json_encode(['error' => 'Formula is pending materials to add, cannot be marked as complete']);
+            return;
+        }
+        if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid' AND owner_id = '$userID'")){
+            $batchID = genBatchID();
+            genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'] ?: 2,$settings['defPercentage'] ?: 100,'makeFormula');
+            mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
+            echo json_encode(['success' => 'Formula is complete']);
+        }
+    return;
 
     case 'getAIReplacementSuggestions':
         if (empty($_GET['ingredient'])) {

@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 13.2
+- Formula making api added "Complete Formula"
 
 ### Version 13.1
 - Dashboard pie color is retained in local storage
