@@ -126,11 +126,15 @@ if ($meta === 0) {
     $filtered = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM formulasMetaData WHERE toDo = '1' $filter"));
 }
 
+// Add a hash of the data for frontend comparison
+$data_hash = hash('sha256', json_encode($rx));
+
 $response = array_merge($response, [
     "draw" => isset($_POST['draw']) ? (int)$_POST['draw'] : 1,
     "recordsTotal" => (int)$total['entries'],
     "recordsFiltered" => (int)$filtered['entries'],
-    "data" => $rx
+    "data" => $rx,
+    "data_hash" => $data_hash
 ]);
 
 header('Content-Type: application/json; charset=utf-8');
