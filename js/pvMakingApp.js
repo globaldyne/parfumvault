@@ -16,7 +16,7 @@
         // App links
         var iosAppUrl = "https://apps.apple.com/app/6746516633";
         var iosAppScheme = "parfumvaultmaking://";
-        var androidAppUrl = "https://www.perfumersvault.com/store/apps/pvMaking.apk";
+        var androidAppUrl = "https://github.com/globaldyne/pv-making-public/raw/refs/heads/main/pvMaking.apk";
         var androidAppScheme = "parfumvaultmaking://";
 
         if (!(isIOS || isAndroid)) return;
@@ -42,10 +42,10 @@
         bar.innerHTML = `
             <div class="d-flex align-items-center">
                 <i class="bi bi-phone me-2" style="font-size:1.5rem;color:#fff;"></i>
-                <span class="fw-semibold">For a better experience:</span>
+                <span class="fw-semibold">For a better experience in formula making:</span>
             </div>
             <div>
-                <a href="#" id="${openBtnId}" class="btn btn-light btn-sm me-2" style="font-weight:bold;">Open app</a>
+                <a href="#" id="${openBtnId}" class="btn btn-light btn-sm me-2" style="font-weight:bold; display:none;">Open app</a>
                 <a href="${appUrl}" id="${getBtnId}" class="btn btn-outline-light btn-sm me-2" style="font-weight:bold; display:none;" target="_blank">Get the ${appType} app</a>
             </div>
             <button type="button" class="btn-close btn-close-white ms-2" id="closeAppBar" aria-label="Close"></button>
@@ -60,15 +60,42 @@
 
         document.body.style.paddingTop = "64px";
 
+        // Try to detect if the app is installed by attempting to open the scheme
+        function showOpenAppButtonIfSchemeWorks() {
+            var timeout;
+            var hidden = false;
+            var iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = appScheme;
+            document.body.appendChild(iframe);
+
+            timeout = setTimeout(function() {
+                // If still here after 1s, likely not installed
+                document.getElementById(openBtnId).style.display = "none";
+                document.getElementById(getBtnId).style.display = "inline-block";
+                document.body.removeChild(iframe);
+            }, 1000);
+
+            window.addEventListener("blur", function handler() {
+                // User left the page, likely app opened
+                clearTimeout(timeout);
+                document.getElementById(openBtnId).style.display = "inline-block";
+                document.getElementById(getBtnId).style.display = "none";
+                document.body.removeChild(iframe);
+                window.removeEventListener("blur", handler);
+            });
+        }
+
+        showOpenAppButtonIfSchemeWorks();
+
         document.getElementById(openBtnId).onclick = function(e) {
             e.preventDefault();
             var now = Date.now();
             window.location = appScheme;
             setTimeout(function() {
-                // If user is still on the page after 1s, show the Store link
-                if (Date.now() - now < 1500) {
-                    document.getElementById(getBtnId).style.display = "inline-block";
-                }
+                // Show both buttons after 1s if still on the page
+                document.getElementById(openBtnId).style.display = "inline-block";
+                document.getElementById(getBtnId).style.display = "inline-block";
             }, 1000);
         };
     });
