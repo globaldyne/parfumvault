@@ -1,4 +1,10 @@
 # CHANGELOG
+### Version 13.2
+- Formula making api added "Complete Formula"
+- Added Scheduled formula auto table update
+- Formula making Android app link update
+- Formula making app detection improvements
+
 ### Version 13.1
 - Dashboard pie color is retained in local storage
 - Added Pedro Perfumer in AI providers

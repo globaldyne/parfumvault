@@ -255,6 +255,67 @@ $(document).ready(function() {
 	});
 
 }); //END DOC
+
+// Monitor the scheduled formulas table for changes
+// and reload it if there are any changes in the backend data
+// This function checks the backend data every 5 seconds
+// and compares it with the current table data.
+// If there are any changes, it reloads the table.
+function monitorAndReloadScheduledTable() {
+    var table = $('#tdDataScheduled').DataTable();
+    $.ajax({
+        url: '/core/pending_formulas_data.php?meta=1&full=1',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var localData = table.ajax.json() && table.ajax.json().data ? table.ajax.json().data : [];
+            var remoteData = data.data || [];
+
+            // Build maps by id for fast lookup
+            var localMap = {};
+            localData.forEach(function(item) { localMap[item.fid] = item; });
+            var remoteMap = {};
+            remoteData.forEach(function(item) { remoteMap[item.fid] = item; });
+
+            var reloadNeeded = false;
+
+            // Check for changes and missing/extra items
+            Object.keys(remoteMap).forEach(function(fid) {
+                var local = localMap[fid];
+                var remote = remoteMap[fid];
+                if (!local) {
+                    reloadNeeded = true;
+                    return;
+                }
+                if (local.name !== remote.name ||
+                    local.total_ingredients_left !== remote.total_ingredients_left ||
+                    local.total_ingredients !== remote.total_ingredients ||
+                    local.madeOn !== remote.madeOn ||
+                    local.scheduledOn !== remote.scheduledOn) {
+                    reloadNeeded = true;
+                }
+            });
+
+            // Check for removed items
+            Object.keys(localMap).forEach(function(fid) {
+                if (!remoteMap[fid]) {
+                    reloadNeeded = true;
+                }
+            });
+
+            if (reloadNeeded) {
+                table.ajax.reload(null, true);
+                console.log('Scheduled formulas table reloaded due to backend change');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error checking scheduled formulas data:', error);
+        }
+    });
+}
+
+// Poll every 5 seconds
+setInterval(monitorAndReloadScheduledTable, 5000);
 </script>
 <!-- IMPORT JSON MODAL -->
 <div class="modal fade" id="import_making_json" data-bs-backdrop="static" tabindex="-1" aria-labelledby="import_making_json" aria-hidden="true">
@@ -315,3 +376,4 @@ $(document).ready(function() {
 
 
 <script src="/js/import.making.js"></script>
+<script src="/js/pvMakingApp.js"></script>
