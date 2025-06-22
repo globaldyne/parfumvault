@@ -7421,34 +7421,41 @@ if($_POST['action'] == 'skipMaterial' && $_POST['fid'] &&  $_POST['id']){
 
 //MARK COMPLETE
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
-	require_once(__ROOT__.'/libs/fpdf.php');
-	require_once(__ROOT__.'/func/genBatchID.php');
-	require_once(__ROOT__.'/func/genBatchPDF.php');
-	require_once(__ROOT__.'/func/ml2L.php');
+    require_once(__ROOT__.'/libs/fpdf.php');
+    require_once(__ROOT__.'/func/genBatchID.php');
+    require_once(__ROOT__.'/func/genBatchPDF.php');
+    require_once(__ROOT__.'/func/ml2L.php');
 
-	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
-	$total_quantity = mysqli_real_escape_string($conn, $_POST['totalQuantity']);
+    $fid = mysqli_real_escape_string($conn, $_POST['fid']);
+    $total_quantity = mysqli_real_escape_string($conn, $_POST['totalQuantity']);
 
-	define('FPDF_FONTPATH',__ROOT__.'/fonts');
-	$defCatClass = $settings['defCatClass'];
-	
-		
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1' AND skip = '0' AND owner_id = '$userID'"))){
-		$response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
-		echo json_encode($response);
-		return;
-	}
-	if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid' AND owner_id = '$userID'")){
-		$batchID = genBatchID();
-		genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'],$settings['defPercentage'],'makeFormula');
+    define('FPDF_FONTPATH',__ROOT__.'/fonts');
+    $defCatClass = $settings['defCatClass'];
 
-		mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
-		
-		$response['success'] = '<strong>Formula is complete</strong>';
-	}
-	
-	echo json_encode($response);
-	return;
+    // Check if already marked as made
+    $meta = mysqli_fetch_assoc(mysqli_query($conn, "SELECT isMade FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'"));
+    if ($meta && $meta['isMade'] == '1') {
+        $response['error'] = '<strong>Formula is already marked as complete.</strong>';
+        echo json_encode($response);
+        return;
+    }
+
+    if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM makeFormula WHERE fid = '$fid' AND toAdd = '1' AND skip = '0' AND owner_id = '$userID'"))){
+        $response['error'] = '<strong>Formula is pending materials to add, cannot be marked as complete.</strong>';
+        echo json_encode($response);
+        return;
+    }
+    if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid' AND owner_id = '$userID'")){
+        $batchID = genBatchID();
+        genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'],$settings['defPercentage'],'makeFormula');
+
+        mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
+
+        $response['success'] = '<strong>Formula is complete</strong>';
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 
