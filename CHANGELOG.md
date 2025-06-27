@@ -1,6 +1,8 @@
 # CHANGELOG
 ### Version 13.3
-- Fixed percentage calculation in formula analysis
+- Fixed percentage calculation errors in formula analysis.
+- Fixed popup link when clicking an ingredient in formula analysis.
+- Added visualization to highlight sub-materials exceeding usage limits.
 
 ### Version 13.2
 - Formula making api added "Complete Formula"
