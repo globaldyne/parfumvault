@@ -78,7 +78,7 @@ $(document).ready(function() {
 		columns: [
 			  { data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
 			  { data : 'sub_ing', title: 'Contains', render: subIng },
-			  { data : 'contained_percentage', title: 'Percentage in formula(%)' },
+			  { data : 'contained_percentage', title: 'Percentage in formula(%)', render: percInFormula },
 			  { data : 'max_allowed_val', title: 'Max allowed(%)', render: maxAllowedReason },
 		],
 		rowsGroup: [
@@ -124,6 +124,18 @@ $(document).ready(function() {
 		return '<a class="ing_rep_name" href="#" >' + row.sub_ing + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="CAS: ' + row.cas + '"></i>';
 	};
 	
+	function percInFormula(data, type, row){
+		if(row.contained_percentage > row.max_allowed_val) {
+			return '<span class="badge bg-danger">' + row.contained_percentage + '%</span>';
+		} else if(row.contained_percentage <= row.max_allowed_val) {
+			return '<span class="badge bg-success">' + row.contained_percentage + '%</span>';
+		} else if(row.contained_percentage > 0) {
+			return '<span class="badge bg-warning">' + row.contained_percentage + '%</span>';
+		} else {
+			return '<span class="badge bg-secondary">0%</span>';
+		}
+	};
+
 	function maxAllowedReason(data, type, row){
 		if(row.max_allowed_reason) {
 			maxData = '<a class="ing_rep_name" href="#" >' + row.max_allowed_val + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="' + row.max_allowed_reason + '"></i>';
@@ -149,6 +161,13 @@ $(document).ready(function() {
 			 container: "body",
 			 delay: {"show": 100, "hide": 0},
 		 });
+
+		$('.popup-link').magnificPopup({
+			type: 'iframe',
+			closeOnContentClick: false,
+			closeOnBgClick: false,
+			showCloseBtn: true,
+		});
 	}
 });
 </script>
