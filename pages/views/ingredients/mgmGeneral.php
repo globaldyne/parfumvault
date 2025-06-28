@@ -291,54 +291,54 @@ $(document).ready(function() {
 	});
 
 	$('#ai-notes-btn').on('click', function() {
-    var ingName = $("#name").val() || "<?= htmlspecialchars($ing['name'] ?? '', ENT_QUOTES) ?>";
-    if (!ingName) {
-        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Enter the ingredient name first.');
-        $('.toast-header').removeClass().addClass('toast-header alert-danger');
-        $('.toast').toast('show');
-        return;
-    }
-    var $btn = $(this);
-    $btn.prop('disabled', true).html('<i class="fa fa-robot fa-spin"></i> AI Fill');
-    $.post('/core/core.php', { action: 'aiChat', message: "Get ingredient description for: " + ingName }, function(resp) {
-        try {
-            var parsed = JSON.parse(resp);
-            if (parsed.success) {
-                // Try to get the first description from the response
-                var desc = '';
-                if (parsed.success[0] && parsed.success[0].description) {
-                    desc = parsed.success[0].description;
-                } else if (parsed.success.description) {
-                    desc = parsed.success.description;
-                } else {
-                    // fallback: try to find any description in the object
-                    for (var k in parsed.success) {
-                        if (parsed.success[k] && parsed.success[k].description) {
-                            desc = parsed.success[k].description;
-                            break;
-                        }
-                    }
-                }
-                if (desc) {
-                    $('#notes').val(desc);
-                } else {
-                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>No description found in AI response.');
-                    $('.toast-header').removeClass().addClass('toast-header alert-danger');
-                    $('.toast').toast('show');
-                }
-            } else if (parsed.error) {
-                $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + parsed.error);
-                $('.toast-header').removeClass().addClass('toast-header alert-danger');
-                $('.toast').toast('show');
-            }
-        } catch (e) {
-            $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>AI response error.');
-            $('.toast-header').removeClass().addClass('toast-header alert-danger');
-            $('.toast').toast('show');
-        }
-        $btn.prop('disabled', false).html('<i class="fa fa-robot"></i> AI Fill');
-    });
-});
+		var ingName = $("#name").val() || "<?= htmlspecialchars($ing['name'] ?? '', ENT_QUOTES) ?>";
+		if (!ingName) {
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Enter the ingredient name first.');
+			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('.toast').toast('show');
+			return;
+		}
+		var $btn = $(this);
+		$btn.prop('disabled', true).html('<i class="fa fa-robot fa-spin"></i> AI Fill');
+		$.post('/core/core.php', { action: 'aiChat', message: "Get ingredient description for: " + ingName }, function(resp) {
+			try {
+				var parsed = JSON.parse(resp);
+				if (parsed.success) {
+					// Try to get the first description from the response
+					var desc = '';
+					if (parsed.success[0] && parsed.success[0].description) {
+						desc = parsed.success[0].description;
+					} else if (parsed.success.description) {
+						desc = parsed.success.description;
+					} else {
+						// fallback: try to find any description in the object
+						for (var k in parsed.success) {
+							if (parsed.success[k] && parsed.success[k].description) {
+								desc = parsed.success[k].description;
+								break;
+							}
+						}
+					}
+					if (desc) {
+						$('#notes').val(desc);
+					} else {
+						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>No description found in AI response.');
+						$('.toast-header').removeClass().addClass('toast-header alert-danger');
+						$('.toast').toast('show');
+					}
+				} else if (parsed.error) {
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + parsed.error);
+					$('.toast-header').removeClass().addClass('toast-header alert-danger');
+					$('.toast').toast('show');
+				}
+			} catch (e) {
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>AI response error.');
+				$('.toast-header').removeClass().addClass('toast-header alert-danger');
+				$('.toast').toast('show');
+			}
+			$btn.prop('disabled', false).html('<i class="fa fa-robot"></i> AI Fill');
+		});
+	});
 
 }); 
 
