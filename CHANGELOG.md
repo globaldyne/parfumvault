@@ -4,6 +4,7 @@
 - Fixed popup link when clicking an ingredient in formula analysis.
 - Added visualization to highlight sub-materials exceeding usage limits.
 - Added AI support to fetch sub-ingredient info in formula analysis
+- Improved backend queries for ingredient replacements in formula view
 
 ### Version 13.2
 - Formula making api added "Complete Formula"
