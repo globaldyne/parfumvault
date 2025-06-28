@@ -125,7 +125,64 @@ $(document).ready(function() {
 	};
 	
 	function subIng(data, type, row){
-		return '<a class="ing_rep_name" href="#" >' + row.sub_ing + '</a><i class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="CAS: ' + row.cas + '"></i>';
+		// Add a unique id for the name and info icon
+		let nameId = 'name-' + Math.random().toString(36).substr(2, 9);
+		let infoId = 'info-' + Math.random().toString(36).substr(2, 9);
+		let casTooltip = row.cas ? 'CAS: ' + row.cas : 'No CAS available';
+
+		// Attach click event for modal on the name (delegated, so works after redraw)
+		setTimeout(function() {
+			$(document).off('click.' + nameId).on('click.' + nameId, '#' + nameId, function(e) {
+				e.preventDefault();
+				let $name = $(this);
+				// Show a message that AI is being queried
+				showIngredientModal(
+					row.sub_ing,
+					'<div class="d-flex align-items-center"><i class="fa fa-robot fa-spin me-2"></i> Querying AI for ingredient information...</div>'
+				);
+				$.post('/core/core.php', { action: 'aiChat', message: "Tell me about " + row.sub_ing + " ingredient. CAS, Molecular Weight, Molecular Structure and IFRA restrictions." }, (resp) => {
+					let tip = 'No description available.';
+					try {
+						let parsed = JSON.parse(resp);
+						let info = null;
+						if (parsed && parsed.success) {
+							// If array
+							if (Array.isArray(parsed.success) && parsed.success[0]) {
+								info = parsed.success[0];
+							}
+							// If object with numeric keys
+							else if (typeof parsed.success === 'object' && parsed.success.description === undefined) {
+								let firstKey = Object.keys(parsed.success).find(k => !isNaN(k));
+								if (firstKey) info = parsed.success[firstKey];
+							}
+							// If flat object
+							else if (typeof parsed.success === 'object' && parsed.success.description) {
+								info = parsed.success;
+							}
+						}
+						if (info) {
+							tip = `
+								<div>
+									<strong>Description:</strong> ${info.description || '-'}<br>
+									<strong>Physical State:</strong> ${info.physical_state || '-'}<br>
+									<strong>Color:</strong> ${info.color || '-'}<br>
+									<strong>Category:</strong> ${info.category || '-'}<br>
+									<strong>CAS:</strong> ${info.cas || '-'}<br>
+									<strong>Olfactory Type:</strong> ${info.olfactory_type || '-'}
+								</div>
+							`;
+						} else if (typeof parsed.error !== 'undefined') {
+							tip = `<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i><strong>${parsed.error}</strong></div>`;
+						}
+					} catch (e) {}
+					showIngredientModal(row.sub_ing, tip);
+				});
+			});
+		}, 0);
+
+		// Info icon: shows CAS as tooltip on hover
+		return '<a class="ing_rep_name" href="#" id="' + nameId + '">' + row.sub_ing + '</a>' +
+			'<i id="' + infoId + '" class="fas fa-info-circle pv_point_gen mx-2" rel="tip" title="' + casTooltip + '" style="cursor:pointer"></i>';
 	};
 	
 	function percInFormula(data, type, row){
@@ -171,6 +228,42 @@ $(document).ready(function() {
 			closeOnContentClick: false,
 			closeOnBgClick: false,
 			showCloseBtn: true,
+		});
+	}
+
+	// Modal HTML and show function
+	if (!document.getElementById('ingredientModal')) {
+		$('body').append(`
+			<div class="modal fade" id="ingredientModal" tabindex="-1" aria-labelledby="ingredientModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="ingredientModalLabel">Ingredient Info</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				  </div>
+				  <div class="modal-body" id="ingredientModalBody">
+					Loading...
+				  </div>
+				</div>
+			  </div>
+			</div>
+		`);
+	}
+
+	function showIngredientModal(title, body) {
+		$('#ingredientModalLabel').text(title);
+		$('#ingredientModalBody').html(body);
+		let modalEl = document.getElementById('ingredientModal');
+		let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+		modal.show();
+
+		// Ensure modal is properly dismissed on close
+		$('#ingredientModal .btn-close').off('click.dismiss').on('click.dismiss', function() {
+			modal.hide();
+		});
+		// Also dismiss on backdrop click or ESC (Bootstrap handles this by default, but this is explicit)
+		$(modalEl).off('hidden.bs.modal.dismiss').on('hidden.bs.modal.dismiss', function() {
+			modal.dispose();
 		});
 	}
 });
