@@ -3,6 +3,7 @@
 - Fixed percentage calculation errors in formula analysis.
 - Fixed popup link when clicking an ingredient in formula analysis.
 - Added visualization to highlight sub-materials exceeding usage limits.
+- Added AI support to fetch sub-ingredient info in formula analysis
 
 ### Version 13.2
 - Formula making api added "Complete Formula"
