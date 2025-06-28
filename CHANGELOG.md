@@ -6,7 +6,7 @@
 - Added AI support to fetch sub-ingredient info in formula analysis
 - Improved backend queries for ingredient replacements in formula view
 - Added AI auto fill for ingredient notes
-- Prevent Pyramid view settings to sum up above 100%
+- Enforce that pyramid view note values must total 100% before saving settings
 
 ### Version 13.2
 - Formula making api added "Complete Formula"

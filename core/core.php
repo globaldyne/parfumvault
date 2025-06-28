@@ -1000,8 +1000,14 @@ if ($_POST['action'] === 'update_user_settings') {
     $heart_n = floatval($_POST['heart_n']);
     $base_n = floatval($_POST['base_n']);
 
-    if (($top_n + $heart_n + $base_n) > 100) {
+    // Ensure the sum is exactly 100
+    $sum = $top_n + $heart_n + $base_n;
+    if ($sum > 100) {
         echo json_encode(['error' => 'Top, Heart, and Base values must not sum above 100%']);
+        return;
+    }
+    if ($sum < 100) {
+        echo json_encode(['error' => 'Top, Heart, and Base values must not sum less than 100%']);
         return;
     }
     
