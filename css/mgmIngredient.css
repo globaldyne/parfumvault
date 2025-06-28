@@ -24,3 +24,38 @@
 .img_ing_overview {
   max-height: 100px;
 }
+
+.ai-border {
+  position: relative;
+  z-index: 2;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.ai-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 8px;
+  padding: 2px;
+  background: linear-gradient(270deg, #ff00cc, #3333ff, #00ff99, #ffcc00, #ff00cc);
+  background-size: 400% 400%;
+  animation: ai-border-anim 5s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes ai-border-anim {
+  0% { background-position: 0% 50%;}
+  50% { background-position: 100% 50%;}
+  100% { background-position: 0% 50%;}
+}
+
+#notes {
+  padding-right: 110px;
+}
