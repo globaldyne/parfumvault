@@ -7,6 +7,10 @@
 - Improved backend queries for ingredient replacements in formula view
 - Added AI auto fill for ingredient notes
 - Enforce that pyramid view note values must total 100% before saving settings
+- Fixed Advanced search in ingredients
+- Added a warning message to the ingredient management if no ingredient categories exists
+
+- Clear error message if AI service is disabled
 
 ### Version 13.2
 - Formula making api added "Complete Formula"

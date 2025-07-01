@@ -139,8 +139,61 @@ $(document).ready(function() {
 			search: "<?=$_GET['search']?>"
 		},
 		dom: 'lr<"#advanced_search">tip',
-		initComplete: function(settings, json) {
-			$("#advanced_search").html(`
+		processing: true,
+		serverSide: true,
+		searching: true,
+		responsive: true,
+		language: {
+			loadingRecords: '&nbsp;',
+			processing: 'Blending...',
+			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
+			search: 'Quick Search:',
+			searchPlaceholder: 'Name, CAS, EINECS, IUPAC...',
+		},
+		ajax: {	
+			url: '/core/list_ingredients_data.php',
+			type: 'POST',
+			data: function(d) {
+				d.pvSearch =  '<?=$_GET['search']?>'
+				d.provider = $('#pv_search_btn').attr('data-provider')
+				d.advanced = '<?=htmlspecialchars($_POST['advanced']?:0, ENT_QUOTES, 'UTF-8')?>'
+				d.profile = '<?=htmlspecialchars($_POST['profile']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.name = '<?=htmlspecialchars($_POST['name']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.cas = '<?=htmlspecialchars($_POST['cas']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.einecs = '<?=htmlspecialchars($_POST['einecs']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.cat = '<?=htmlspecialchars($_POST['cat']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.synonym = '<?=htmlspecialchars($_POST['synonym']?:null, ENT_QUOTES, 'UTF-8')?>'
+				d.notes = '<?=htmlspecialchars($_POST['notes']?:null, ENT_QUOTES, 'UTF-8')?>'
+				if (d.order.length>0){
+					d.order_by = d.columns[d.order[0].column].data
+					d.order_as = d.order[0].dir
+				}
+			},
+			dataType: 'json',
+		},
+		columns: [
+			  { data : 'name', title: 'Name', render: iName },
+			  { data : 'IUPAC', title: 'IUPAC' },
+			  { data : 'labels', title: 'Labels', render: labels },
+			  { data : 'profile', title: 'Profile', render: iProfile },
+			  { data : 'category', title: 'Category', render: iCategory },
+			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
+			  { data : 'stock', title: 'In Stock <i rel="tip" title="The total amount available in stock from all suppliers." class="fas fa-info-circle"></i></span>', render: iStock},
+			  { data : null, title: 'Supplier(s)', render: iSuppliers},
+			  { data : null, title: 'Document(s)', render: iDocs},
+	
+			  { data : null, title: '', render: actions},		   
+		],
+		order: [[ 0, 'asc' ]],
+		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
+		pageLength: 20,
+		displayLength: 20,
+		drawCallback: function( settings ) {
+			extrasShow();
+		},
+		initComplete: function( settings, json ) {
+		
+						$("#advanced_search").html(`
 				<span>
 					<hr />
 					<div id="filter" class="d-flex flex-wrap mb-2"></div>
@@ -204,61 +257,7 @@ $(document).ready(function() {
 				$('#btnAdvSearch').trigger('click');
 				$(this).parent().remove();
 			});
-		},
-		processing: true,
-		serverSide: true,
-		searching: true,
-		responsive: true,
-		language: {
-			loadingRecords: '&nbsp;',
-			processing: 'Blending...',
-			zeroRecords: '<div class="alert alert-warning mt-2"><i class="fa-solid fa-triangle-exclamation mx-2"></i><strong>Nothing found, try <a href="#" data-bs-toggle="modal" data-bs-target="#adv_search">advanced</a> search instead?</strong></div>',
-			search: 'Quick Search:',
-			searchPlaceholder: 'Name, CAS, EINECS, IUPAC...',
-		},
-		ajax: {	
-			url: '/core/list_ingredients_data.php',
-			type: 'POST',
-			data: function(d) {
-				d.pvSearch =  '<?=$_GET['search']?>'
-				d.provider = $('#pv_search_btn').attr('data-provider')
-				d.advanced = '<?=htmlspecialchars($_POST['advanced']?:0, ENT_QUOTES, 'UTF-8')?>'
-				d.profile = '<?=htmlspecialchars($_POST['profile']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.name = '<?=htmlspecialchars($_POST['name']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.cas = '<?=htmlspecialchars($_POST['cas']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.einecs = '<?=htmlspecialchars($_POST['einecs']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.cat = '<?=htmlspecialchars($_POST['cat']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.synonym = '<?=htmlspecialchars($_POST['synonym']?:null, ENT_QUOTES, 'UTF-8')?>'
-				d.notes = '<?=htmlspecialchars($_POST['notes']?:null, ENT_QUOTES, 'UTF-8')?>'
-				if (d.order.length>0){
-					d.order_by = d.columns[d.order[0].column].data
-					d.order_as = d.order[0].dir
-				}
-			},
-			dataType: 'json',
-		},
-		columns: [
-			  { data : 'name', title: 'Name', render: iName },
-			  { data : 'IUPAC', title: 'IUPAC' },
-			  { data : 'labels', title: 'Labels', render: labels },
-			  { data : 'profile', title: 'Profile', render: iProfile },
-			  { data : 'category', title: 'Category', render: iCategory },
-			  { data : 'usage.limit', title: '<?=ucfirst($defCatClass)?>(%)', render: iLimit},
-			  { data : 'stock', title: 'In Stock <i rel="tip" title="The total amount available in stock from all suppliers." class="fas fa-info-circle"></i></span>', render: iStock},
-			  { data : null, title: 'Supplier(s)', render: iSuppliers},
-			  { data : null, title: 'Document(s)', render: iDocs},
-	
-			  { data : null, title: '', render: actions},		   
-		],
-		order: [[ 0, 'asc' ]],
-		lengthMenu: [[20, 50, 100, 200, 400], [20, 50, 100, 200, 400]],
-		pageLength: 20,
-		displayLength: 20,
-		drawCallback: function( settings ) {
-			extrasShow();
-		},
-		initComplete: function( settings, json ) {
-		
+			
 			$('#tdDataIng').on('click', '[id*=show-all-labels]', function () {
 				const $button = $(this);
 				const labels = $button.data('labels');
