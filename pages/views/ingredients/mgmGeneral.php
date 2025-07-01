@@ -127,14 +127,20 @@ if($_GET["newIngName"]){
   </div>
   
   <div class="mt-3 col-md-6">
-  	<label for="category" class="form-label">Olfactive family</label>
-    <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
-        <option value="" selected></option>
-        <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
-            <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>></option>
-        <?php } ?>
-    </select>  
-  </div>
+    <label for="category" class="form-label">Olfactive family</label>
+    <?php if(mysqli_num_rows($res_ingCategory) > 0) { ?>
+        <select name="category" id="category" class="form-control selectpicker" data-live-search="true">
+            <option value="" selected></option>
+            <?php while ($row_ingCategory = mysqli_fetch_array($res_ingCategory)){ ?>
+                <option data-content="<img class='img_ing_sel' src='<?php if($row_ingCategory['image']){ echo $row_ingCategory['image']; }else{ echo '/img/molecule.png';}?>'><?php echo $row_ingCategory['name'];?>" value="<?php echo $row_ingCategory['id'];?>" <?php echo ($ing['category']==$row_ingCategory['id'])?"selected=\"selected\"":""; ?>></option>
+            <?php } ?>
+        </select>
+    <?php } else { ?>
+        <div class="alert alert-warning mt-2">
+            No olfactive families found. <a href="/?do=settings" class="alert-link" target="_blank">Add ingredient categories in Settings</a>.
+        </div>
+    <?php } ?>
+</div>
   <div class="form-floating mt-3 col-md-6">
 	<input type="text" class="form-control" id="labelsinput" placeholder="Start typing to add a label..." data-role="labelsinput" value="<?= implode(",", $labelsData) ?>">
   </div>
