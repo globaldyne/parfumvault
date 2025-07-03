@@ -9,8 +9,9 @@
 - Enforce that pyramid view note values must total 100% before saving settings
 - Fixed Advanced search in ingredients
 - Added a warning message to the ingredient management if no ingredient categories exists
-
+- Dockefile update
 - Clear error message if AI service is disabled
+- Added odor field in api to maintain backport ios app compatibility
 
 ### Version 13.2
 - Formula making api added "Complete Formula"
