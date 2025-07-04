@@ -1,4 +1,6 @@
 # CHANGELOG
+### Version 13.4
+
 ### Version 13.3
 - Fixed percentage calculation errors in formula analysis.
 - Fixed popup link when clicking an ingredient in formula analysis.
