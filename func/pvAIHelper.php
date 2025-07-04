@@ -31,7 +31,7 @@ function pvAIHelper($prompt) {
 
     // Check if the user has enabled AI service
     if ($user_settings['use_ai_service'] !== '1') {
-        return ['error' => 'AI service is disabled for this user'];
+        return ['error' => 'AI service is disabled, please enable it in settings.'];
     }
 
     // Validate the provider
@@ -253,7 +253,7 @@ function classifyPrompt($prompt) {
     ];
     // Keywords for ingredient questions
     $ingredientKeywords = [
-        'what is', 'tell me about', 'describe', 'properties of', 'use of', 'source of', 'explain', 'info about'
+       'ingredient', 'what is', 'tell me about', 'describe', 'properties of', 'use of', 'source of', 'explain', 'info about'
     ];
 
     // Detect replacements prompt

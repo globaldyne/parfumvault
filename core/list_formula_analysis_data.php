@@ -85,8 +85,7 @@ foreach ($get_data_ings as $get_data_ing) {
         $stmt3->bind_param('ss', $get_data_ing['ing'], $userID);
         $stmt3->execute();
         $result3 = $stmt3->get_result();
-        
-        
+
         if (!$result3) {
             error_log("PV error: Failed to fetch ingredient ID: " . mysqli_error($conn));
             echo json_encode(["error" => "Internal server error"]);
@@ -94,29 +93,49 @@ foreach ($get_data_ings as $get_data_ing) {
         }
 
         $ingID = mysqli_fetch_assoc($result3);
-        $ingredientIds[$get_data_ing['ing']] = (int)$ingID['id'];
+        $ingredientIds[$get_data_ing['ing']] = isset($ingID['id']) ? (int)$ingID['id'] : null;
     }
 
     $r['id'] = $ingredientIds[$get_data_ing['ing']];
     $r['main_ing'] = (string)$get_data_ing['ing'];
     $r['sub_ing'] = (string)$get_data_ing['name'];
-    $r['cas'] = (string)$get_data_ing['cas'] ?: '-';
-    $r['min_percentage'] = (float)$get_data_ing['min_percentage'] ?: 0;
-    $r['max_percentage'] = (float)$get_data_ing['max_percentage'] ?: 0;
-    $r['avg_percentage'] = ($r['min_percentage'] + $r['max_percentage']) / 2;
-    $r['formula_percentage'] = ($get_data_ing['quantity'] / $total_quantity) * 100;
+    $r['cas'] = (string)($get_data_ing['cas'] ?? '-');
+    $r['min_percentage'] = isset($get_data_ing['min_percentage']) ? (float)$get_data_ing['min_percentage'] : 0.0;
+    $r['max_percentage'] = isset($get_data_ing['max_percentage']) ? (float)$get_data_ing['max_percentage'] : 0.0;
 
-    $conc_p = number_format(($r['avg_percentage'] / 100 * $get_data_ing['quantity'] * $r['formula_percentage']) / 100, 5);
-
-    if ($settings['multi_dim_perc'] == '1') {
-        $multi_dim_result = multi_dim_perc($conn, $formula_data, $get_data_ing['cas'], $settings['qStep'], $settings['defPercentage']);
-        $conc_p += $multi_dim_result[$get_data_ing['cas']] ?? 0;
+    // Calculate average percentage
+    if ($r['min_percentage'] > 0 && $r['max_percentage'] > 0) {
+        $r['avg_percentage'] = ($r['min_percentage'] + $r['max_percentage']) / 2.0;
+    } elseif ($r['max_percentage'] > 0) {
+        $r['avg_percentage'] = $r['max_percentage'];
+    } elseif ($r['min_percentage'] > 0) {
+        $r['avg_percentage'] = $r['min_percentage'];
+    } else {
+        $r['avg_percentage'] = 0.0;
     }
 
-    $r['contained_percentage'] = $conc_p;
+    // Calculate formula percentage (ingredient's share in the formula)
+    $quantity = isset($get_data_ing['quantity']) ? (float)$get_data_ing['quantity'] : 0.0;
+    $r['formula_percentage'] = ($total_quantity > 0) ? ($quantity / $total_quantity) * 100.0 : 0.0;
 
+    // Calculate contained percentage (how much of the compound is in the formula)
+    // This assumes avg_percentage is the percentage of the compound in the ingredient
+    // and formula_percentage is the percentage of the ingredient in the formula.
+    $contained_percentage = ($r['avg_percentage'] / 100.0) * $r['formula_percentage'];
+
+    // If multi_dim_perc is enabled, add its result
+    if ($settings['multi_dim_perc'] == '1') {
+        $multi_dim_result = multi_dim_perc($conn, $formula_data, $get_data_ing['cas'], $settings['qStep'], $settings['defPercentage']);
+        if (isset($multi_dim_result[$get_data_ing['cas']])) {
+            $contained_percentage += (float)$multi_dim_result[$get_data_ing['cas']];
+        }
+    }
+
+    $r['contained_percentage'] = round($contained_percentage, 5);
+
+    // IFRA search and limits
     $u = searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass);
-    $r['max_allowed_val'] = $u['val'] ?? $u['type'] ?? 'No value';
+    $r['max_allowed_val'] = $u['val'] ?? ($u['type'] ?? 'No value');
     $r['max_allowed_reason'] = $u['risk'] ?? '';
 
     $response['data'][] = $r;
