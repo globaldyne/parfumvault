@@ -157,6 +157,9 @@ while($cats_res = mysqli_fetch_array($cats_q)){
             <label for="base_n" class="form-label" id="base">Base notes %</label>
             <input name="base_n" type="range" class="form-range" id="base_n" min="0" max="100" value="<?= htmlspecialchars($user_settings ['base_n']) ?>"/>
         </div>
+        <div id="notes_range_error" class="text-danger" style="display: none;">
+            <strong>Note percentages must sum up to 100%.</strong>
+        </div>
     </div>
 
     <div class="col-sm-3">       
@@ -297,22 +300,30 @@ $(document).ready(function() {
 	  });
 	});
 	
-	$('#top').text('Top notes ' + $('#top_n').val() + '%');
-	$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
-	$('#base').text('Base notes ' + $('#base_n').val() + '%');
-	
-	$('#top_n').on('input', function(){
-		$('#top').text('Top notes ' + $('#top_n').val() + '%');
-	});
-	
-	$('#heart_n').on('input', function(){
-		$('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
-	});
-	
-	$('#base_n').on('input', function(){
-		$('#base').text('Base notes ' + $('#base_n').val() + '%');
-	});
-	
+	function updateNotesRangeError() {
+        var top = parseInt($('#top_n').val()) || 0;
+        var heart = parseInt($('#heart_n').val()) || 0;
+        var base = parseInt($('#base_n').val()) || 0;
+        var sum = top + heart + base;
+        if (sum !== 100) {
+            $('#notes_range_error').show().html(
+                '<strong>Note percentages must sum up to 100%. (Current sum: ' + sum + '%)</strong>'
+            );
+        } else {
+            $('#notes_range_error').hide();
+        }
+    }
+
+    // Initial check on page load
+    updateNotesRangeError();
+
+    // Update on slider input
+    $('#top_n, #heart_n, #base_n').on('input', function(){
+        $('#top').text('Top notes ' + $('#top_n').val() + '%');
+        $('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+        $('#base').text('Base notes ' + $('#base_n').val() + '%');
+        updateNotesRangeError();
+    });
 });
 
 $('#confirm-clear-search-pref').click(function() {

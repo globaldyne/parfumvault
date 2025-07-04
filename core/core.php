@@ -996,9 +996,20 @@ if ($_POST['action'] === 'update_user_settings') {
     $currency = mysqli_real_escape_string($conn, $_POST['currency']);
     $currency_code = mysqli_real_escape_string($conn, $_POST['currency_code']);
 
-    $top_n = mysqli_real_escape_string($conn, $_POST['top_n']);
-    $heart_n = mysqli_real_escape_string($conn, $_POST['heart_n']);
-    $base_n = mysqli_real_escape_string($conn, $_POST['base_n']);
+    $top_n = floatval($_POST['top_n']);
+    $heart_n = floatval($_POST['heart_n']);
+    $base_n = floatval($_POST['base_n']);
+
+    // Ensure the sum is exactly 100
+    $sum = $top_n + $heart_n + $base_n;
+    if ($sum > 100) {
+        echo json_encode(['error' => 'Top, Heart, and Base values must not sum above 100%']);
+        return;
+    }
+    if ($sum < 100) {
+        echo json_encode(['error' => 'Top, Heart, and Base values must not sum less than 100%']);
+        return;
+    }
     
     $qStep = mysqli_real_escape_string($conn, $_POST['qStep']);
     $defCatClass = mysqli_real_escape_string($conn, $_POST['defCatClass']);

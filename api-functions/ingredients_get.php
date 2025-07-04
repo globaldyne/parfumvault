@@ -110,6 +110,8 @@ while ($rx = mysqli_fetch_assoc($result)) {
     $rx['price'] = normalize_value($price_per_unit, 'float', 0.0);
     $rx['stock'] = normalize_value($gSupQ['stock'], 'float', 0.0);
     $rx['isSolvent'] = ($rx['profile'] === "Solvent") ? 1 : 0;
+    // Set odor for ios app compatibility
+    $rx['odor'] = ($gCatQ['name'] ?: '-') ;
 
     $r[] = $rx;
 }

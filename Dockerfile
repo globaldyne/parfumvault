@@ -8,14 +8,14 @@
 FROM quay.io/centos/centos:stream10-minimal
 
 # Metadata labels
-LABEL co.uk.globaldyne.component="perfumers-vault-container" \
+LABEL com.perfodynelabs.component="perfumers-vault-container" \
 	description="Perfumers Vault container image" \
 	summary="Perfumers Vault container image" \
 	version="PRO" \
 	io.k8s.description="Init Container for Perfumers Vault PRO" \
 	io.k8s.display-name="Perfumers Vault Pro Container" \
-	io.openshift.tags="pvault,jb,perfumer,vault,jbpvault,PRO" \
-	name="globaldyne/pvault" \
+	io.openshift.tags="pvault,perfumersvault" \
+	name="perfodynelabs/pvault" \
 	maintainer="John Belekios"
 
 # Set default environment variables
@@ -28,6 +28,7 @@ ARG INSTALL_SESS_MONITOR=false
 
 
 # Update the system
+RUN microdnf clean all && microdnf update -y
 RUN microdnf -y update
 # Install PHP and other dependencies
 RUN microdnf --setopt=tsflags=nodocs -y install \
