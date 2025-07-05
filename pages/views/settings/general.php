@@ -249,6 +249,10 @@ while($cats_res = mysqli_fetch_array($cats_q)){
 
 <script>
 $(document).ready(function() {
+    // Set initial label values for note sliders
+    $('#top').text('Top notes ' + $('#top_n').val() + '%');
+    $('#heart').text('Heart notes ' + $('#heart_n').val() + '%');
+    $('#base').text('Base notes ' + $('#base_n').val() + '%');
 
 	$('[data-bs-toggle=tooltip]').tooltip();
 	$('#save-general').click(function() {
