@@ -1,7 +1,8 @@
 # CHANGELOG
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders
- 
+- Added toggle API key visibility
+
 ### Version 13.3
 - Fixed percentage calculation errors in formula analysis.
 - Fixed popup link when clicking an ingredient in formula analysis.
