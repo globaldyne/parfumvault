@@ -195,7 +195,7 @@ while($qTags = mysqli_fetch_array($tagsQ)){
      <div class="form-row">
         <div class="form-group col-auto">
         <label class="control-label col-auto" for="notes">Notes</label>
-        <a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>"><?php echo $info['notes']?: 'None';?></a>
+        <a href="#" data-name="notes" class="notes" data-type="textarea" id="notes" data-pk="<?php echo $info['id'];?>" data-title="Notes" data-placeholder="Add notes here..." data-rows="6" data-mode="inline" style="min-width:350px;min-height:120px;display:inline-block;vertical-align:top;white-space:pre-line;"><?php echo $info['notes']?: 'None';?></a>
         </div>
      </div>
 </div>
@@ -244,7 +244,11 @@ $(document).ready(function(){
 	  	url: "/core/core.php?formulaMeta=<?=$info['fid']?>",
 	  	title: 'Notes',
 	  	mode: 'inline',
-		ajaxOptions: {
+	  	type: 'textarea',
+	  	textarea: {
+		  rows: 6
+		},
+	  	ajaxOptions: {
 			type: "POST",
 			dataType: 'json'
 		},
