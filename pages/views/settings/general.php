@@ -118,7 +118,7 @@ while($cats_res = mysqli_fetch_array($cats_q)){
                 <select name="defPercentage" id="defPercentage" class="form-select">
                     <option value="min_percentage" <?= $user_settings ['defPercentage'] == "min_percentage" ? 'selected' : '' ?>>Minimum value</option>
                     <option value="max_percentage" <?= $user_settings ['defPercentage'] == "max_percentage" ? 'selected' : '' ?>>Maximum value</option>
-                    <!-- <option value="avg_percentage" <?= $user_settings ['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option> -->
+                    <option value="avg_percentage" <?= $user_settings ['defPercentage'] == "avg_percentage" ? 'selected' : '' ?>>Average value</option>
                 </select>
                 <label for="defPercentage" class="form-label mx-2"><strong>Calculate sub materials as</strong></label>
             </div>

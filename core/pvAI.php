@@ -142,8 +142,8 @@ if ($_POST['action'] === 'addFormulaAI') {
     $prompt = $_POST['message'] ?? '';
     $result = pvAIHelper($prompt);
 
-    error_log("AI Chat Prompt: $prompt");
-    error_log("AI Chat Result: " . json_encode($result));
+   // error_log("AI Chat Prompt: $prompt");
+   // error_log("AI Chat Result: " . json_encode($result));
 
     if (isset($result['error'])) {
         echo json_encode(['error' => $result['error']]);

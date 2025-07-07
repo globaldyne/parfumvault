@@ -2,6 +2,8 @@
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders
 - Added toggle API key visibility
+- Average value can now be used for formula analysis - Default
+- Added additional col in formula analysis representing the final product
 
 ### Version 13.3
 - Fixed percentage calculation errors in formula analysis.
