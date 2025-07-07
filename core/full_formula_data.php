@@ -142,16 +142,39 @@ if(isset($_GET['stats_only'])){
 foreach ($form as $formula){
 	
 	$ing_q = mysqli_fetch_array(mysqli_query($conn, "SELECT id, name, cas, $defCatClass, profile, category, physical_state,usage_type AS classification, type, byPassIFRA, notes FROM ingredients WHERE name = '".$formula['ingredient']."' AND owner_id = '$userID'"));
-	$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	
+	if ($defPercentage === 'avg_percentage') {
+		$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,min_percentage,max_percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	} else {
+		$totalcontainsOthers = mysqli_num_rows(mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'"));
+	}
+	
 	$inventory = mysqli_fetch_array(mysqli_query($conn, "SELECT stock,mUnit,batch,purchased FROM suppliers WHERE ingID = '".$ing_q['id']."' AND preferred = '1' AND owner_id = '$userID'"));
 	$conc = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * 100;
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $meta['finalType'];
 	
 	if($settings['multi_dim_perc'] == '1'){
-		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
-		
-		while($compo = mysqli_fetch_array($compos)){
-			$cmp[] = $compo;
+		if ($defPercentage === 'avg_percentage') {
+			$compos = mysqli_query($conn, "SELECT name,min_percentage,max_percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
+			while($compo = mysqli_fetch_array($compos)){
+				$min = isset($compo['min_percentage']) ? (float)$compo['min_percentage'] : 0.0;
+				$max = isset($compo['max_percentage']) ? (float)$compo['max_percentage'] : 0.0;
+				if ($min > 0 && $max > 0) {
+					$compo['avg_percentage'] = ($min + $max) / 2.0;
+				} elseif ($max > 0) {
+					$compo['avg_percentage'] = $max;
+				} elseif ($min > 0) {
+					$compo['avg_percentage'] = $min;
+				} else {
+					$compo['avg_percentage'] = 0.0;
+				}
+				$cmp[] = $compo;
+			}
+		} else {
+			$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
+			while($compo = mysqli_fetch_array($compos)){
+				$cmp[] = $compo;
+			}
 		}
 		
 		foreach ($cmp as $a){

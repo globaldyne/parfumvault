@@ -135,23 +135,57 @@ foreach ($formulas as $formula) {
         }
     }
 
-    $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
-        FROM ingredient_compounds, IFRALibrary 
-        WHERE ingredient_compounds.ing = '$ingredient' 
-        AND toDeclare = '1' 
-        AND IFRALibrary.name = ingredient_compounds.name 
-        AND ingredient_compounds.owner_id = '$userID'
-        AND IFRALibrary.owner_id = '$userID'
-        GROUP BY name");
+    if ($defPercentage === 'avg_percentage') {
+        $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.min_percentage, ingredient_compounds.max_percentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
+            FROM ingredient_compounds, IFRALibrary 
+            WHERE ingredient_compounds.ing = '$ingredient' 
+            AND toDeclare = '1' 
+            AND IFRALibrary.name = ingredient_compounds.name 
+            AND ingredient_compounds.owner_id = '$userID'
+            AND IFRALibrary.owner_id = '$userID'
+            GROUP BY name");
 
-    while ($cmp = mysqli_fetch_array($qCMP)) {
-        $x .= '<tr>
-            <td align="center">' . htmlspecialchars($cmp['name']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
-            <td align="center">' . number_format($cmp['percentage'] / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
-        </tr>';
+        while ($cmp = mysqli_fetch_array($qCMP)) {
+            $min = isset($cmp['min_percentage']) ? (float)$cmp['min_percentage'] : 0.0;
+            $max = isset($cmp['max_percentage']) ? (float)$cmp['max_percentage'] : 0.0;
+            if ($min > 0 && $max > 0) {
+                $avg = ($min + $max) / 2.0;
+            } elseif ($max > 0) {
+                $avg = $max;
+            } elseif ($min > 0) {
+                $avg = $min;
+            } else {
+                $avg = 0.0;
+            }
+            $percentage = $avg;
+            $x .= '<tr>
+                <td align="center">' . htmlspecialchars($cmp['name']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
+                <td align="center">' . number_format($percentage / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
+            </tr>';
+        }
+    } else {
+        $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
+            FROM ingredient_compounds, IFRALibrary 
+            WHERE ingredient_compounds.ing = '$ingredient' 
+            AND toDeclare = '1' 
+            AND IFRALibrary.name = ingredient_compounds.name 
+            AND ingredient_compounds.owner_id = '$userID'
+            AND IFRALibrary.owner_id = '$userID'
+            GROUP BY name");
+
+        while ($cmp = mysqli_fetch_array($qCMP)) {
+            $percentage = isset($cmp[$defPercentage]) ? (float)$cmp[$defPercentage] : 0.0;
+            $x .= '<tr>
+                <td align="center">' . htmlspecialchars($cmp['name']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
+                <td align="center">' . number_format($percentage / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
+            </tr>';
+        }
     }
 }
 
