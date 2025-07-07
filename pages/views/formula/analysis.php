@@ -76,14 +76,18 @@ $(document).ready(function() {
 		},
 		mark: true,
 		columns: [
-			  { data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
-			  { data : 'sub_ing', title: 'Contains', render: subIng },
+			{ data : 'main_ing', title: 'Main Ingredient', render: mainName, name: 'main_ing' },
+			{ data : 'sub_ing', title: 'Contains', render: subIng },
 			{ 
 				data: 'contained_percentage', 
 				title: 'Percentage in formula(%) <i class="fas fa-info-circle pv_point_gen mx-1" rel="tip" title="This is the percentage of this compound in the overall formula, calculated as if the formula were at 100% concentration"></i>', 
 				render: percInFormula 
 			},
-			  { data : 'max_allowed_val', title: 'Max allowed(%)', render: maxAllowedReason },
+			{ 
+				data : 'max_allowed_val', 
+				title: 'Max allowed(%) <i class="fas fa-info-circle pv_point_gen mx-1" rel="tip" title="This is the maximum percentage allowed for this ingredient in the finished product"></i>',  
+				render: maxAllowedReason 
+			},
 		],
 		rowsGroup: [
       		'main_ing:name'
@@ -187,13 +191,13 @@ $(document).ready(function() {
 	
 	function percInFormula(data, type, row){
 		if(row.contained_percentage > row.max_allowed_val) {
-			return '<span class="badge bg-danger">' + row.contained_percentage + '</span>';
+			return '<span class="badge text-bg-danger">' + row.contained_percentage + '</span>';
 		} else if(row.contained_percentage <= row.max_allowed_val) {
-			return '<span class="badge bg-success">' + row.contained_percentage + '</span>';
+			return '<span class="badge text-bg-success">' + row.contained_percentage + '</span>';
 		} else if(row.contained_percentage > 0) {
-			return '<span class="badge bg-warning">' + row.contained_percentage + '</span>';
+			return '<span class="badge text-bg-warning">' + row.contained_percentage + '</span>';
 		} else {
-			return '<span class="badge bg-secondary">0</span>';
+			return '<span class="badge text-bg-secondary">0</span>';
 		}
 	};
 
