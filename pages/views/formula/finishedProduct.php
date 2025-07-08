@@ -28,26 +28,23 @@ require_once(__ROOT__.'/inc/opendb.php');
                         <tr>
                             <th>Ingredient</th>
                             <th>CAS</th>
-                            <th>Quantity</th>
                             <th>Concentration %</th>
                             <th>Cost</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th colspan="5">&nbsp;</th>
+                            <th colspan="4">&nbsp;</th>
                         </tr>
                         <tr>
                             <th></th>
                             <th class="fw-medium text-info-emphasis text-right">Sub Total</th>
-                            <th class="fw-medium text-info-emphasis text-center" id="sub-total-quantity"></th>
                             <th class="fw-medium text-info-emphasis text-center" id="sub-total-concentration"></th>
                             <th class="fw-medium text-info-emphasis text-center" id="sub-total-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
                             <th class="fw-medium text-info-emphasis text-right">Carrier/Solvent</th>
-                            <th class="fw-medium text-info-emphasis text-center" id="carrier-quantity"></th>
                             <th class="fw-medium text-info-emphasis text-center" id="carrier-concentration"></th>
                             <th class="fw-medium text-info-emphasis text-center" id="carrier-cost"></th>
                         </tr>
@@ -55,14 +52,12 @@ require_once(__ROOT__.'/inc/opendb.php');
                             <th></th>
                             <th class="fw-medium text-info-emphasis text-right">Bottle</th>
                             <th class="fw-medium text-info-emphasis text-center" id="bottle-quantity"></th>
-                            <th class="fw-medium text-info-emphasis text-center">-</th>
                             <th class="fw-medium text-info-emphasis text-center" id="bottle-cost"></th>
                         </tr>
                         <tr>
                             <th></th>
                             <th class="fw-medium text-info-emphasis text-right">Accessory</th>
                             <th class="fw-medium text-info-emphasis text-center" id="accessory"></th>
-                            <th class="fw-medium text-info-emphasis text-center">-</th>
                             <th class="fw-medium text-info-emphasis text-center" id="accessory-cost"></th>
                         </tr>
                         <tr>
@@ -70,13 +65,11 @@ require_once(__ROOT__.'/inc/opendb.php');
                             <th class="fw-medium text-info-emphasis text-right">Batch No</th>
                             <th class="fw-medium text-info-emphasis text-center" id="batch-no"></th>
                             <th class="fw-medium text-info-emphasis text-center">-</th>
-                            <th class="fw-medium text-info-emphasis text-center">-</th>
                         </tr>
                         <tr>
                             <th></th>
                             <th class="fw-bold text-info-emphasis text-right">Total</th>
-                            <th class="fw-bold text-info-emphasis text-center" id="total-quantity"></th>
-                            <th class="fw-bold text-info-emphasis text-center" id="total-concentration"></th>
+                            <th class="fw-bold text-info-emphasis text-center">-</th>
                             <th class="fw-bold text-info-emphasis text-center" id="total-cost"></th>
                         </tr>
                     </tfoot>
@@ -292,10 +285,6 @@ require_once(__ROOT__.'/inc/opendb.php');
                     title: 'CAS #'
                 },
                 {
-                    data: 'quantity',
-                    title: 'Quantity'
-                },
-                {
                     data: 'final_concentration',
                     title: 'Concentration'
                 },
@@ -313,9 +302,7 @@ require_once(__ROOT__.'/inc/opendb.php');
                     carrier_concentration = response.meta['carrier_concentration'];
                     batchNo = response.meta['batchNo'];
                     fid = response.meta['fid'];
-
-                    $('#sub-total-quantity').text(response.meta['sub_total_quantity'] + response
-                        .meta['quantity_unit']);
+;
                     $('#carrier-quantity').text(response.meta['carrier_quantity'] + response.meta[
                         'quantity_unit']);
                     $('#bottle-quantity').text(response.meta['bottle_quantity'] + response.meta[
@@ -332,16 +319,11 @@ require_once(__ROOT__.'/inc/opendb.php');
                         $('#batch-no').text('Not generated');
                     }
 
-                    $('#total-quantity').text(response.meta['total_quantity'] + response.meta[
-                        'quantity_unit']);
                     $('#sub-total-concentration').text(response.meta['sub_concentration'] + '%');
                     $('#carrier-concentration').text(response.meta['carrier_concentration'] + '%');
-                    $('#carrier-cost').html(response.meta['currency'] + response.meta[
-                        'carrier_cost']);
-                    $('#sub-total-cost').html(response.meta['currency'] + response.meta[
-                    'sub_cost']);
-                    $('#bottle-cost').html(response.meta['currency'] + response.meta[
-                    'bottle_cost']);
+                    $('#carrier-cost').html(response.meta['currency'] + response.meta['carrier_cost']);
+                    $('#sub-total-cost').html(response.meta['currency'] + response.meta['sub_cost']);
+                    $('#bottle-cost').html(response.meta['currency'] + response.meta['bottle_cost']);
                     $('#total-cost').html(response.meta['currency'] + response.meta['total_cost']);
 
                     createAlertBox(response);
@@ -350,18 +332,23 @@ require_once(__ROOT__.'/inc/opendb.php');
             },
 
             createdRow: function(row, data, dataIndex) {
+                const alertClasses = ['alert-danger', 'alert-info', 'alert-warning', 'alert-success'];
                 const setAlertClassAndIcon = (selector, alertClass, title) => {
+                    // Remove previous alert classes and icons
+                    $(row).find(selector)
+                        .removeClass(alertClasses.join(' '))
+                        .find('i.pv_point_gen.fas.fa-info-circle').remove();
+                    // Add new class and icon
                     $(row).find(selector).addClass(alertClass).append(
                         `<i rel="tip" title="${title}" class="mx-2 pv_point_gen fas fa-info-circle"></i>`
-                        );
+                    );
                 };
 
                 const checkUsage = (selector, regulator, limit, concentration, restriction) => {
                     if (regulator === "IFRA" && parseFloat(limit) < parseFloat(concentration)) {
                         setAlertClassAndIcon(selector, 'alert-danger',
                             `Max usage: ${limit}% IFRA Regulated`);
-                    } else if (regulator === "PV" && parseFloat(limit) < parseFloat(
-                            concentration)) {
+                    } else if (regulator === "PV" && parseFloat(limit) < parseFloat(concentration)) {
                         switch (restriction) {
                             case 1:
                                 setAlertClassAndIcon(selector, 'alert-info',
@@ -383,25 +370,28 @@ require_once(__ROOT__.'/inc/opendb.php');
                                 setAlertClassAndIcon(selector, 'alert-success', '');
                         }
                     } else {
+                        // Remove previous alert classes and icons, add success
+                        $(row).find(selector)
+                            .removeClass(alertClasses.join(' '))
+                            .find('i.pv_point_gen.fas.fa-info-circle').remove();
                         $(row).find(selector).addClass('alert-success');
                     }
                 };
 
                 // Check initial usage
-                checkUsage('td:eq(3)', data['usage_regulator'], data['usage_limit'], data[
-                    'concentration'], data['usage_restriction']);
+                checkUsage('td:eq(2)', data['usage_regulator'], data['usage_limit'], data['concentration'], data['usage_restriction']);
 
-                // Check ingredient classification
-                if (data.ingredient.classification == 4 || data['usage_restriction_type'] ==
-                    'PROHIBITION') {
-                    $(row).find('td').not('td:eq(5)').addClass('bg-banned text-light').append(
+                // Check ingredient classification (banned/prohibited)
+                if (data.ingredient.classification == 4 || data['usage_restriction_type'] == 'PROHIBITION') {
+                    // Remove previous banned classes/icons
+                    $(row).find('td').removeClass('bg-banned text-light').find('i.pv_point_gen.fas.fa-ban').remove();
+                    $(row).find('td').addClass('bg-banned text-light').append(
                         '<i rel="tip" title="This material is prohibited" class="mx-2 pv_point_gen fas fa-ban"></i>'
-                        );
+                    );
                 }
 
                 // Check final usage
-                checkUsage('td:eq(3)', data['usage_regulator'], data['usage_limit'], data[
-                    'final_concentration'], data['usage_restriction']);
+                checkUsage('td:eq(2)', data['usage_regulator'], data['usage_limit'], data['final_concentration'], data['usage_restriction']);
             },
 
             drawCallback: function(settings) {

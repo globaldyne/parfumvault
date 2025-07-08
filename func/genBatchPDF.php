@@ -215,17 +215,34 @@ function genBatchPDF($fid, $batchID, $bottle, $new_conc, $mg, $defCatClass, $qSt
 
 	}
 	while ($res_all_ing = mysqli_fetch_array($qAllIng)) {
-		
-		if($bldQ = mysqli_query($conn, "SELECT ing,name,cas,$defPercentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."' AND owner_id = '$userID'")){
+		if ($defPercentage === 'avg_percentage') {
+			$bldQ = mysqli_query($conn, "SELECT ing,name,cas,min_percentage,max_percentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."' AND owner_id = '$userID'");
+		} else {
+			$bldQ = mysqli_query($conn, "SELECT ing,name,cas,$defPercentage FROM ingredient_compounds WHERE ing = '".$res_all_ing['ingredient']."' AND owner_id = '$userID'");
+		}
+		if($bldQ){
 			while($bld = mysqli_fetch_array($bldQ)){
 				$pdf->Ln();
 				$pdf->SetFont('Arial','',8);
-	
 				$pdf->Cell(68,8,$bld['ing'],1,0,'C');
-	
 				$pdf->Cell(68,8,$bld['name'],1,0,'C');
 				$pdf->Cell(68,8,$bld['cas'],1,0,'C');
-				$pdf->Cell(68,8,$bld[$defPercentage],1,0,'C');
+				if ($defPercentage === 'avg_percentage') {
+					$min = isset($bld['min_percentage']) ? (float)$bld['min_percentage'] : 0.0;
+					$max = isset($bld['max_percentage']) ? (float)$bld['max_percentage'] : 0.0;
+					if ($min > 0 && $max > 0) {
+						$avg = ($min + $max) / 2.0;
+					} elseif ($max > 0) {
+						$avg = $max;
+					} elseif ($min > 0) {
+						$avg = $min;
+					} else {
+						$avg = 0.0;
+					}
+					$pdf->Cell(68,8,$avg,1,0,'C');
+				} else {
+					$pdf->Cell(68,8,$bld[$defPercentage],1,0,'C');
+				}
 			}
 		}
 	}	

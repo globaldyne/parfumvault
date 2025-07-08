@@ -4,6 +4,11 @@
 - Added toggle API key visibility
 - Average value can now be used for formula analysis - Default
 - Added additional col in formula analysis representing the final product
+- Update Dockerfile package from mysql -> mariadb
+- Fixed SDS doc generation failing
+- Removed quantity column from finished product
+- Improved sub materials lookup in finished product for IFRA calculation
+- Added a sponsor link
 
 ### Version 13.3
 - Fixed percentage calculation errors in formula analysis.

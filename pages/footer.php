@@ -30,6 +30,7 @@ if (empty($commit)) {
         <strong><a href="https://www.perfumersvault.com" target="_blank"><?php echo $product; ?></a></strong>
         <div id="footer_release" class="pv_point_gen"> Version: <strong><?php echo $ver ."  ". $commit; ?></strong></div>
         <div><a href="https://discord.gg/WxNE8kR8ug" target="_blank"><strong>Discord Server</strong></a></div>
+        <div><a href="https://ko-fi.com/perfumersvault" target="_blank"><strong>Sponsor the project on Ko-fi</strong></a></div>
         <div class="mt-2" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
           <div style="text-align: center;">
             <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank">

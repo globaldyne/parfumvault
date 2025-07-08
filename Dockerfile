@@ -39,7 +39,7 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	  php-fpm \
 	  php-pear \
 	  openssl \
-	  mysql \
+	  mariadb \
 	  ncurses \
 	  nginx \
 	  procps-ng \
