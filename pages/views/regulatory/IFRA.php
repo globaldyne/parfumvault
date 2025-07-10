@@ -127,7 +127,7 @@ require_once(__ROOT__.'/func/php-settings.php');
        </div>
        <div class="dropdown-divider"></div>
        <div class="col-sm col-sm-10 text-xs-center mb-3">
-       		<strong>The IFRA xls can be downloaded from its official <a href="https://ifrafragrance.org/safe-use/standards-guidance" target="_blank">web site</a></strong>
+       		<strong>The IFRA xls can be downloaded from its official <a href="https://d3t14p1xronwr0.cloudfront.net/docs/Standards-Documentation/ifra-51st-amendment-ifra-standards-overview.xlsx" target="_blank">web site</a></strong>
        </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnIFRAC">Close</button>

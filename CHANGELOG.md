@@ -9,6 +9,8 @@
 - Removed quantity column from finished product
 - Improved sub materials lookup in finished product for IFRA calculation
 - Added a sponsor link
+- Added app meta data in pv api
+- Updated broken IFRA xls download link
 
 ### Version 13.3
 - Fixed percentage calculation errors in formula analysis.
