@@ -110,25 +110,29 @@ foreach ($form as $formula){
   	$conc_final = $formula['concentration'] / 100 * $formula['quantity']/$mg['total_mg'] * $concentration;
 	
 	if($settings['multi_dim_perc'] == '1'){
+		// Fetch min_percentage and max_percentage for avg calculation if needed
+		$compos = mysqli_query($conn, "SELECT name,min_percentage,max_percentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
+		while($compo = mysqli_fetch_array($compos)){
+			if($defPercentage == 'avg_percentage'){
+				$min = isset($compo['min_percentage']) ? (float)$compo['min_percentage'] : 0.0;
+				$max = isset($compo['max_percentage']) ? (float)$compo['max_percentage'] : 0.0;
+				if ($min > 0 && $max > 0) {
+					$compo['avg_percentage'] = ($min + $max) / 2.0;
+				} elseif ($max > 0) {
+					$compo['avg_percentage'] = $max;
+				} elseif ($min > 0) {
+					$compo['avg_percentage'] = $min;
+				} else {
+					$compo['avg_percentage'] = 0.0;
+				}
+			}
+			$cmp[] = $compo;
+		}
+	} else {
 		$compos = mysqli_query($conn, "SELECT name,$defPercentage,cas FROM ingredient_compounds WHERE ing = '".$formula['ingredient']."' AND owner_id = '$userID'");
-		
 		while($compo = mysqli_fetch_array($compos)){
 			$cmp[] = $compo;
 		}
-		
-		foreach ($cmp as $a){
-			$arrayLength = count($a);
-			$i = 0;
-			while ($i < $arrayLength){
-				$c = multi_dim_search($a, 'cas', $ing_q['cas']?:'N/A')[$i];
-				$conc_a[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / 100;
-				$conc_b[$a['cas']] += $c['percentage']/100 * $formula['quantity'] * $formula['concentration'] / $mg['total_mg']* $concentration / 100 ;
-				$i++;
-			}
-		}
-		$conc+=$conc_a[$a['cas']];
-		$conc_final+=$conc_b[$a['cas']];
-
 	}
  	
 	$r['formula_ingredient_id'] = (int)$formula['id'];  

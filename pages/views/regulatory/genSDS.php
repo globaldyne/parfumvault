@@ -7,7 +7,6 @@ require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 
 $defCatClass = $settings['defCatClass'];
-$defPercentage = $settings['defPercentage'];
 $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE owner_id = '$userID'"));
 $sds_settings = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM sdsSettings WHERE owner_id = '$userID'"));
 
@@ -51,6 +50,11 @@ if ($_POST['do'] = 'genSDS') {
   $disclaimer = nl2br(htmlspecialchars_decode($sds_settings['sds_disclaimer'], ENT_QUOTES));
 
   $qHtml = mysqli_fetch_array(mysqli_query($conn, "SELECT id, content FROM templates WHERE id = '$sds_tmpl' AND owner_id = '$userID'"));
+  if (!is_array($qHtml) || empty($qHtml['content'])) {
+    $result['error'] = "Template not found or invalid.";
+    echo json_encode($result);
+    return;
+  }
   $htmlContent =  $qHtml['content'];
 
 
@@ -405,9 +409,10 @@ if ($_POST['do'] = 'genSDS') {
 
   if ($insert_sds_data) {
     $ownerID = mysqli_insert_id($conn);
+    $result = [];
 
     $stmt = $conn->prepare("INSERT INTO documents (docData, isSDS, name, type, notes, ownerID, owner_id) VALUES (?, '1', ?, '0', ?, ?, ?)");
-    $stmt->bind_param("bssii", $contents, $name, $notes, $ownerID, $userID);
+    $stmt->bind_param("bssis", $contents, $name, $notes, $ownerID, $userID);
     $stmt->send_long_data(0, $contents);
     $sds = $stmt->execute();
 

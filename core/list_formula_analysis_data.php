@@ -9,6 +9,21 @@ require_once(__ROOT__.'/func/calcPerc.php');
 
 
 $defCatClass = $settings['defCatClass'];
+//Fetch meta data for the formula
+$metaDataQuery = "SELECT id, finalType FROM formulasMetaData WHERE fid = ? AND owner_id = ?";
+$metastmt = $conn->prepare($metaDataQuery);
+$metastmt->bind_param("ss", $_POST['fid'], $userID);
+$metastmt->execute();
+$result = $metastmt->get_result();
+$metaData = $result->fetch_array(MYSQLI_ASSOC);
+
+if (!$metaData || !$metaData['id']) {
+	$response['error'] = "Requested ID is not valid or you do not have access.";
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode($response);
+    error_log("PV error: Invalid formula ID or access denied for user $userID on formula ID {$_POST['fid']}");
+	return;
+}
 
 // Fetch formula data with owner_id condition
 $query1 = "SELECT ingredient, quantity FROM formulas WHERE fid = ? AND owner_id = ?";
@@ -114,24 +129,27 @@ foreach ($get_data_ings as $get_data_ing) {
         $r['avg_percentage'] = 0.0;
     }
 
+    // Select which percentage to use based on defPercentage setting
+    $selected_percentage = $r['avg_percentage'];
+    if ($settings['defPercentage'] === 'max_percentage') {
+        $selected_percentage = $r['max_percentage'];
+    } elseif ($settings['defPercentage'] === 'min_percentage') {
+        $selected_percentage = $r['min_percentage'];
+    } // else default to avg_percentage
+
     // Calculate formula percentage (ingredient's share in the formula)
     $quantity = isset($get_data_ing['quantity']) ? (float)$get_data_ing['quantity'] : 0.0;
     $r['formula_percentage'] = ($total_quantity > 0) ? ($quantity / $total_quantity) * 100.0 : 0.0;
+    // Calculate final product percentage
+    $r['final_product_percentage'] = ($total_quantity > 0) ? ($quantity / $total_quantity) * $metaData['finalType'] : 0.0;
 
     // Calculate contained percentage (how much of the compound is in the formula)
-    // This assumes avg_percentage is the percentage of the compound in the ingredient
-    // and formula_percentage is the percentage of the ingredient in the formula.
-    $contained_percentage = ($r['avg_percentage'] / 100.0) * $r['formula_percentage'];
+    $contained_percentage = ($selected_percentage / 100.0) * $r['formula_percentage'];
+    $final_contained_percentage = ($selected_percentage / 100.0) * $r['final_product_percentage'];
 
-    // If multi_dim_perc is enabled, add its result
-    if ($settings['multi_dim_perc'] == '1') {
-        $multi_dim_result = multi_dim_perc($conn, $formula_data, $get_data_ing['cas'], $settings['qStep'], $settings['defPercentage']);
-        if (isset($multi_dim_result[$get_data_ing['cas']])) {
-            $contained_percentage += (float)$multi_dim_result[$get_data_ing['cas']];
-        }
-    }
 
-    $r['contained_percentage'] = round($contained_percentage, 5);
+    $r['contained_percentage'] = round($contained_percentage, 6);
+    $r['final_contained_percentage'] = round($final_contained_percentage, 6);
 
     // IFRA search and limits
     $u = searchIFRA($get_data_ing['cas'], $get_data_ing['name'], null, $defCatClass);

@@ -3,7 +3,7 @@
 if (!defined('pvault_panel')){ die('Not Found');}
 
 header('Content-Type: application/json; charset=utf-8');
-global $conn, $userID;
+global $conn, $userID, $ver;
 
 // Function to fetch data as associative array
 function fetch_assoc($conn, $query) {
@@ -119,6 +119,10 @@ while ($rx = mysqli_fetch_assoc($result)) {
 // Output JSON response
 $response = [
     "ingredients" => $r,
+    "metadata" => [
+        "pv_version" => isset($ver) ? $ver : '',
+        "total_entries" => count($r)
+    ]
 ];
 echo json_encode($response, JSON_PRETTY_PRINT);
 ?>

@@ -106,19 +106,21 @@ while ($formula = mysqli_fetch_array($formula_q)) {
 $x = '';
 
 foreach ($formulas as $formula) {
-	if ( $formulas['exclude_from_calculation'] != 1 ){
-		$mg['total_mg'] += $formulas['quantity'];
-	}
+    if ($formula['exclude_from_calculation'] != 1) {
+        $mg['total_mg'] += $formula['quantity'];
+    }
     $ingredient = mysqli_real_escape_string($conn, $formula['ingredient']);
     $cas = mysqli_fetch_array(mysqli_query($conn, "SELECT cas, $defCatClass FROM ingredients WHERE name = '$ingredient' AND owner_id = '$userID'"));
 
+    $parent_found = false;
     if ($cas['cas']) {
         $q2 = mysqli_query($conn, "SELECT DISTINCT name, $defCatClass, risk, type, cas FROM IFRALibrary WHERE (name LIKE '$ingredient' OR cas = '" . $cas['cas'] . "') AND owner_id = '$userID' GROUP BY name");
 
         while ($ifra = mysqli_fetch_array($q2)) {
+            $parent_found = true;
             $new_quantity = $formula['quantity'] / $mg['total_mg'] * $new_conc;
             $conc = $new_quantity / $bottle * 100;
-            $conc_p = number_format($formula['concentration'] / 100 * $conc, $settings['qStep']);
+            $conc_p = $formula['concentration'] / 100 * $conc;
 
             if ($settings['multi_dim_perc'] == '1') {
                 $multi_dim = multi_dim_perc($conn, $formulas, $cas['cas'], $settings['qStep'], $settings['defPercentage']);
@@ -133,25 +135,60 @@ foreach ($formulas as $formula) {
                 <td align="center">' . htmlspecialchars($ifra['risk']) . '</td>
             </tr>';
         }
-    }
+    } 
 
-    $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
-        FROM ingredient_compounds, IFRALibrary 
-        WHERE ingredient_compounds.ing = '$ingredient' 
-        AND toDeclare = '1' 
-        AND IFRALibrary.name = ingredient_compounds.name 
-        AND ingredient_compounds.owner_id = '$userID'
-        AND IFRALibrary.owner_id = '$userID'
-        GROUP BY name");
+    // Always append sub-materials, regardless of parent_found
+    if ($defPercentage === 'avg_percentage') {
+        $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.min_percentage, ingredient_compounds.max_percentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
+            FROM ingredient_compounds, IFRALibrary 
+            WHERE ingredient_compounds.ing = '$ingredient' 
+            AND toDeclare = '1' 
+            AND IFRALibrary.name = ingredient_compounds.name 
+            AND ingredient_compounds.owner_id = '$userID'
+            AND IFRALibrary.owner_id = '$userID'
+            GROUP BY name");
 
-    while ($cmp = mysqli_fetch_array($qCMP)) {
-        $x .= '<tr>
-            <td align="center">' . htmlspecialchars($cmp['name']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
-            <td align="center">' . number_format($cmp['percentage'] / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
-            <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
-        </tr>';
+        while ($cmp = mysqli_fetch_array($qCMP)) {
+            $min = isset($cmp['min_percentage']) ? (float)$cmp['min_percentage'] : 0.0;
+            $max = isset($cmp['max_percentage']) ? (float)$cmp['max_percentage'] : 0.0;
+            if ($min > 0 && $max > 0) {
+                $avg = ($min + $max) / 2.0;
+            } elseif ($max > 0) {
+                $avg = $max;
+            } elseif ($min > 0) {
+                $avg = $min;
+            } else {
+                $avg = 0.0;
+            }
+            $percentage = $avg;
+            $x .= '<tr>
+                <td align="center">&nbsp;&nbsp;&rarr; ' . htmlspecialchars($cmp['name']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
+                <td align="center">' . number_format($percentage / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
+            </tr>';
+        }
+    } else {
+        $qCMP = mysqli_query($conn, "SELECT ingredient_compounds.ing, ingredient_compounds.name, ingredient_compounds.cas, ingredient_compounds.$defPercentage, IFRALibrary.risk, IFRALibrary.$defCatClass 
+            FROM ingredient_compounds, IFRALibrary 
+            WHERE ingredient_compounds.ing = '$ingredient' 
+            AND toDeclare = '1' 
+            AND IFRALibrary.name = ingredient_compounds.name 
+            AND ingredient_compounds.owner_id = '$userID'
+            AND IFRALibrary.owner_id = '$userID'
+            GROUP BY name");
+
+        while ($cmp = mysqli_fetch_array($qCMP)) {
+            $percentage = isset($cmp[$defPercentage]) ? (float)$cmp[$defPercentage] : 0.0;
+            $x .= '<tr>
+                <td align="center">&nbsp;&nbsp;&rarr; ' . htmlspecialchars($cmp['name']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['cas']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp[$defCatClass]) . '</td>
+                <td align="center">' . number_format($percentage / 100 * $formula['quantity'] / $mg['total_mg'] * $new_conc / 100 * $bottle, $settings['qStep']) . '</td>
+                <td align="center">' . htmlspecialchars($cmp['risk']) . '</td>
+            </tr>';
+        }
     }
 }
 

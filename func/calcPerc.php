@@ -47,17 +47,39 @@ function multi_dim_perc($conn, $form, $ingCas, $qStep, $defPercentage) {
     global $userID;
     $conc = [];
 
-    $stmt = $conn->prepare("SELECT cas, $defPercentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
-    $stmt->bind_param("ss", $ingCas, $userID);
-    $stmt->execute();
-    $compos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-
-    foreach ($compos as $a) {
-        $cas = $a['cas'];
-        $conc[$cas] = isset($conc[$cas]) ? $conc[$cas] : 0;
-        $conc[$cas] += number_format(($a[$defPercentage] / 100) * ($form['quantity'] * $form['concentration'] / 100), $qStep);
+    if ($defPercentage === 'avg_percentage') {
+        $stmt = $conn->prepare("SELECT cas, min_percentage, max_percentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+        $stmt->bind_param("ss", $ingCas, $userID);
+        $stmt->execute();
+        $compos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        foreach ($compos as $a) {
+            $min = isset($a['min_percentage']) ? (float)$a['min_percentage'] : 0.0;
+            $max = isset($a['max_percentage']) ? (float)$a['max_percentage'] : 0.0;
+            if ($min > 0 && $max > 0) {
+                $avg = ($min + $max) / 2.0;
+            } elseif ($max > 0) {
+                $avg = $max;
+            } elseif ($min > 0) {
+                $avg = $min;
+            } else {
+                $avg = 0.0;
+            }
+            $cas = $a['cas'];
+            $conc[$cas] = isset($conc[$cas]) ? $conc[$cas] : 0;
+            $conc[$cas] += number_format(($avg / 100) * ($form['quantity'] * $form['concentration'] / 100), $qStep);
+        }
+    } else {
+        $stmt = $conn->prepare("SELECT cas, $defPercentage FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");
+        $stmt->bind_param("ss", $ingCas, $userID);
+        $stmt->execute();
+        $compos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        foreach ($compos as $a) {
+            $cas = $a['cas'];
+            $conc[$cas] = isset($conc[$cas]) ? $conc[$cas] : 0;
+            $conc[$cas] += number_format(($a[$defPercentage] / 100) * ($form['quantity'] * $form['concentration'] / 100), $qStep);
+        }
     }
-
     return $conc;
 }

@@ -69,7 +69,24 @@ if(count((array)$used) == 0 && count((array)$usedCmp) == 0){
                     <a href="/pages/mgmIngredient.php?id=<?=$ingID?>"><?=$used['ing']?></a>
                 </td>
                 <td>
-                    <a href="#"><?= $used[$defPercentage] ?: 'N/A' ?></a>
+                    <?php
+                    if ($defPercentage === 'avg_percentage') {
+                        $min = isset($used['min_percentage']) ? (float)$used['min_percentage'] : 0.0;
+                        $max = isset($used['max_percentage']) ? (float)$used['max_percentage'] : 0.0;
+                        if ($min > 0 && $max > 0) {
+                            $avg = ($min + $max) / 2.0;
+                        } elseif ($max > 0) {
+                            $avg = $max;
+                        } elseif ($min > 0) {
+                            $avg = $min;
+                        } else {
+                            $avg = 0.0;
+                        }
+                        echo $avg;
+                    } else {
+                        echo $used[$defPercentage] ?: 'N/A';
+                    }
+                    ?>
                 </td>
             </tr>
             <?php } ?>

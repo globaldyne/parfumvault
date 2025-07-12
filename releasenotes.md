@@ -1,11 +1,11 @@
-What's New in v13.3
-- Fixed percentage calculation errors in formula analysis.
-- Fixed popup link when clicking an ingredient in formula analysis.
-- Added visualization to highlight sub-materials exceeding usage limits.
-- Added AI support to fetch sub-ingredient info in formula analysis
-- Added AI auto fill for ingredient notes
-- Enforce that pyramid view note values must total 100% before saving settings
-- Fixed Advanced search in ingredients
-- Added a warning message to the ingredient management if no ingredient categories exists
+What's New in v13.4
+- Display current olfactory pyramid values on sliders
+- Added option to toggle API key visibility
+- Enabled use of average value as default in formula analysis
+- Added a new column in formula analysis for the final product
+- Updated Dockerfile to use mariadb instead of mysql
+- Fixed issue with SDS document generation
+- Removed quantity column from finished product
+- Enhanced sub-materials lookup in finished product for IFRA calculations
 
-For a complete list of changes and previous versions, please refer to the CHANGELOG.md
+For a full list of changes and previous versions, see CHANGELOG.md.

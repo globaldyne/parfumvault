@@ -6,8 +6,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 
 $defCatClass = $settings['defCatClass'];
-$defPercentage = $settings['defPercentage'];
-
 $ingID = base64_decode($_GET["id"]);
 
 $stmt = $conn->prepare("SELECT id,ing,name,cas,ec,min_percentage,max_percentage,GHS,toDeclare FROM ingredient_compounds WHERE ing = ? AND owner_id = ?");

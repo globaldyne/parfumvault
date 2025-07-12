@@ -7,6 +7,7 @@ define('LOG_API_FILE', 'pv-api.log');
 
 require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
+require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/rgbToHex.php');
 
 // Check if API is enabled in system settings

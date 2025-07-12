@@ -47,7 +47,7 @@ $f = !empty($filters) ? 'AND ' . implode(' AND ', $filters) : '';
 $Query = "
     SELECT 
         fm.id, fm.fid, fm.name, fm.product_name, fm.isProtected, fm.profile, fm.gender, fm.created_at, fm.catClass, 
-        fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision,
+        fm.isMade, fm.madeOn, fm.status, fm.rating, fm.revision, fm.notes,
         (SELECT updated_at 
          FROM formulas 
          WHERE fid = fm.fid AND owner_id = '$userID' 
@@ -90,7 +90,8 @@ foreach ($formulaData as $formula) {
         'status' => (int)($formula['status'] ?: 0),
         'rating' => (int)($formula['rating'] ?: 0),
         'revision' => (int)($formula['revision'] ?: 0),
-        'gid' => (int)($formula['gid'] ?: 0)
+        'gid' => (int)($formula['gid'] ?: 0),
+        'notes' => (string)($formula['notes'] ?: 'none')
     ];
     
     $rx[] = $r;

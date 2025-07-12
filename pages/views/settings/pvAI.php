@@ -40,7 +40,10 @@ require_once(__ROOT__.'/inc/settings.php');
                         <div class="mb-3">
                             <label for="openai_api_key" class="form-label">OpenAI API Key</label>
                             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your OpenAI key here"></a>
-                            <input name="openai_api_key" type="text" class="form-control" id="openai_api_key" value="<?= $user_settings['openai_api_key'] ?>" />
+                            <div class="input-group">
+                                <input name="openai_api_key" type="password" class="form-control" id="openai_api_key" value="<?= $user_settings['openai_api_key'] ?>" />
+                                <button class="btn btn-outline-secondary toggle-api-key-visibility" type="button" tabindex="-1" data-target="#openai_api_key"><i class="fa fa-eye"></i></button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="openai_model" class="form-label">Model</label>
@@ -64,7 +67,10 @@ require_once(__ROOT__.'/inc/settings.php');
                         <div class="mb-3">
                             <label for="google_gemini_api_key" class="form-label">Google Gemini API Key</label>
                             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Google Gemini API key here"></a>
-                            <input name="google_gemini_api_key" type="text" class="form-control" id="google_gemini_api_key" value="<?= $user_settings['google_gemini_api_key'] ?>" />
+                            <div class="input-group">
+                                <input name="google_gemini_api_key" type="password" class="form-control" id="google_gemini_api_key" value="<?= $user_settings['google_gemini_api_key'] ?>" />
+                                <button class="btn btn-outline-secondary toggle-api-key-visibility" type="button" tabindex="-1" data-target="#google_gemini_api_key"><i class="fa fa-eye"></i></button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="google_gemini_model" class="form-label">Model</label>
@@ -81,7 +87,10 @@ require_once(__ROOT__.'/inc/settings.php');
                         <div class="mb-3">
                             <label for="pedro_perfumer_api_key" class="form-label">Pedro Perfumer API Key</label>
                             <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Pedro Perfumer API key here"></a>
-                            <input name="pedro_perfumer_api_key" type="text" class="form-control" id="pedro_perfumer_api_key" value="<?= $user_settings['pedro_perfumer_api_key'] ?? '' ?>" />
+                            <div class="input-group">
+                                <input name="pedro_perfumer_api_key" type="password" class="form-control" id="pedro_perfumer_api_key" value="<?= $user_settings['pedro_perfumer_api_key'] ?? '' ?>" />
+                                <button class="btn btn-outline-secondary toggle-api-key-visibility" type="button" tabindex="-1" data-target="#pedro_perfumer_api_key"><i class="fa fa-eye"></i></button>
+                            </div>
                         </div>
                     </div>
                     
@@ -449,5 +458,18 @@ $('#pedro-create-api-key-btn').on('click', function(e) {
         return false;
     }
     // Otherwise, allow modal to open
+});
+
+// Toggle API key visibility
+$(document).on('click', '.toggle-api-key-visibility', function() {
+    var target = $($(this).data('target'));
+    var icon = $(this).find('i');
+    if (target.attr('type') === 'password') {
+        target.attr('type', 'text');
+        icon.removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+        target.attr('type', 'password');
+        icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    }
 });
 </script>
