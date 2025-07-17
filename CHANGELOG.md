@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 13.5
+- Added metadata in formulas get api
 
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders
