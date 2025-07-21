@@ -59,7 +59,10 @@ function pvAIHelper($prompt) {
     $model = $isGemini
         ? ($user_settings['google_gemini_model'] ?: 'gemini-2.0-flash')
         : ($user_settings['openai_model'] ?: 'gpt-4.1');
-    $temperature = $user_settings['openai_temperature'] ?: 0.7;
+    // OpenAI requires a temperature setting to always be a float    
+    $temperature = isset($user_settings['openai_temperature']) 
+        ? floatval($user_settings['openai_temperature']) 
+        : 0.7;
 
     if (empty($api_key)) {
         return ['error' => 'API key is not set'];
