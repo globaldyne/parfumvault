@@ -90,7 +90,13 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
 
         # Tail error logs
         echo "Tailing error logs from $ERROR_LOG..."
-        tail -f "$ERROR_LOG"
+
+        # Ensure both log files exist before tailing
+        [ -f "$ERROR_LOG" ] || touch "$ERROR_LOG"
+        [ -f "/tmp/php-fpm-www-error.log" ] || touch "/tmp/php-fpm-www-error.log"
+
+        tail -F "$ERROR_LOG" "/tmp/php-fpm-www-error.log"
+
         exit 0
     else
         echo "Database connection failed. Retrying in $RETRY_INTERVAL seconds..."
