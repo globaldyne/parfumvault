@@ -170,7 +170,7 @@ $(document).ready(function () {
             $("#btnBackup").prop("disabled", false);
             $("#btnCloseBK").prop("disabled", false);
 
-            var blob = new Blob([data], { type: "application/gzip" });
+            var blob = new Blob([data], { type: "application/x-gzip" });
             var url = window.URL.createObjectURL(blob);
             var a = document.createElement("a");
             a.download = 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz';

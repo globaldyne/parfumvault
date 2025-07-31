@@ -5584,7 +5584,7 @@ if ($_GET['do'] == 'backupDB') {
         }
 
         // Set secure headers for file download
-        header('Content-Type: application/gzip');
+        header('Content-Type: application/x-gzip');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Length: ' . $filesize);
         header('Content-Encoding: none');
