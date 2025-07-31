@@ -172,12 +172,13 @@ $(document).ready(function () {
 
             var blob = new Blob([data], { type: "application/gzip" });
             var url = window.URL.createObjectURL(blob);
-            var a = $("<a />");
-            a.attr("download", 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz');
-            a.attr("href", url);
-            $("body").append(a);
-            a[0].click();
-            $("body").remove(a);
+            var a = document.createElement("a");
+            a.download = 'backup_<?=$ver?>_<?=date("d-m-Y")?>.sql.gz';
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
             $('#backup_db').modal('hide');
         },
         error: function (request, status, error) {
