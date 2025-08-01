@@ -5528,11 +5528,6 @@ if ($_GET['do'] == 'backupDB') {
             throw new Exception('Backup file was not created or is empty');
         }
 
-        // Check if gzip is available
-        $gzip_check = shell_exec('which gzip 2>/dev/null');
-        if (empty($gzip_check)) {
-            throw new Exception('gzip compression utility not found on system');
-        }
 
         // Compress the backup file
         $tmpFile_escaped = escapeshellarg($tmpFile);
