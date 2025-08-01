@@ -3,6 +3,10 @@
 - Added metadata in formulas get api
 - AI full ingredient fill (WIP)
 - AI Overall improvements
+- Improved backup and restore process
+- Removed deprecated columns-statistics from the backup params
+- Fixed makeformula api to remove the formula from the queue of making instead of deleting it
+- Updated footer for th PV Making app
 
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders

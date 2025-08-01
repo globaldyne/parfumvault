@@ -388,14 +388,19 @@ switch ($action) {
             return;
         }
 
-        // Delete the formula and its related entries
-        $deleteFormula = mysqli_query($conn, "DELETE FROM $table WHERE fid = '$fid' AND owner_id = '$userID'");
-        $deleteMeta = mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'");
+        // Delete action should set formula to toDo = 0 and isMade = 0
+        $updateMeta = mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '0', isMade = '0' WHERE fid = '$fid' AND owner_id = '$userID'");
+        if (!$updateMeta) {
+            echo json_encode(['error' => 'Failed to update formula metadata.']);
+            return;
+        }
+        //$deleteFormula = mysqli_query($conn, "DELETE FROM $table WHERE fid = '$fid' AND owner_id = '$userID'");
+        //$deleteMeta = mysqli_query($conn, "DELETE FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'");
 
-        if ($deleteFormula && $deleteMeta) {
-            echo json_encode(['success' => 'Formula and related metadata deleted successfully.']);
+        if ($updateMeta) {
+            echo json_encode(['success' => 'Formula removed from the making queue.']);
         } else {
-            echo json_encode(['error' => 'Failed to delete the formula. Please try again.']);
+            echo json_encode(['error' => 'Failed to remove the formula from the queue. Please try again.']);
         }
         return;
 

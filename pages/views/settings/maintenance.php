@@ -61,8 +61,6 @@ $ver = trim(file_get_contents(__ROOT__.'/VERSION.md'));
           <div id="backupArea">
               <div class="form-group">
                 <div class="mx-4">
-    				<input type="checkbox" class="form-check-input" id="column-statistics">
-   					<label class="form-check-label" for="column-statistics">Column Statistics<i class="fa-solid fa-circle-info mx-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Add ANALYZE TABLE statements to the output to generate histogram statistics for dumped tables when the dump file is reloaded. Disable this if your back-up fails or takes too long."></i></label>
   				</div>
               </div>
               <div class="col-md-12">
@@ -159,7 +157,6 @@ $(document).ready(function () {
         url: '/core/core.php',
         data: {
             do: 'backupDB',
-            column_statistics: $('#column-statistics').prop("checked")
         },
         cache: false,
         xhrFields: {

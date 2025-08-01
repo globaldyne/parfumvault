@@ -63,7 +63,7 @@ docker run --name pvault \
   -e MAX_FILE_SIZE=4194304 \
   -e TMP_PATH=/tmp/ \
   -e FILE_EXT='pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif' \
-  -e DB_BACKUP_PARAMETERS='--column-statistics=1' \
+  -e DB_BACKUP_PARAMETERS='--single-transaction --routines --triggers' \
   -e SYS_LOGS=DISABLED \
   -p 8000:8000 \
   -d globaldyne/perfumersvault

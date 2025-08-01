@@ -5474,10 +5474,6 @@ if ($_GET['do'] == 'backupDB') {
             $bkparams = escapeshellarg(getenv('DB_BACKUP_PARAMETERS'));
         }
 
-        // Validate column statistics parameter
-        if (isset($_GET['column_statistics']) && $_GET['column_statistics'] === 'true') {
-            $bkparams .= ' --column-statistics=1';
-        }
 
         // Validate database credentials
         if (empty($dbuser) || empty($dbname) || empty($dbhost)) {
@@ -5498,17 +5494,10 @@ if ($_GET['do'] == 'backupDB') {
         }
 
         // Build mysqldump command with proper escaping
-        // Escape and validate DB credentials
-        $dbuser_escaped = escapeshellarg($dbuser ?: getenv('DB_USER'));
-        $dbpass_escaped = escapeshellarg($dbpass ?: getenv('DB_PASS'));
-        $dbhost_escaped = escapeshellarg($dbhost ?: getenv('DB_HOST'));
-        $dbname_escaped = escapeshellarg($dbname ?: getenv('DB_NAME'));
-
-        if (empty($dbuser) || empty($dbpass) || empty($dbhost) || empty($dbname)) {
-            error_log("PV Backup Error: Missing database credentials for backup (dbuser: $dbuser, dbhost: $dbhost, dbname: $dbname)");
-            echo json_encode(['error' => 'Database credentials are missing. Please check configuration.']);
-            return;
-        }
+        $dbuser_escaped = escapeshellarg($dbuser);
+        $dbpass_escaped = escapeshellarg($dbpass);
+        $dbhost_escaped = escapeshellarg($dbhost);
+        $dbname_escaped = escapeshellarg($dbname);
         $tmpFile_escaped = escapeshellarg($tmpFile);
 
         $cmd = "mysqldump {$bkparams} -u {$dbuser_escaped} --password={$dbpass_escaped} -h {$dbhost_escaped} {$dbname_escaped} > {$tmpFile_escaped} 2>&1";
