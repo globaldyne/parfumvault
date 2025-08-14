@@ -115,6 +115,15 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE ow
             </div>
                     
             <div class="row mt-4">
+                <!-- Banner Start -->
+                 <!-- PLACEHOLDER FOR PV2
+                <div class="col-12 mb-4 d-flex justify-content-center">
+                    <div id="dashboard-banner" style="width:1600px; height:400px; overflow:hidden; border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,0.12); background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                        <img src="https://www.perfumersvault.com/wp-content/uploads/2025/04/beaker-svgrepo-com-1.png" alt="Dashboard Banner" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                </div>
+                -->
+                <!-- Banner End -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-lg p-3 rounded">
                         <div class="card-header">
@@ -350,3 +359,51 @@ $(document).ready(function() {
 });
 </script>
 <?php } ?>
+
+<!-- Modal HTML -->
+<div class="modal fade" id="downloadAppModal" tabindex="-1" aria-labelledby="downloadAppModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="downloadAppModalLabel">Download Perfumers Vault App</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-4">Choose your platform to download the Perfumers Vault app:</p>
+        <div class="row justify-content-center">
+          <div class="col-md-6 mb-3">
+            <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank" class="btn btn-outline-primary w-100 p-3">
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-apple me-2" style="font-size: 1.5rem;"></i>
+                <div>
+                  <div class="fw-bold">App Store</div>
+                  <small class="text-muted">for iOS devices</small>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-6 mb-3">
+            <a href="#" onclick="alert('Play Store version coming soon!')" class="btn btn-outline-success w-100 p-3">
+              <div class="d-flex align-items-center justify-content-center">
+                <i class="bi bi-google-play me-2" style="font-size: 1.5rem;"></i>
+                <div>
+                  <div class="fw-bold">Play Store</div>
+                  <small class="text-muted">for Android devices</small>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal trigger script -->
+<script>
+$(document).ready(function() {
+  $('#dashboard-banner').css('cursor', 'pointer').on('click', function() {
+    $('#downloadAppModal').modal('show');
+  });
+});
+</script>
