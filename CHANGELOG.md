@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 13.5
+- Added formula update api calls from the PV2 app
 - Added metadata in formulas get api
 - AI full ingredient fill (WIP)
 - AI Overall improvements
