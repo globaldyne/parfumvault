@@ -116,13 +116,23 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE ow
                     
             <div class="row mt-4">
                 <!-- Banner Start -->
-                 <!-- PLACEHOLDER FOR PV2
                 <div class="col-12 mb-4 d-flex justify-content-center">
-                    <div id="dashboard-banner" style="width:1600px; height:400px; overflow:hidden; border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,0.12); background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
-                        <img src="https://www.perfumersvault.com/wp-content/uploads/2025/04/beaker-svgrepo-com-1.png" alt="Dashboard Banner" style="width:100%; height:100%; object-fit:cover;">
+                    <div id="dashboard-banner" style="position:relative; width:1000px; height:200px; overflow:hidden; border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,0.12); background:#f8f9fa; display:flex; align-items:center; justify-content:center;">
+                        <img src="/img/PV2_PROMO.png" alt="Dashboard Banner" style="width:100%; height:100%; object-fit:cover; opacity:0.6; transition: opacity 0.3s ease;">
+                        <div class="banner-overlay" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+                            <div style="background:rgba(0,0,0,0.35); padding:10px 18px; border-radius:10px; text-align:left; display:flex; align-items:center; gap:12px; position:relative;">
+                                <img src="/img/pv2_logo_tr.png" alt="PV2 Logo" style="height:56px; width:auto; display:block;">
+                                <div>
+                                    <h2 style="color:#fff; margin:0; font-size:1.25rem; font-weight:700; letter-spacing:0.5px;">Perfumers Vault 2</h2>
+                                    <p style="color:#fff; margin:0; font-size:0.9rem;">The app is now available to download</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Hide button positioned at top-right of the banner -->
+                        <button id="hide-banner-btn" type="button" class="btn btn-sm btn-light" style="position:absolute; right:12px; top:12px; pointer-events:auto; z-index:60; opacity:0.95;">Hide</button>
                     </div>
                 </div>
-                -->
+                
                 <!-- Banner End -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-lg p-3 rounded">
@@ -372,7 +382,7 @@ $(document).ready(function() {
         <p class="mb-4">Choose your platform to download the Perfumers Vault app:</p>
         <div class="row justify-content-center">
           <div class="col-md-6 mb-3">
-            <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank" class="btn btn-outline-primary w-100 p-3">
+            <a href="https://apps.apple.com/us/app/perfumers-vault-2/id6748814424" target="_blank" class="btn btn-outline-primary w-100 p-3">
               <div class="d-flex align-items-center justify-content-center">
                 <i class="bi bi-apple me-2" style="font-size: 1.5rem;"></i>
                 <div>
@@ -402,8 +412,39 @@ $(document).ready(function() {
 <!-- Modal trigger script -->
 <script>
 $(document).ready(function() {
-  $('#dashboard-banner').css('cursor', 'pointer').on('click', function() {
+  // If user hid banner previously, respect preference
+  if (localStorage.getItem('pv2_banner_hidden') === '1') {
+    $('#dashboard-banner').hide();
+  } else {
+    $('#dashboard-banner').css('cursor', 'pointer');
+  }
+
+  // Click banner to open modal
+  $('#dashboard-banner').on('click', function(e) {
+    // ignore clicks on the hide button
+    if ($(e.target).closest('#hide-banner-btn').length) return;
     $('#downloadAppModal').modal('show');
+  });
+
+  // Hide button: hide and persist preference
+  $('#hide-banner-btn').on('click', function(e) {
+    e.stopPropagation();
+    $('#dashboard-banner').slideUp(200);
+    try { localStorage.setItem('pv2_banner_hidden', '1'); } catch(err) {}
+  });
+
+  // Optional: allow toggling back via keyboard shortcut (Ctrl+Shift+B)
+  $(document).on('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key && e.key.toLowerCase() === 'b') {
+      var hidden = localStorage.getItem('pv2_banner_hidden') === '1';
+      if (hidden) {
+        localStorage.removeItem('pv2_banner_hidden');
+        $('#dashboard-banner').slideDown(200);
+      } else {
+        localStorage.setItem('pv2_banner_hidden', '1');
+        $('#dashboard-banner').slideUp(200);
+      }
+    }
   });
 });
 </script>

@@ -33,7 +33,7 @@ if (empty($commit)) {
         <div><a href="https://ko-fi.com/perfumersvault" target="_blank"><strong>Sponsor the project on Ko-fi</strong></a></div>
         <div class="mt-2" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
           <div style="text-align: center;">
-            <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank">
+            <a href="https://apps.apple.com/us/app/perfumers-vault-2/id6748814424" target="_blank">
               <img src="/img/appstore/get_pv.png" alt="App Store" style="width: 150px;">
             </a>
             <div class="mt-1">Get the Perfumers Vault app</div>
@@ -62,7 +62,7 @@ if (empty($commit)) {
         <p class="mb-4">Choose your platform to download the Perfumers Vault app:</p>
         <div class="row justify-content-center">
           <div class="col-md-6 mb-3">
-            <a href="https://apps.apple.com/us/app/perfumers-vault/id1525381567" target="_blank" class="btn btn-outline-primary w-100 p-3">
+            <a href="https://apps.apple.com/us/app/perfumers-vault-2/id6748814424" target="_blank" class="btn btn-outline-primary w-100 p-3">
               <div class="d-flex align-items-center justify-content-center">
                 <i class="bi bi-apple me-2" style="font-size: 1.5rem;"></i>
                 <div>
