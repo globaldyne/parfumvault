@@ -47,7 +47,7 @@ if (!$meta_stmt) {
     return;
 }
 
-$ing_query = "INSERT INTO formulas (fid, name, ingredient, concentration, dilutant, quantity, notes) VALUES (?,?,?,?,?,?,?)";
+$ing_query = "INSERT INTO formulas (fid, name, ingredient, concentration, dilutant, quantity, notes, owner_id) VALUES (?,?,?,?,?,?,?,?)";
 $ing_stmt = mysqli_prepare($conn, $ing_query);
 if (!$ing_stmt) {
     mysqli_stmt_close($meta_stmt);
@@ -376,7 +376,7 @@ foreach ($data['formulas'] as $row) {
                         $e['notes'] !== $idata['notes']
                     );
                     if ($needsUpdate) {
-                        $ing_update_types = 'dsdsssss';
+                        $ing_update_types = 'dsdssss';
                         if (!mysqli_stmt_bind_param($ing_update_stmt, $ing_update_types, $idata['concentration'], $idata['dilutant'], $idata['quantity'], $idata['notes'], $name, $fid, $iname)) {
                             mysqli_stmt_close($meta_stmt);
                             mysqli_stmt_close($ing_stmt);
@@ -415,8 +415,8 @@ foreach ($data['formulas'] as $row) {
                     $ingredient_dilutant = $idata['dilutant'];
                     $ing_notes = $idata['notes'];
 
-                    $ing_types_local = 'sssdsds';
-                    if (!mysqli_stmt_bind_param($ing_stmt, $ing_types_local, $ingredient_fid, $name, $ingredient_name, $ingredient_concentration, $ingredient_dilutant, $ingredient_quantity, $ing_notes)) {
+                    $ing_types_local = 'sssdsdss';
+                    if (!mysqli_stmt_bind_param($ing_stmt, $ing_types_local, $ingredient_fid, $name, $ingredient_name, $ingredient_concentration, $ingredient_dilutant, $ingredient_quantity, $ing_notes, $owner_id)) {
                         mysqli_stmt_close($meta_stmt);
                         mysqli_stmt_close($ing_stmt);
                         mysqli_stmt_close($check_stmt);
@@ -538,8 +538,8 @@ foreach ($data['formulas'] as $row) {
             $ingredient_dilutant = isset($ingredient['dilutant']) ? (string)$ingredient['dilutant'] : '-';
             $ing_notes = isset($ingredient['notes']) ? (string)$ingredient['notes'] : '-';
 
-            $ing_types = 'sssdsds';
-            if (!mysqli_stmt_bind_param($ing_stmt, $ing_types, $ingredient_fid, $name, $ingredient_name, $ingredient_concentration, $ingredient_dilutant, $ingredient_quantity, $ing_notes)) {
+            $ing_types = 'sssdsdss';
+            if (!mysqli_stmt_bind_param($ing_stmt, $ing_types, $ingredient_fid, $name, $ingredient_name, $ingredient_concentration, $ingredient_dilutant, $ingredient_quantity, $ing_notes, $owner_id)) {
                 mysqli_stmt_close($meta_stmt);
                 mysqli_stmt_close($ing_stmt);
                 mysqli_rollback($conn);
