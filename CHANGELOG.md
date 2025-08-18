@@ -10,6 +10,8 @@
 - Updated footer for th PV Making app
 - PV2 promo banner added
 - Appstore links update
+- Removed deprecated pv library
+- Removed Marketplace
 
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders

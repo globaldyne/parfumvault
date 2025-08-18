@@ -195,15 +195,6 @@ $(document).ready(function() {
     <hr class="sidebar-divider d-none d-md-block">
 
     <li class="nav-item">
-    <a class="nav-link" href="/?do=marketplace">
-      <i class="fas fa-fw fa-store"></i>
-      <span>Marketplace</span>
-    </a>
-    </li>
-
-    <hr class="sidebar-divider d-none d-md-block">
-
-    <li class="nav-item">
     <a class="nav-link" href="/?do=genSDS">
       <i class="fas fa-square-poll-horizontal"></i>
       <span>My SDSs</span>
@@ -224,9 +215,6 @@ $(document).ready(function() {
       break;
     case 'settings':
       require_once(__ROOT__.'/pages/settings.php');
-      break;
-    case 'marketplace':
-      require_once(__ROOT__.'/pages/views/pvLibrary/marketPlace.php');
       break;
     case 'statistics':
       require_once(__ROOT__.'/pages/statistics.php');
