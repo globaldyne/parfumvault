@@ -20,7 +20,7 @@ if(getenv('PLATFORM') === "CLOUD"){
 
 	$tmp_path = getenv('TMP_PATH') ?: "/tmp/";
 	$allowed_ext = getenv('FILE_EXT') ?: "pdf, doc, docx, xls, csv, xlsx, png, jpg, jpeg, gif";
-	$bkparams =  getenv('DB_BACKUP_PARAMETERS') ?: '--column-statistics=1';
+	$bkparams =  getenv('DB_BACKUP_PARAMETERS') ?: '--single-transaction --routines --triggers';
 	$sysLogsEnabled = getenv('SYS_LOGS') === 'ENABLED' || getenv('SYS_LOGS') === '1';
 	$session_timeout = getenv('SYS_TIMEOUT') ?: 1800;
 	$disable_updates = getenv('DISABLE_UPDATES');

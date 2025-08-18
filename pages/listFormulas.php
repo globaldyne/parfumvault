@@ -217,7 +217,7 @@ $(document).ready(function() {
 			language: {
 				loadingRecords: '&nbsp;',
 				processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-				emptyTable: '<div class="mt-1 row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas available. Click <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add a new formula, or visit the <a href="/?do=marketplace" class="link-primary">Marketplace</a> to import a demo. You can also explore more options in the Actions menu.</strong></div></div>',
+				emptyTable: '<div class="mt-1 row g-3"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas available. Click <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#add_formula">here</a> to add a new formula. You can also explore more options in the Actions menu.</strong></div></div>',
 				zeroRecords: '<div class="mt-1 row g-3 mt-1"><div class="alert alert-info"><i class="fa-solid fa-circle-info mx-2"></i><strong>No formulas found</strong></div></div>',
 				searchPlaceholder: 'Search by formula, or product name...',
 				search: ''

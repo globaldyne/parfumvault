@@ -564,7 +564,6 @@ $(document).ready(function() {
 			data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?newIngName='+ btoa(row.ingredient.name) +'&newIngCAS='+ row.ingredient.cas +'"><i class="fa-solid fa-flask-vial mx-2"></i>Create ingredient</a></li>';
 		
 			data+='<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_ingredients_json"><i class="bi bi-filetype-json mx-2"></i>Import from JSON</a></li>';
-			data+='<li><a class="dropdown-item" href="https://library.perfumersvault.com/query/' + row.ingredient.name+ '" target="_blank"><i class="fa-solid fa-cloud-arrow-down mx-2"></i>Search PV Library<i class="ml-2 fa-solid fa-arrow-up-right-from-square"></i></a></li>';
 					
 			data+='</div></div>';
 			return data;

@@ -10,6 +10,7 @@ if(!$_GET['ingID']){
 	echo 'Invalid ID';
 	return;
 }
+$ingData = mysqli_fetch_array(mysqli_query($conn, "SELECT name FROM ingredients WHERE id = '$ingID' AND owner_id = '$userID'"));
 
 $query = "SELECT id, tenacity, flash_point, chemical_name, formula, logp, soluble, molecularWeight, appearance, rdi, shelf_life FROM ingredients WHERE id = '".$_GET['ingID']."' AND owner_id = '$userID'";
 $result = mysqli_query($conn, $query);
@@ -18,7 +19,14 @@ $ing = mysqli_fetch_array($result);
 $ing['soluble'] = explode(',', $ing['soluble']);
 
 ?>
-<h3>Technical Data</h3>
+<div class="d-flex align-items-center justify-content-between">
+  <h3 class="mb-0">Technical Data</h3>
+ <!--
+  <button type="button" id="ai-tech-btn" class="btn btn-outline-secondary ai-border ms-3">
+    <i class="fa fa-robot"></i> AI Fill
+  </button>
+-->
+</div>
 <hr>
 <div class="container">
     <div class="row mb-3">
@@ -105,9 +113,6 @@ $ing['soluble'] = explode(',', $ing['soluble']);
     <input type="submit" name="save" class="btn btn-primary" id="saveTechData" value="Save" />
 </div>
 
-
-
-
     
 <script>
 $(document).ready(function() {
@@ -147,13 +152,56 @@ $(document).ready(function() {
 				$('.toast').toast('show');
 			},
 			error: function (xhr, status, error) {
-				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
+				$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
 				$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				$('.toast').toast('show');
 			}
 		});
 	});
 
+	$('#ai-tech-btn').on('click', function() {
+        var $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="fa fa-robot fa-spin"></i> AI Fill');
+        $.post('/core/core.php', { action: 'aiChat', message: "Get technical data for <?=$ingData['name']?>" }, function(resp) {
+            try {
+                var parsed = JSON.parse(resp);
+                if (parsed.success) {
+                    var aiData = parsed.success[0] ? parsed.success[0] : parsed.success;
+                    if (aiData.tenacity) $("#tenacity").val(aiData.tenacity);
+                    if (aiData.rdi) $("#rdi").val(aiData.rdi);
+                    if (aiData.flash_point) $("#flash_point").val(aiData.flash_point);
+                    if (aiData.chemical_name) $("#chemical_name").val(aiData.chemical_name);
+                    if (aiData.formula) $("#molecularFormula").val(aiData.formula);
+                    if (aiData.logp) $("#logp").val(aiData.logp);
+                    if (aiData.molecularWeight) $("#molecularWeight").val(aiData.molecularWeight);
+                    if (aiData.appearance) $("#appearance").val(aiData.appearance);
+                    if (aiData.shelf_life) $("#shelf_life").val(aiData.shelf_life);
+
+                    // Solubility checkboxes
+                    if (aiData.soluble) {
+                        var solArr = Array.isArray(aiData.soluble) ? aiData.soluble : String(aiData.soluble).split(',');
+                        $('input[name="soluble[]"]').prop('checked', false);
+                        solArr.forEach(function(val) {
+                            val = String(val).trim();
+                            if (val === "Water" || val === "1") $('#solubleWater').prop('checked', true);
+                            if (val === "Ethanol" || val === "2") $('#solubleEthanol').prop('checked', true);
+                            if (val === "DPG" || val === "3") $('#solubleDPG').prop('checked', true);
+                            if (val === "IPM" || val === "4") $('#solubleIPM').prop('checked', true);
+                        });
+                    }
+                } else if (parsed.error) {
+                    $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + parsed.error);
+                    $('.toast-header').removeClass().addClass('toast-header alert-danger');
+                    $('.toast').toast('show');
+                }
+            } catch (e) {
+                $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>AI response error.');
+                $('.toast-header').removeClass().addClass('toast-header alert-danger');
+                $('.toast').toast('show');
+            }
+            $btn.prop('disabled', false).html('<i class="fa fa-robot"></i> AI Fill');
+        });
+    });
 });
 
 </script>

@@ -1,6 +1,6 @@
 <?php
 if (!defined('pvault_panel')){ die('Not Found');}
-global $conn,$userID;
+global $conn, $userID, $ver;
 
 if ($fid = mysqli_real_escape_string($conn, $_REQUEST['fid'])) {
     $sql = mysqli_query($conn, "SELECT id, fid, name, product_name, notes, finalType AS concentration, status, created_at, isProtected, rating, profile, src, customer_id, revision, madeOn FROM formulasMetaData WHERE fid = '$fid' AND owner_id = '$userID'");
@@ -53,6 +53,12 @@ if ($sql && mysqli_num_rows($sql) > 0) {
         $rows['formulas'][] = $formula;
     }
 }
+
+// Add metadata
+$rows['metadata'] = [
+    'pv_version' => isset($ver) ? $ver : '',
+    'total_entries' => count($rows['formulas'])
+];
 
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($rows, JSON_PRETTY_PRINT);
