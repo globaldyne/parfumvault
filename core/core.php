@@ -1787,77 +1787,6 @@ if ($_POST['action'] === 'embedIng') {
 
 
 
-//PVLibrary Single Import						
-if ($_POST['action'] === 'import' && $_POST['source'] === 'PVLibrary' && $_POST['kind'] === 'ingredient' && !empty($_POST['ing_id'])) {
-    // Sanitize input
-    $id = filter_var($_POST['ing_id'], FILTER_SANITIZE_NUMBER_INT);
-
-    if (!$id) {
-        $response['error'] = 'Invalid ingredient ID.';
-        echo json_encode($response);
-        return;
-    }
-
-    // Fetch data from API
-    $jAPI = $pvLibraryAPI . '?request=ingredients&src=PV_PRO&id=' . $id;
-    $jsonData = json_decode(pv_file_get_contents($jAPI), true);
-
-    if (!empty($jsonData['error'])) {
-        $response['error'] = 'Error: ' . $jsonData['error']['msg'];
-        echo json_encode($response);
-        return;
-    }
-
-    $array_data = $jsonData['ingredients'];
-
-    foreach ($array_data as $id => $row) {
-        // Remove unwanted keys
-        unset($row['structure'], $row['techData'], $row['ifra'], $row['IUPAC'], $row['id']);
-
-        // Prepare keys and values for insertion
-        $insertPairs = [];
-        foreach ($row as $key => $val) {
-            $insertPairs[$key] = $val;
-        }
-
-        // Check if the ingredient already exists
-        $stmtCheck = $conn->prepare("SELECT name FROM ingredients WHERE owner_id = ? AND name = ?");
-        $stmtCheck->bind_param("ss", $userID, $insertPairs['name']);
-        $stmtCheck->execute();
-        $result = $stmtCheck->get_result();
-
-        if ($result->num_rows > 0) {
-            $response['error'] = 'Ingredient ' . $insertPairs['name'] . ' already exists.';
-            echo json_encode($response);
-            return;
-        }
-
-        // Dynamically prepare the INSERT query
-        $columns = '`' . implode('`,`', array_keys($insertPairs)) . '`';
-        $placeholders = implode(',', array_fill(0, count($insertPairs), '?'));
-        $values = array_values($insertPairs);
-
-        $stmtInsert = $conn->prepare("INSERT INTO ingredients ({$columns}, `owner_id`) VALUES ({$placeholders}, ?)");
-
-        $types = str_repeat('s', count($values)) . 's';
-        $params = array_merge([$types], $values, [$userID]);
-
-        call_user_func_array([$stmtInsert, 'bind_param'], $params);
-
-        if ($stmtInsert->execute()) {
-            $response["success"] = 'Ingredient data imported successfully.';
-        } else {
-            $response["error"] = 'Error inserting ingredient: ' . htmlspecialchars($stmtInsert->error);
-        }
-
-        $stmtInsert->close();
-    }
-
-    echo json_encode($response);
-    return;
-}
-
-
 //UPDATE HTML TEMPLATE
 if ($_REQUEST['action'] === 'htmlTmplUpdate') {
     // Sanitize input
@@ -5128,220 +5057,6 @@ if ($_POST['manage'] == 'ingredient' && $_POST['tab'] == 'add_info') {
 }
 
 
-//IMPORT MARKETPLACE FORMULA
-if ($_POST['action'] == 'import' && $_POST['kind'] == 'formula') {
-	require_once(__ROOT__.'/func/genFID.php');
-
-    // Sanitize the inputs
-    $id = mysqli_real_escape_string($conn, $_POST['fid']);
-	$fid = random_str(40, '1234567890abcdefghijklmnopqrstuvwxyz');
-
-    $jAPI = $pvLibraryAPI . '?request=MarketPlace&action=get&id=' . $id;
-    $jsonData = json_decode(pv_file_get_contents($jAPI), true);
-
-    // Check for errors in the API response
-    if ($jsonData['error']) {
-        $response['error'] = 'Error: ' . $jsonData['error']['msg'];
-        echo json_encode($response);
-        return;
-    }
-
-    // Check if the formula has already been downloaded by the user
-    $sql_check = "SELECT fid FROM formulasMetaData WHERE name = ? AND src = 1 AND owner_id = ?";
-    $stmt_check = $conn->prepare($sql_check);
-    $stmt_check->bind_param("ss", $jsonData['meta']['name'], $userID);
-    $stmt_check->execute();
-    $stmt_check->store_result();
-    
-    if ($stmt_check->num_rows > 0) {
-        $response['error'] = 'Formula name ' . $jsonData['meta']['name'] . ' already downloaded. If you want to re-download it, please remove it first.';
-        echo json_encode($response);
-        $stmt_check->close();
-        return;
-    }
-    $stmt_check->close();
-
-    // Prepare and execute the insert statement for the formula metadata
-    $sql_insert = "INSERT INTO formulasMetaData 
-        (name, product_name, fid, profile, gender, notes, defView, catClass, finalType, status, src, owner_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)";
-    
-    $stmt_insert = $conn->prepare($sql_insert);
-    $stmt_insert->bind_param("sssssssssss", 
-        $jsonData['meta']['name'], $jsonData['meta']['product_name'], $fid, 
-        $jsonData['meta']['profile'], $jsonData['meta']['gender'], $jsonData['meta']['notes'], 
-        $jsonData['meta']['defView'], $jsonData['meta']['catClass'], $jsonData['meta']['finalType'], 
-        $jsonData['meta']['status'], $userID);
-    
-    if (!$stmt_insert->execute()) {
-        $response['error'] = 'Unable to import the formula metadata: ' . $stmt_insert->error;
-        echo json_encode($response);
-        $stmt_insert->close();
-        return;
-    }
-
-    $last_id = $stmt_insert->insert_id;
-    $stmt_insert->close();
-
-    // Insert the formula source tag
-    $source = $jsonData['meta']['source'];
-    $stmt_tag = $conn->prepare("INSERT INTO formulasTags (formula_id, tag_name, owner_id) VALUES (?, ?, ?)");
-    $stmt_tag->bind_param("iss", $last_id, $source, $userID);
-    if (!$stmt_tag->execute()) {
-        $response['error'] = 'Unable to insert formula source tag: ' . $stmt_tag->error;
-        echo json_encode($response);
-        $stmt_tag->close();
-        return;
-    }
-    $stmt_tag->close();
-
-    // Process the formula ingredients
-    $array_data = $jsonData['formula'];
-    foreach ($array_data as $row) {
-        // Sanitize the ingredient data
-        $ingredient = mysqli_real_escape_string($conn, $row['ingredient']);
-        
-        // Check if the ingredient exists in the database
-        $stmt_get_ing = $conn->prepare("SELECT id FROM ingredients WHERE name = ? AND owner_id = ?");
-        $stmt_get_ing->bind_param("ss", $ingredient, $userID);
-        $stmt_get_ing->execute();
-        $stmt_get_ing->store_result();
-        
-        if ($stmt_get_ing->num_rows == 0) {
-            // Insert the ingredient if it doesn't exist
-            $stmt_insert_ing = $conn->prepare("INSERT INTO ingredients (name, owner_id) VALUES (?, ?)");
-            $stmt_insert_ing->bind_param("ss", $ingredient, $userID);
-            if (!$stmt_insert_ing->execute()) {
-                $response['error'] = 'Unable to insert ingredient: ' . $stmt_insert_ing->error;
-                echo json_encode($response);
-                $stmt_insert_ing->close();
-                $stmt_get_ing->close();
-                return;
-            }
-            $ingredient_id = $stmt_insert_ing->insert_id;
-            $stmt_insert_ing->close();
-        } else {
-            // Retrieve the existing ingredient ID
-            $stmt_get_ing->bind_result($ingredient_id);
-            $stmt_get_ing->fetch();
-        }
-        $stmt_get_ing->close();
-
-        // Prepare the insert query for formula details
-        $stmt_formula = $conn->prepare(
-            "INSERT INTO formulas (fid, name, ingredient_id, ingredient, concentration, dilutant, quantity, notes, owner_id) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        );
-        $stmt_formula->bind_param("ssissssss", 
-            $fid, $jsonData['meta']['name'], $ingredient_id, $ingredient, 
-            $row['concentration'], $row['dilutant'], $row['quantity'], $row['notes'], $userID);
-
-        // Execute the formula insert
-        if (!$stmt_formula->execute()) {
-            $response['error'] = 'Unable to insert formula details: ' . $stmt_formula->error;
-            echo json_encode($response);
-            $stmt_formula->close();
-            return;
-        }
-
-        $stmt_formula->close();
-    }
-
-    $response['success'] = $jsonData['meta']['name'] . ' formula imported!';
-    echo json_encode($response);
-    return;
-}
-
-
-//CONTACT MARKETPLACE AUTHOR
-if($_POST['action'] == 'contactAuthor'){
-	$fname = $_POST['fname'];
-	$fid = $_POST['fid'];
-	
-	if(empty($contactName = $_POST['contactName'])){
-		$response['error'] = 'Please provide your full name';
-		echo json_encode($response);
-		return;
-	}
-	if(empty($contactEmail = $_POST['contactEmail'])){
-		$response['error'] = 'Please provide your email';
-		echo json_encode($response);
-		return;
-	}
-	if(empty($contactReason = $_POST['contactReason'])){
-		$response['error'] = 'Please provide report details';
-		echo json_encode($response);
-		return;
-	}
-	
-
-	$data = [ 
-		 'request' => 'MarketPlace',
-		 'action' => 'contactAuthor',
-		 'src' => 'marketplace',
-		 'fname' => $fname, 
-		 'fid' => $fid,
-		 'contactName' => $contactName,
-		 'contactEmail' => $contactEmail,
-		 'contactReason' => $contactReason
-		 ];
-	
-    $req = json_decode(pvPost($pvLibraryAPI, $data));
-	if($req->success){
-		$response['success'] = $req->success;
-	}else{
-		$response['error'] = $req->error;
-	}
-	echo json_encode($response);
-	return;
-	
-}
-
-//REPORT MARKETPLACE FORMULA
-if($_POST['action'] == 'report' && $_POST['src'] == 'pvMarket'){
-	$fname = $_POST['fname'];
-	$fid= $_POST['fid'];
-	
-	if(empty($reporterName = $_POST['reporterName'])){
-		$response['error'] = 'Please provide your full name';
-		echo json_encode($response);
-		return;
-	}
-	if(empty($reporterEmail = $_POST['reporterEmail'])){
-		$response['error'] = 'Please provide your email';
-		echo json_encode($response);
-		return;
-	}
-	if(empty($reportReason = $_POST['reportReason'])){
-		$response['error'] = 'Please provide report details';
-		echo json_encode($response);
-		return;
-	}
-	
-
-	$data = [ 
-		 'request' => 'MarketPlace',
-		 'action' => 'report',
-		 'src' => 'marketplace',
-		 'fname' => $fname, 
-		 'fid' => $fid,
-		 'reporterName' => $reporterName,
-		 'reporterEmail' => $reporterEmail,
-		 'reportReason' => $reportReason
-		 ];
-	
-    $req = json_decode(pvPost($pvLibraryAPI, $data));
-	if($req->success){
-		$response['success'] = $req->success;
-	}else if($req->error){
-		$response['error'] = $req->error;
-	}else{
-		$response['error'] = "Unknown error";
-	}
-	echo json_encode($response);
-	return;
-	
-}	
 
 //CLEAR USER PREFS BY ADMIN
 if($_GET['action'] == 'userPerfClearGlobal'){
@@ -5456,128 +5171,357 @@ if (isset($_GET['do']) && $_GET['do'] === 'db_update') {
 
 //DB BACKUP
 if ($_GET['do'] == 'backupDB') {
-    if ($role === (int)1) {
+    if ($role !== (int)1) {
+        echo json_encode(['error' => 'Not authorized']);
+        error_log("PV Error: Unauthorized backup attempt by user role: $role");
+        return;
+    }
+
+    try {
+        // Validate database connection
+        if (!$conn || mysqli_connect_errno()) {
+            throw new Exception('Database connection failed: ' . mysqli_connect_error());
+        }
+
+        // Get backup parameters with validation
         $bkparams = '';
-
         if (getenv('DB_BACKUP_PARAMETERS')) {
-            $bkparams = getenv('DB_BACKUP_PARAMETERS');
+            $bkparams = escapeshellarg(getenv('DB_BACKUP_PARAMETERS'));
         }
 
-        if (isset($_GET['column_statistics']) && $_GET['column_statistics'] === 'true') {
-            $bkparams .= ' --column-statistics=1';
+
+        // Validate database credentials
+        if (empty($dbuser) || empty($dbname) || empty($dbhost)) {
+            throw new Exception('Missing required database credentials');
         }
 
-        // Generate a temporary file with a random name
-        $tmpFile = tempnam(sys_get_temp_dir(), 'backup_') . '.sql';
+        // Generate secure temporary files
+        $tempDir = sys_get_temp_dir();
+        if (!is_writable($tempDir)) {
+            throw new Exception('Temporary directory is not writable');
+        }
+
+        $tmpFile = tempnam($tempDir, 'pv_backup_') . '.sql';
         $compressedFile = $tmpFile . '.gz';
 
-        $cmd = "mysqldump $bkparams -u $dbuser --password=$dbpass -h $dbhost $dbname > $tmpFile";
+        if (!$tmpFile) {
+            throw new Exception('Failed to create temporary file');
+        }
 
+        // Build mysqldump command with proper escaping
+        $dbuser_escaped = escapeshellarg($dbuser);
+        $dbpass_escaped = escapeshellarg($dbpass);
+        $dbhost_escaped = escapeshellarg($dbhost);
+        $dbname_escaped = escapeshellarg($dbname);
+        $tmpFile_escaped = escapeshellarg($tmpFile);
+
+        $cmd = "mysqldump {$bkparams} -u {$dbuser_escaped} --password={$dbpass_escaped} -h {$dbhost_escaped} {$dbname_escaped} > {$tmpFile_escaped} 2>&1";
+
+        // Execute backup command
+        $output = [];
+        $result_code = 0;
         exec($cmd, $output, $result_code);
 
         if ($result_code !== 0) {
-            error_log("PV Backup Error: Command failed with code $result_code");
-            echo json_encode(['error' => 'Backup failed. Please check the server logs for more details.']);
-            unlink($tmpFile); // Clean up the temporary file
+            $error_output = implode("\n", $output);
+            error_log("PV Backup Error: mysqldump failed with code $result_code. Output: $error_output");
+            
+            // Clean up temporary file
+            if (file_exists($tmpFile)) {
+                unlink($tmpFile);
+            }
+            
+            echo json_encode(['error' => 'Database backup failed. Please check server configuration and try again.']);
             return;
         }
 
-        // Compress the temporary file
-        $cmd = "gzip --best $tmpFile 2>&1";
-        exec($cmd, $output, $result_code);
+        // Verify backup file was created and has content
+        if (!file_exists($tmpFile) || filesize($tmpFile) === 0) {
+            if (file_exists($tmpFile)) {
+                unlink($tmpFile);
+            }
+            throw new Exception('Backup file was not created or is empty');
+        }
 
-        if ($result_code !== 0 || !file_exists($compressedFile)) {
-            error_log("PV Backup Error: Compression failed with code $result_code");
-            echo json_encode(['error' => 'Compression failed. Please check the server logs for more details.']);
-            unlink($tmpFile); // Clean up the temporary file
+
+        // Compress the backup file
+        $tmpFile_escaped = escapeshellarg($tmpFile);
+        $compress_cmd = "gzip --best {$tmpFile_escaped} 2>&1";
+        
+        $compress_output = [];
+        $compress_result = 0;
+        exec($compress_cmd, $compress_output, $compress_result);
+
+        if ($compress_result !== 0 || !file_exists($compressedFile)) {
+            $compress_error = implode("\n", $compress_output);
+            error_log("PV Backup Error: Compression failed with code $compress_result. Output: $compress_error");
+            
+            // Clean up files
+            if (file_exists($tmpFile)) unlink($tmpFile);
+            if (file_exists($compressedFile)) unlink($compressedFile);
+            
+            echo json_encode(['error' => 'Backup compression failed. Please try again.']);
             return;
         }
 
-        // Pass the compressed file to download
-        $file = 'backup_' . date("d-m-Y") . '.sql.gz';
+        // Verify compressed file
+        if (!file_exists($compressedFile) || filesize($compressedFile) === 0) {
+            if (file_exists($compressedFile)) unlink($compressedFile);
+            throw new Exception('Compressed backup file is invalid');
+        }
 
-        // Ensure no output before headers
+        // Generate download filename with timestamp and validation
+        $timestamp = date("Y-m-d_H-i-s");
+        $filename = "pv_backup_{$timestamp}.sql.gz";
+        
+        // Validate filename
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename)) {
+            throw new Exception('Invalid filename generated');
+        }
+
+        $filesize = filesize($compressedFile);
+        if ($filesize === false) {
+            throw new Exception('Cannot determine file size');
+        }
+
+        // Clear any previous output
         if (ob_get_level()) {
             ob_end_clean();
         }
 
-        header('Content-Type: application/gzip');
-        header('Content-Disposition: attachment; filename="' . $file . '"');
-        header('Content-Length: ' . filesize($compressedFile));
+        // Set secure headers for file download
+        header('Content-Type: application/x-gzip');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Length: ' . $filesize);
         header('Content-Encoding: none');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
         header('Connection: close');
 
-        // Stream file in chunks
+        // Stream file in chunks with error handling
         $fp = fopen($compressedFile, 'rb');
-        if ($fp) {
-            while (!feof($fp)) {
-                echo fread($fp, 8192);
-                flush();
-            }
-            fclose($fp);
-        } else {
-            error_log("PV Backup Error: Unable to open compressed file for reading.");
-            echo json_encode(['error' => 'Download failed.']);
+        if (!$fp) {
+            throw new Exception('Cannot open compressed file for reading');
         }
 
-        // Clean up the temporary files
-        unlink($compressedFile);
+        $chunk_size = 8192;
+        while (!feof($fp) && connection_status() === CONNECTION_NORMAL) {
+            $chunk = fread($fp, $chunk_size);
+            if ($chunk === false) {
+                break;
+            }
+            echo $chunk;
+            flush();
+        }
+        
+        fclose($fp);
+
+        // Clean up temporary files
+        if (file_exists($compressedFile)) {
+            unlink($compressedFile);
+        }
+
+        // Log successful backup
+        error_log("PV Info: Database backup completed successfully by user ID: $userID");
+        
         exit;
-    } else {
-        echo json_encode(['error' => 'Not authorised']);
-        error_log("PV Error: Not authorised: $role");
+
+    } catch (Exception $e) {
+        // Clean up any temporary files
+        if (isset($tmpFile) && file_exists($tmpFile)) {
+            unlink($tmpFile);
+        }
+        if (isset($compressedFile) && file_exists($compressedFile)) {
+            unlink($compressedFile);
+        }
+
+        error_log("PV Backup Error: " . $e->getMessage());
+        echo json_encode(['error' => 'Backup failed: ' . $e->getMessage()]);
+        return;
     }
+}
+
+//DB RESTORE - Enhanced with better validation and error handling
+if($_GET['restore'] == 'db_bk'){
+    if($role !== (int)1) {
+        echo json_encode(['error' => 'Not authorized']);
+        error_log("PV Error: Unauthorized restore attempt by user role: $role");
+        return;
+    }
+
+    try {
+        // Validate file upload
+        if (!isset($_FILES['backupFile']) || $_FILES['backupFile']['error'] !== UPLOAD_ERR_OK) {
+            $upload_errors = [
+                UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize directive',
+                UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE directive',
+                UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+                UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                UPLOAD_ERR_EXTENSION => 'Upload stopped by extension'
+            ];
+            
+            $error_code = $_FILES['backupFile']['error'] ?? UPLOAD_ERR_NO_FILE;
+            $error_msg = $upload_errors[$error_code] ?? 'Unknown upload error';
+            throw new Exception("Upload failed: $error_msg");
+        }
+
+        // Validate file properties
+        $uploaded_file = $_FILES['backupFile'];
+        $max_file_size = 100 * 1024 * 1024; // 100MB limit
+        
+        if ($uploaded_file['size'] > $max_file_size) {
+            throw new Exception('Backup file is too large (max 100MB allowed)');
+        }
+
+        if ($uploaded_file['size'] === 0) {
+            throw new Exception('Uploaded file is empty');
+        }
+
+        // Validate file extension
+        $original_filename = basename($uploaded_file['name']);
+        if (!preg_match('/\.sql\.gz$/i', $original_filename)) {
+            throw new Exception('Invalid file type. Only .sql.gz files are allowed');
+        }
+
+        // Create secure temporary directory
+        if (!file_exists($tmp_path)) {
+            if (!mkdir($tmp_path, 0750, true)) {
+                throw new Exception('Failed to create temporary directory');
+            }
+        }
+
+        if (!is_writable($tmp_path)) {
+            throw new Exception('Temporary directory is not writable');
+        }
+
+        // Generate secure target path
+        $safe_filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $original_filename);
+        $target_path = $tmp_path . uniqid('restore_', true) . '_' . $safe_filename;
+
+        // Move uploaded file with validation
+        if (!move_uploaded_file($uploaded_file['tmp_name'], $target_path)) {
+            throw new Exception('Failed to move uploaded file');
+        }
+
+        // Verify file was moved and validate
+        if (!file_exists($target_path) || !is_readable($target_path)) {
+            throw new Exception('Uploaded file is not accessible');
+        }
+
+        // Validate gzip file integrity
+        $gzip_test = shell_exec("gzip -t " . escapeshellarg($target_path) . " 2>&1");
+        if ($gzip_test !== null && !empty($gzip_test)) {
+            unlink($target_path);
+            throw new Exception('Backup file is corrupted or invalid');
+        }
+
+        // Extract version information (if available in filename)
+        preg_match('/backup_(\d{4}-\d{2}-\d{2})/', $original_filename, $version_matches);
+        $backup_date = $version_matches[1] ?? null;
+
+        // Create restore SQL file path
+        $restore_sql_path = $tmp_path . uniqid('restore_', true) . '.sql';
+
+        // Decompress file with error handling
+        $decompress_cmd = "gunzip -c " . escapeshellarg($target_path) . " > " . escapeshellarg($restore_sql_path) . " 2>&1";
+        $decompress_output = shell_exec($decompress_cmd);
+        
+        if (!file_exists($restore_sql_path) || filesize($restore_sql_path) === 0) {
+            // Clean up
+            if (file_exists($target_path)) unlink($target_path);
+            if (file_exists($restore_sql_path)) unlink($restore_sql_path);
+            throw new Exception('Failed to decompress backup file');
+        }
+
+        // Validate SQL file content
+        $sql_header = file_get_contents($restore_sql_path, false, null, 0, 1000);
+        if (!preg_match('/mysqldump|CREATE TABLE|INSERT INTO/i', $sql_header)) {
+            // Clean up
+            unlink($target_path);
+            unlink($restore_sql_path);
+            throw new Exception('Invalid SQL backup file format');
+        }
+
+        // Backup current database before restore (safety measure)
+        $safety_backup = $tmp_path . 'safety_backup_' . date('Y-m-d_H-i-s') . '.sql';
+        $safety_cmd = "mysqldump -u " . escapeshellarg($dbuser) . 
+                     " --password=" . escapeshellarg($dbpass) . 
+                     " -h " . escapeshellarg($dbhost) . 
+                     " " . escapeshellarg($dbname) . 
+                     " > " . escapeshellarg($safety_backup) . " 2>&1";
+        
+        exec($safety_cmd, $safety_output, $safety_result);
+        
+        if ($safety_result !== 0) {
+            error_log("PV Warning: Could not create safety backup before restore");
+        }
+
+        // Restore database with enhanced error handling
+        $mysql_cmd = "mysql -u " . escapeshellarg($dbuser) . 
+                    " --password=" . escapeshellarg($dbpass) . 
+                    " -h " . escapeshellarg($dbhost) . 
+                    " " . escapeshellarg($dbname) . 
+                    " < " . escapeshellarg($restore_sql_path) . " 2>&1";
+
+        $restore_output = [];
+        $restore_result = 0;
+        exec($mysql_cmd, $restore_output, $restore_result);
+
+        // Clean up temporary files
+        if (file_exists($target_path)) unlink($target_path);
+        if (file_exists($restore_sql_path)) unlink($restore_sql_path);
+
+        if ($restore_result !== 0) {
+            $error_output = implode("\n", $restore_output);
+            error_log("PV Restore Error: Database restore failed. Output: $error_output");
+            
+            // Attempt to restore safety backup if available
+            if (file_exists($safety_backup)) {
+                error_log("PV Info: Attempting to restore safety backup");
+                $rollback_cmd = "mysql -u " . escapeshellarg($dbuser) . 
+                              " --password=" . escapeshellarg($dbpass) . 
+                              " -h " . escapeshellarg($dbhost) . 
+                              " " . escapeshellarg($dbname) . 
+                              " < " . escapeshellarg($safety_backup) . " 2>&1";
+                exec($rollback_cmd);
+            }
+            
+            throw new Exception('Database restore failed. Please check the backup file and try again.');
+        }
+
+        // Clean up safety backup on successful restore
+        if (file_exists($safety_backup)) {
+            unlink($safety_backup);
+        }
+
+        // Clear sessions to force re-authentication
+        session_unset();
+        session_destroy();
+
+        // Log successful restore
+        error_log("PV Info: Database restored successfully by user ID: $userID from file: $original_filename");
+
+        echo json_encode(['success' => 'Database has been restored successfully. Please refresh the page for changes to take effect.']);
+
+    } catch (Exception $e) {
+        // Clean up any remaining temporary files
+        if (isset($target_path) && file_exists($target_path)) {
+            unlink($target_path);
+        }
+        if (isset($restore_sql_path) && file_exists($restore_sql_path)) {
+            unlink($restore_sql_path);
+        }
+
+        error_log("PV Restore Error: " . $e->getMessage());
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+
     return;
 }
 
-
-//DB RESTORE
-if($_GET['restore'] == 'db_bk'){
-	if($role === (int)1) {
-
-		if (!file_exists($tmp_path)) {
-			mkdir($tmp_path, 0777, true);
-		}
-		$result = [];
-        $original_filename = basename($_FILES['backupFile']['name']);
-        $target_path = $tmp_path . $fid . '_' . $original_filename;
-
-		if(move_uploaded_file($_FILES['backupFile']['tmp_name'], $target_path)) {
-			$gz_tmp = basename($_FILES['backupFile']['name']);
-			preg_match('/_(.*?)_/', $gz_tmp, $v);
-
-			if($ver !== $v['1']){
-				$result['error'] = "Backup file is taken from a different version ".$v['1'];
-				echo json_encode($result);
-				return;
-			}
-			
-			system("gunzip -c $target_path > ".$tmp_path.'restore.sql');
-			$cmd = "mysql -u$dbuser -p$dbpass -h$dbhost $dbname < ".$tmp_path.'restore.sql'; 
-			passthru($cmd,$e);
-			
-			unlink($target_path);
-			unlink($tmp_path.'restore.sql');
-			
-			if(!$e){
-				$result['success'] = 'Database has been restored. Please refresh the page for the changes to take effect.';
-				unset($_SESSION['parfumvault']);
-				session_unset();
-			}else{
-				$result['error'] = "Something went wrong...";
-			}
-		} else {
-			$result['error'] = "There was an error processing backup file $target_path, please try again!";
-		}
-	
-	}	else {
-		echo json_encode(['error' => 'Not authorised']);
-		error_log("PV Error: Not authorised: .$role");
-	}
-
-	echo json_encode($result);
-	return;
-}
 
 //EXPORT IFRA
 if($_GET['action'] == 'exportIFRA'){

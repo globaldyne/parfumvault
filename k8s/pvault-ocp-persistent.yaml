@@ -51,7 +51,7 @@ spec:
       containers:
         - env:
             - name: DB_BACKUP_PARAMETERS
-              value: --column-statistics=1
+              value: --single-transaction
             - name: DB_HOST
               value: pvdb
             - name: DB_NAME

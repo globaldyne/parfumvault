@@ -88,7 +88,7 @@ if ($key && $do === 'auth') {
 }
 
 $validEndpoints = [
-    'upload' => ['formula', 'ingredients', 'aromatrack'],
+    'upload' => ['formulas', 'ingredients', 'aromatrack'],
     'get' => ['formulas', 'ingredients', 'categories', 'suppliers', 'documents', 'ifra', 'aromatrack'],
     'manage' => ['makeformula']
 ];

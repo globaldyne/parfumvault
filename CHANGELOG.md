@@ -1,4 +1,18 @@
 # CHANGELOG
+### Version 13.5
+- Added formula update api calls from the PV2 app
+- Added metadata in formulas get api
+- AI full ingredient fill (WIP)
+- AI Overall improvements
+- Improved backup and restore process
+- Removed deprecated columns-statistics from the backup params
+- Fixed makeformula api to remove the formula from the queue of making instead of deleting it
+- Updated footer for th PV Making app
+- PV2 promo banner added
+- Appstore links update
+- Removed deprecated pv library
+- Removed Marketplace
+
 ### Version 13.4
 - Ensure olfactory pyramid current values appear in sliders
 - Added toggle API key visibility
