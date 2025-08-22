@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 13.6
+- Links update
 
 ### Version 13.5
 - Added formula update api calls from the PV2 app
