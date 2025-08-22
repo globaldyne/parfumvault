@@ -165,10 +165,6 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
             Calculation Tools
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="https://discord.gg/WxNE8kR8ug" target="_blank">
-            <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
-            Join our Discord Server
-          </a>
           <a class="dropdown-item" href="https://www.perfumersvault.com/kb" target="_blank">
             <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
             Documentation
