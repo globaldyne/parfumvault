@@ -45,7 +45,6 @@ $placeholders = [
     '{{product_url}}' => 'https://www.perfumersvault.com',
     '{{product_name}}' => htmlspecialchars($product),
     '{{version}}' => htmlspecialchars($ver . " " . $commit),
-    '{{discord_url}}' => 'https://discord.gg/WxNE8kR8ug',
     '{{appstore_pv}}' => 'https://apps.apple.com/us/app/perfumers-vault-2/id6748814424',
     '{{appstore_pv_img}}' => '/img/appstore/get_pv.png',
     '{{appstore_aroma}}' => 'https://apps.apple.com/us/app/aromatrack/id6742348411',

@@ -898,7 +898,6 @@ INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `descriptio
 ('USER_selfRegister', '0', 'Enable user registration', 'checkbox', 'Enable or disable user self registration'),
 ('USER_terms_url', 'https://www.perfumersvault.com/terms-of-service', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and conditions info for users'),
 ('USER_privacy_url', 'https://www.perfumersvault.com/privacy-policy', 'Privacy Policy URL', 'text', 'Point this to your web site that hosts the privacy policy info for users'),
-('LIBRARY_enable', '1', 'Enanle PV Library', 'checkbox', 'Enable or disable PV Library'),
 ('announcements', '', 'Announcement', 'textarea', 'Add here any announcement for your users when login'),
 ('EMAIL_isEnabled', '0', 'Enable email', 'checkbox', 'Enable or disable email functions, like user welcome email when register, password reset, email confirmation etc'),
 ('EMAIL_smtp_host', '', 'SMPT Host', 'text', 'This is your smtp email server ip or hostname'),

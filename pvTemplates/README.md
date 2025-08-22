@@ -29,7 +29,6 @@ The following placeholders are used in the `pvDefault.html` file. These placehol
 - `{{product_url}}`: URL of the product's official website.
 - `{{product_name}}`: Name of the product, dynamically set.
 - `{{version}}`: Version of the application, including commit information.
-- `{{discord_url}}`: URL to the official Discord server.
 - `{{appstore_pv}}`: URL to the Perfumers Vault app on the App Store.
 - `{{appstore_pv_img}}`: Path to the image for the Perfumers Vault app link.
 - `{{appstore_aroma}}`: URL to the AromaTrack app on the App Store.
