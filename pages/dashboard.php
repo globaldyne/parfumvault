@@ -413,11 +413,11 @@ $(document).ready(function() {
 <script>
 $(document).ready(function() {
   // If user hid banner previously, respect preference
-  if (localStorage.getItem('pv2_banner_hidden') === '1') {
-    $('#dashboard-banner').hide();
-  } else {
+  //if (localStorage.getItem('pv2_banner_hidden') === '1') {
+  //  $('#dashboard-banner').hide();
+  //} else {
     $('#dashboard-banner').css('cursor', 'pointer');
-  }
+  //}
 
   // Click banner to open modal
   $('#dashboard-banner').on('click', function(e) {

@@ -6,6 +6,7 @@
 - Added scale parameter in makeformula api 
 - Removed PVScale function
 - Removed deprecated print and pdf,csv export action from formula making
+- Removed PV Scale integration
 
 ### Version 13.6
 - Links update
