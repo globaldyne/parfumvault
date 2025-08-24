@@ -1,11 +1,18 @@
 <?php
 define('__ROOT__', dirname(dirname(__FILE__))); 
-global $conn, $userID , $settings, $user_settings, $system_settings;
+global $conn, $userID, $system_settings;
 
-
-require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/func/ml2L.php');
 require_once(__ROOT__.'/func/countElement.php');
+
+$user_settings = [];
+$query = "SELECT * FROM user_settings WHERE owner_id = '".$userID."'";
+if ($result = mysqli_query($conn, $query)) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $user_settings[$row['key_name']] = $row['value'];
+    }
+    mysqli_free_result($result);
+}
 
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'meta';
@@ -21,7 +28,7 @@ $table = "makeFormula";
 $fid = isset($_GET['fid']) ? mysqli_real_escape_string($conn, $_GET['fid']) : '';
 
 if (isset($_GET['qStep'])) {
-    $settings['qStep'] = $_GET['qStep'];
+    $user_settings['qStep'] = $_GET['qStep'];
 }
 
 $filter = $search !== '' ? " AND (ingredient LIKE '%$search%') AND owner_id = '$userID'" : " AND owner_id = '$userID' ";
@@ -97,7 +104,7 @@ switch ($action) {
                 'inventory' => [
                     'suppliers' => $suppliers,
                     'total_supplier_stock' => $total_supplier_stock,
-                    'mUnit' => $preferred_munit ?: ($settings['mUnit'] ?? 'ml')
+                    'mUnit' => $preferred_munit ?: ($user_settings['mUnit'] ?? 'ml')
                 ],
                 'toAdd' => (int)$rq['toAdd'],
                 'toSkip' => (int)$rq['skip'],
@@ -118,12 +125,11 @@ switch ($action) {
         $m = [
             'total_ingredients' => (int)countElement("$table", "fid = '$fid'"),
             'total_ingredients_left' => (int)countElement("$table", "fid = '$fid' AND toAdd = '1' AND skip = '0'"),
-            'total_quantity' => ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']),
-            'total_quantity_left' => ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']),
-            'quantity_unit' => (string)$settings['mUnit'],
+            'total_quantity' => ml2l($mg['total_mg'], $user_settings['qStep'], $user_settings['mUnit']),
+            'total_quantity_left' => ml2l($mg['total_mg_left'], $user_settings['qStep'], $user_settings['mUnit']),
+            'quantity_unit' => (string)$user_settings['mUnit'],
             'last_updated' => (string)mysqli_fetch_assoc(mysqli_query($conn, "SELECT updated_at FROM $table WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1"))['updated_at']
         ];
-
         $response['meta'] = $m;
         
         $total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS entries FROM $table WHERE fid = '$fid' AND owner_id = '$userID'"));
@@ -257,7 +263,7 @@ switch ($action) {
                 }
                 $nIngID = $repID ?: $ingID;
                 mysqli_query($conn, "UPDATE suppliers SET stock = stock + $originalQuantity WHERE ingID = '$nIngID' AND ingSupplierID = '$supplier' AND owner_id = '$userID'");
-                $response['success'] .= " Stock increased by ".$originalQuantity.($settings['mUnit'] ?? 'ml');
+                $response['success'] .= " Stock increased by ".$originalQuantity.($user_settings['mUnit'] ?? 'ml');
             }
             echo json_encode($response);
         } else {
@@ -280,7 +286,7 @@ switch ($action) {
 
         define('FPDF_FONTPATH',__ROOT__.'/fonts');
         // Ensure defCatClass is never null
-        $defCatClass = isset($settings['defCatClass']) && $settings['defCatClass'] !== null && $settings['defCatClass'] !== '' ? $settings['defCatClass'] : 'cat4';
+        $defCatClass = isset($user_settings['defCatClass']) && $user_settings['defCatClass'] !== null && $user_settings['defCatClass'] !== '' ? $user_settings['defCatClass'] : 'cat4';
 
         //error_log("Marking formula $fid as complete with total quantity $total_quantity - $defCatClass");
         // Check if already marked as made
@@ -296,7 +302,7 @@ switch ($action) {
         }
         if(mysqli_query($conn,"UPDATE formulasMetaData SET isMade = '1', toDo = '0', madeOn = NOW(), status = '2' WHERE fid = '$fid' AND owner_id = '$userID'")){
             $batchID = genBatchID();
-            genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$settings['qStep'] ?: 2,$settings['defPercentage'] ?: 100,'makeFormula');
+            genBatchPDF($fid,$batchID,$total_quantity,'100',$total_quantity,$defCatClass,$user_settings['qStep'] ?: 2,$user_settings['defPercentage'] ?: 100,'makeFormula');
             mysqli_query($conn, "DELETE FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
             echo json_encode(['success' => 'Formula is complete']);
         }
