@@ -174,32 +174,46 @@ $.ajax({
 
 //Add in Schedule
 $('#schedule_to_make').on('click', '[id*=addTODO]', function () {
-	$.ajax({ 
+    var scaleChecked = $('#scaleOnSchedule').is(':checked');
+    var scaleAmount = $('#scaleAmount').val();
+    $('#scheduleToMakeMsg').html('');
+    if (scaleChecked) {
+        if (!scaleAmount || $.trim(scaleAmount) === '') {
+            $('#scheduleToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>New amount is required when scaling.</div>');
+            $('#scaleAmount').focus();
+            return;
+        }
+        if (isNaN(scaleAmount)) {
+            $('#scheduleToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-circle-exclamation mx-2"></i>New amount must be a number.</div>');
+            $('#scaleAmount').focus();
+            return;
+        }
+    }
+    $.ajax({ 
     url: '/core/core.php', 
 	type: 'POST',
     data: {
 		action: 'todo',
 		fname: myFNAME,
 		fid: myFID,
+		scaleAmount: scaleChecked ? scaleAmount : '',
 		add: true,
 	},
 	dataType: 'json',
     success: function (data) {
 		if ( data.success ) {
-			$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+			$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 			$('.toast-header').removeClass().addClass('toast-header alert-success');
-			
+			$('#schedule_to_make').modal('toggle');
+			$('.toast').toast('show');
 		} else {
-			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+			$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 			$('.toast-header').removeClass().addClass('toast-header alert-danger');
+			$('#scheduleToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + data.error + '</div>');
 		}
-		$('#schedule_to_make').modal('toggle');
-		$('.toast').toast('show');
     },
 	error: function (xhr, status, error) {
-		$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i> An ' + status + ' occurred, check server logs for more info. '+ error);
-		$('.toast-header').removeClass().addClass('toast-header alert-danger');
-		$('.toast').toast('show');
+		$('#scheduleToMakeMsg').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>' + status + ' ' + error + '</div>');
 	}
   });
 });
@@ -590,7 +604,6 @@ $("#formula").on("click", ".open-quantity-dialog", function () {
 			cache: true,
 		}		
 	});
-	
 });
 
 

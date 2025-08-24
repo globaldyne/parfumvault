@@ -22,7 +22,7 @@
         if (!(isIOS || isAndroid)) return;
 
         var bar = document.createElement("div");
-        bar.className = "alert alert-primary d-flex align-items-center justify-content-between shadow-sm border-0";
+        bar.className = "text-primary-emphasis bg-primary-subtle d-flex align-items-center justify-content-between shadow-sm border-0";
         bar.style.position = "fixed";
         bar.style.top = "0";
         bar.style.left = "0";

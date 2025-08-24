@@ -932,6 +932,15 @@ $(document).ready(function() {
 		$('#formula').DataTable().button(0).trigger();
 	});
 	
+	$('#scaleOnSchedule').on('change', function() {
+		if($(this).is(':checked')) {
+			$('#scaleAmountGroup').show();
+		} else {
+			$('#scaleAmountGroup').hide();
+		}
+	});
+	
+
 });//doc ready
 
 
@@ -958,15 +967,27 @@ function reload_formula_data() {
       </div>
       <div class="modal-body">
       <div id="scheduleToMakeMsg"></div>
-      <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mx-2"></i>This will add the current formulation to scheduled formulas. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
-	    <div class="modal-footer">
-	     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-  		 <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
-	   </div>
+      <div class="alert alert-info"><i class="fa-solid fa-circle-exclamation mx-2"></i>This will add the current formulation to scheduled formulas. You can optionally scale the formula when scheduling. Any changes in this formula will not be replicated to the scheduled version. If you make changes here, you have to remove it and re-add it for making.</div>
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="scaleOnSchedule" name="scaleOnSchedule">
+        <label class="form-check-label" for="scaleOnSchedule">Scale formula when scheduling</label>
+      </div>
+      <div class="mb-3" id="scaleAmountGroup" style="display:none;">
+        <label for="scaleAmount" class="form-label">New amount</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="scaleAmount" name="scaleAmount" value="100" />
+          <span class="input-group-text"><strong><?=$settings['mUnit']?></strong></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+       <input type="submit" name="button" class="btn btn-primary" id="addTODO" value="Schedule Formula">
+     </div>
     </div>
   </div>
  </div>
 </div>
+
 
 <!--Scale Formula-->
 <div class="modal fade" id="amount_to_make" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amount_to_make" aria-hidden="true">
