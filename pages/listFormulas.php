@@ -372,19 +372,12 @@ $(document).ready(function() {
 	function fActions(data, type, row, meta){
 			data = '<div class="dropdown">' +
 			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-				'<ul class="dropdown-menu dropdown-menu-right">';
-				
+				'<ul class="dropdown-menu dropdown-menu-right">';				
 			data += '<li><a class="pv_point_gen dropdown-item" data-bs-toggle="modal" data-bs-target="#getFormMeta" data-formula="'+row.name+'" data-id="' + row.id + '"><i class="fas fa-cogs mx-2"></i>Settings</a></li>';
-	
 			data += '<li><a class="dropdown-item" href="/pages/export.php?action=exportFormulas&fid=' + row.fid + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
-			
-			data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Schedule to make</a></li>';
-			
+			data += '<li><a class="dropdown-item" href="#" id="addTODO" rel="tip" title="Quick schedule '+ row.name +' to make" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-tasks mx-2"></i>Quick schedule to make</a></li>';
 			data += '<li><a class="dropdown-item" href="#" id="cloneMe" rel="tip" title="Duplicate '+ row.name +'" data-id='+ row.fid +' data-name="'+ row.name +'"><i class="fas fa-copy mx-2"></i>Duplicate formula</a></li>';
-			
 			data += '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#genQRC" data-id="'+ row.fid +'" data-formula="'+ row.name +'"><i class="fa-solid fa-qrcode mx-2"></i>Generate QR Code</a></li>';
-	
-	
 			data += '<div class="dropdown-divider"></div>';
 			if (row.gid) {
 				data += '<li><a class="dropdown-item" href="/?do=Formula&id='+ row.id +'&gid='+ row.gid +'"><i class="fas fa-share-alt mx-2"></i>View shared formula</a></li>';

@@ -1,4 +1,13 @@
 # CHANGELOG
+### Version 13.7
+- Prevent add formula for making if ingredients missing from the database
+- Allow formula to be scalled before added for making and in making
+- Ingredient id will now be fetched from the ingredients table when adding for making, instead of the formulas table
+- Added scale parameter in makeformula api 
+- Removed PVScale function
+- Removed deprecated print and pdf,csv export action from formula making
+- Removed PV Scale integration
+
 ### Version 13.6
 - Links update
 

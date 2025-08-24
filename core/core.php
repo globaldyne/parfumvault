@@ -7372,7 +7372,36 @@ if($_POST['action'] == 'skipMaterial' && $_POST['fid'] &&  $_POST['id']){
 	return;
 }
 
+//SCALE MAKE FORMULA
+if ($_POST['action'] == 'scaleFormula' && $_POST['fid'] && $_POST['scaleAmount']) {
+    $fid = mysqli_real_escape_string($conn, $_POST['fid']);
+    $scaleAmount = floatval($_POST['scaleAmount']);
 
+    // Get the sum of all quantities for this formula
+    $result = mysqli_query($conn, "SELECT SUM(quantity) as total FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
+    $row = mysqli_fetch_assoc($result);
+    $total = floatval($row['total']);
+
+    if ($total <= 0) {
+        $response['error'] = 'Total quantity is zero, cannot scale.';
+        echo json_encode($response);
+        return;
+    }
+
+    $scaleFactor = $scaleAmount / $total;
+
+    // Update each ingredient's quantity and originalQuantity proportionally
+    $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
+
+    if ($update) {
+        $response['success'] = 'Formula scaled successfully';
+    } else {
+        $response['error'] = 'Error scaling the formula';
+    }
+
+    echo json_encode($response);
+    return;
+}
 
 //MARK COMPLETE
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
@@ -7416,24 +7445,75 @@ if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['markComplete']){
 
 //MAKING ADD FORMULA
 if($_POST['action'] == 'todo' && $_POST['fid'] && $_POST['add']){
-	$fid = mysqli_real_escape_string($conn, $_POST['fid']);
-	$fname = mysqli_real_escape_string($conn, $_POST['fname']);
-	
-	if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND toDo = '1' AND owner_id = '$userID'"))){
-		$response['error'] = 'Formula '.$fname.' is already scheduled';
-		echo json_encode($response);
-		return;
-	}
-								
-	if(mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, originalQuantity, toAdd, owner_id) SELECT fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, quantity, '1', '$userID' FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0' AND owner_id = '$userID'")){
-		mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', scheduledOn = NOW() WHERE fid = '$fid' AND owner_id = '$userID'");
-		$response['success'] = 'Formula <a href="/?do=scheduledFormulas">'.$fname.'</a> scheduled for making';
-	}else{
-		$response['error'] = 'An error occured '.mysqli_error($conn);
-	}
-	
-	echo json_encode($response);
-	return;
+    $fid = mysqli_real_escape_string($conn, $_POST['fid']);
+    $fname = mysqli_real_escape_string($conn, $_POST['fname']);
+    $scaleAmount = floatval($_POST['scaleAmount']);
+
+    // Check if formula is already scheduled
+    if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fid = '$fid' AND toDo = '1' AND owner_id = '$userID'"))){
+        $response['error'] = 'Formula '.$fname.' is already scheduled';
+        echo json_encode($response);
+        return;
+    }
+
+    // Check if all ingredients exist in the ingredients table
+    $missingIngredients = [];
+    $formulaIngredients = mysqli_query($conn, "SELECT ingredient FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0' AND owner_id = '$userID'");
+    while ($row = mysqli_fetch_assoc($formulaIngredients)) {
+        $ingredientName = mysqli_real_escape_string($conn, $row['ingredient']);
+        $exists = mysqli_num_rows(mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredientName' AND owner_id = '$userID'"));
+        if (!$exists) {
+            $missingIngredients[] = $row['ingredient'];
+        }
+    }
+    if (!empty($missingIngredients)) {
+        $response['error'] = 'Formula cannot be added. The following ingredients do not exist in your inventory: ' . implode(', ', $missingIngredients);
+        echo json_encode($response);
+        return;
+    }
+
+    // Calculate total quantity for scaling
+    $totalQuantityRes = mysqli_query($conn, "SELECT SUM(quantity) as total FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0' AND owner_id = '$userID'");
+    $totalQuantityRow = mysqli_fetch_assoc($totalQuantityRes);
+    $totalQuantity = floatval($totalQuantityRow['total']);
+
+    if ($scaleAmount > 0 && $totalQuantity > 0) {
+        $scaleFactor = $scaleAmount / $totalQuantity;
+    } else {
+        $scaleFactor = 1;
+    }
+
+    // Insert into makeFormula, scaling quantity
+    $formulaRows = mysqli_query($conn, "SELECT name, ingredient, concentration, dilutant, quantity FROM formulas WHERE fid = '$fid' AND exclude_from_calculation = '0' AND owner_id = '$userID'");
+    $allInserted = true;
+    while ($row = mysqli_fetch_assoc($formulaRows)) {
+        $ingredientName = mysqli_real_escape_string($conn, $row['ingredient']);
+        $ingredientIdRes = mysqli_query($conn, "SELECT id FROM ingredients WHERE name = '$ingredientName' AND owner_id = '$userID' LIMIT 1");
+        $ingredientIdRow = mysqli_fetch_assoc($ingredientIdRes);
+        $ingredient_id = $ingredientIdRow ? $ingredientIdRow['id'] : 0;
+
+        $name = mysqli_real_escape_string($conn, $row['name']);
+        $concentration = mysqli_real_escape_string($conn, $row['concentration']);
+        $dilutant = mysqli_real_escape_string($conn, $row['dilutant']);
+        $origQuantity = floatval($row['quantity']);
+        $scaledQuantity = $origQuantity * $scaleFactor;
+
+        $insert = mysqli_query($conn, "INSERT INTO makeFormula (fid, name, ingredient, ingredient_id, concentration, dilutant, quantity, originalQuantity, toAdd, owner_id) VALUES ('$fid', '$name', '$ingredientName', '$ingredient_id', '$concentration', '$dilutant', '$scaledQuantity', '$scaledQuantity', '1', '$userID')");
+        if (!$insert) {
+            $allInserted = false;
+            break;
+        }
+    }
+
+    if($allInserted){
+        mysqli_query($conn, "UPDATE formulasMetaData SET toDo = '1', status = '1', isMade = '0', scheduledOn = NOW() WHERE fid = '$fid' AND owner_id = '$userID'");
+        $response['success'] = 'Formula <a href="/?do=scheduledFormulas">'.$fname.'</a> scheduled for making';
+    }else{
+        $response['error'] = 'An error occured '.mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    return;
 }
 
 //MAKING REMOVE FORMULA
