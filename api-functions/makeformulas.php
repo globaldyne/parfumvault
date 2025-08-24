@@ -404,6 +404,29 @@ switch ($action) {
         }
         return;
 
+    case 'scaleFormula':
+        // Ensure 'fid' is provided
+        if (empty($fid)) {
+            echo json_encode(['error' => 'Formula ID is required for scaling.']);
+            return;
+        }
+
+        // Scale action should update the formula's scale factor
+        $scaleFactor = isset($_POST['scaleFactor']) ? (float)$_POST['scaleFactor'] : 1;
+        $updateMeta = mysqli_query($conn, "UPDATE formulasMetaData SET scale = '$scaleFactor' WHERE fid = '$fid' AND owner_id = '$userID'");
+
+        if (!$updateMeta) {
+            echo json_encode(['error' => 'Failed to update formula metadata.']);
+            return;
+        }
+
+        if ($updateMeta) {
+            echo json_encode(['success' => 'Formula scaled successfully.']);
+        } else {
+            echo json_encode(['error' => 'Failed to scale the formula. Please try again.']);
+        }
+        return;
+
     case 'meta':
     default:
         $filter = $search !== '' ? " AND (name LIKE '%$search%') AND owner_id = '$userID'" : " AND owner_id = '$userID' ";

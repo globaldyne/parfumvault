@@ -69,7 +69,6 @@ if(mysqli_num_rows(mysqli_query($conn, "SELECT id FROM formulasMetaData WHERE fi
       <script src="/js/bootbox.min.js"></script>
       <script src="/js/select2.js"></script>
       <script src="/js/magnific-popup.js"></script>
-
    
 </head>
 <?php
@@ -89,21 +88,43 @@ if($formula_not_found){
           <div id="errors"></div>
 		  <div id="msg"><?php if(isset($msg)): echo $msg; endif; ?>
 		</div>
-          <div class="btn-group mb-3" id="menu">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars mx-2"></i>Actions</button>
-            <div class="dropdown-menu">
-               <li><a class="dropdown-item" href="#" id="markCompleteMenu"><i class="fa-solid fa-check mx-2"></i>Mark formula as complete</a></li>
-               <div class="dropdown-divider"></div>
-               <li class="dropdown-header">Options</li>
-               <li><a class="dropdown-item" href="#" id="toggleAdded"><i class="bi bi-list-check mx-2"></i>Show/hide added</a></li>
-               	<div class="dropdown-divider"></div>
-               	<li class="dropdown-header">Export</li>
-          		<li><a class="dropdown-item" href="/core/core.php?action=exportMaking&fid=<?=$fid?>"><i class="fa-solid fa-file-code mx-2"></i>Export as JSON</a></li>
-               <li><a class="dropdown-item export_as" href="#" data-format="csv"><i class="fa-solid fa-file-csv mx-2"></i>Export as CSV</a></li>
-               <li><a class="dropdown-item export_as" href="#" data-format="pdf"><i class="fa-solid fa-file-code mx-2"></i>Export as PDF</a></li>
-               <li><a class="dropdown-item" href="#" id="print"><i class="fa-solid fa-print mx-2"></i>Print formula</a></li>
-            </div>
-        </div>
+		<div class="mb-3 d-flex justify-content-end" id="menu">
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button" id="actionsMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fa fa-bars mx-2"></i>Actions
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionsMenuButton">
+					<li>
+						<a class="dropdown-item" href="#" id="markCompleteMenu">
+							<i class="fa-solid fa-check mx-2"></i>Mark formula as complete
+						</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="#" id="scaleFormula">
+							<i class="fa-solid fa-calculator mx-2"></i>Scale formula
+						</a>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					<li>
+						<h6 class="dropdown-header">Options</h6>
+					</li>
+					<li>
+						<a class="dropdown-item" href="#" id="toggleAdded">
+							<i class="bi bi-list-check mx-2"></i>Show/hide added
+						</a>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					<li>
+						<h6 class="dropdown-header">Export</h6>
+					</li>
+					<li>
+						<a class="dropdown-item" href="/core/core.php?action=exportMaking&fid=<?=$fid?>">
+							<i class="fa-solid fa-file-code mx-2"></i>Export as JSON
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
             <table class="table table-striped" id="tdDataPending" width="100%" cellspacing="0">
               <thead>
                 <tr>
@@ -127,11 +148,6 @@ if($formula_not_found){
           </div>
         </div>
       </div>
-      
-     <footer class="pvScale-data-footer mx-2 mb-4 p-5 border border-dark-subtle rounded-3" id="pvScale-data-footer">
-        <h3 id="scale-reading"></h3> 
-    </footer>
-    
    </div>
     
 <script>
@@ -142,6 +158,11 @@ var repName;
 var repID;
 $(document).ready(function() {
 	
+	$('#scaleFormula').on('click', function(e) {
+		e.preventDefault();
+		$('#scaleAmountModal').modal('show');
+	});
+
 	$('#updateStock').click(function(){
 		if($(this).is(':checked')){
 			$('#supplier').prop('disabled', false);
@@ -150,8 +171,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	
-	$('#pvScale-data-footer').addClass('d-none');
 	$('#mainTitle').click(function() {
 	 	reload_data();
   	});
@@ -166,13 +185,6 @@ $(document).ready(function() {
 			{ responsivePriority: 1, targets: 0 }
 		],
 		dom: 'lrft',
-		buttons: [{
-			extend: 'print',
-			title: myFNAME,
-			exportOptions: {
-				columns: [0, 1, 2, 3]
-			},
-		}],
 		processing: true,
 		serverSide: true,
 		searching: true,
@@ -279,12 +291,6 @@ $(document).ready(function() {
 		$(this).removeClass('pv-transition');
 	});
 
-	<?php if($settings['pv_scale_enabled'] == '1') { ?>
-	$('#tdDataPending tbody').on('click', 'tr', function () {
-		var rowData = tdDataPending.row(this).data();
-		rowClickedFunction(rowData);
-	});
-	<?php } ?>
 
 	function ingredient(data, type, row){
 		data ='<div class="listIngNameCas-with-separator"><a href="#" class="dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient+'</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span><div class="dropdown-menu dropdown-menu-right">';
@@ -416,7 +422,6 @@ $(document).ready(function() {
 
     setInterval(reload_data, 5000); // Check for updates every 5 seconds
 
-
 	function extrasShow() {
 		$('[rel=tip]').tooltip({
 			"html": true,
@@ -428,127 +433,7 @@ $(document).ready(function() {
 			closeOnBgClick: false,
 			showCloseBtn: true,
 		});
-	};
-	<?php if($settings['pv_scale_enabled'] == '1') { ?>
-		var pvScaleHost = "<?php echo $settings['pv_scale_host']?: '0.0.0.0'; ?>";	
-		var wsProtocol = location.protocol === "https:" ? "wss://" : "ws://";
-		var ws = new WebSocket(wsProtocol + pvScaleHost + ":81");
-		$('#scale-reading').addClass("spinner-border spinner-border-sm");
-		
-		$.ajax({
-			url: '/integrations/pvscale/manage.php',
-			type: 'POST',
-			data: {
-				ping: 1,
-				pv_scale_host: pvScaleHost
-			},
-			dataType: 'json',
-			success: function(data) {
-				if (data.success === true) {
-					ws.onmessage = function(r) {
-						$('#scale-reading').removeClass("spinner-border spinner-border-sm");
-	
-						console.log("Received reading: " + r.data);
-						$('#scale-reading').html('<strong>' + r.data + '</strong>');
-					};
-					// When WebSocket connection is closed
-					ws.onclose = function() {
-						console.log("WS closed");
-					};
-				} else {
-					$('#scale-reading').removeClass("spinner-border spinner-border-sm");
-					$('#scale-reading').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Connection failed</div>');
-				}
-			},
-			error: function() {
-				$('#scale-reading').removeClass("spinner-border spinner-border-sm");
-				$('#scale-reading').html('<div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation mx-2"></i>Network error</div>');
-			},
-			complete: function() {
-	
-			   
-			}
-		});
-		
-			
-		$('#pvScale-data-footer').removeClass('d-none');
-		function pollReloadSignal() {
-			setInterval(function() {
-				$.ajax({
-					url: '/integrations/pvscale/manage.php?action=check_reload_signal',
-					type: 'GET',
-					success: function(response) {
-						if (response === 'reload') {
-							reload_data();
-							$.ajax({
-								url: '/integrations/pvscale/manage.php?action=update_reload_signal',
-								type: 'GET'
-							});
-						}
-					},
-					error: function(xhr, status, error) {
-						console.error(xhr.responseText);
-					}
-				});
-			}, 5000);
-		}
-		
-		pollReloadSignal();
-	
-			
-		function rowClickedFunction(data) {
-			$.ajax({
-				type: 'POST',
-				url: "/integrations/pvscale/manage.php?action=send2PVScale",
-				data: JSON.stringify({
-					"formulas": [
-						{
-							"id": data.id,
-							"fid": data.fid,
-							"name": data.name,
-							"cas" : data.cas,
-							"notes" : data.notes,
-							"ingredient": data.ingredient,
-							"ingredient_id": data.ingID,
-							"concentration": data.concentration,
-							"dilutant": "-",
-							"quantity": data.quantity,
-							"stock" : data.inventory.stock,
-							"mUnit" : data.inventory.mUnit,
-							"pending" : data.toAdd,
-							"ApiKey" : "<?php echo $settings['api_key'];?>"
-						},
-					],
-					"pvMeta": {
-						"ingredients": 1,
-						"host": "<?=$settings['pv_host']?>",
-						"mUnit" : "<?php echo $settings['mUnit'];?>"
-					}
-				}),
-				contentType: 'application/json',
-				dataType: 'json',
-				success: function(data) {
-					if(data.success == true){
-						console.log("Scale updated " + data.success);
-					}else if(data.success == false){
-						$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
-						$('.toast-header').removeClass().addClass('toast-header alert-danger');
-					}
-					$('.toast').toast('show');
-				},
-				error: function(err) {
-					console.error(err);
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>Unable to communicate with the scale, ' + err.statusText);
-					$('.toast-header').removeClass().addClass('toast-header alert-danger');
-					$('.toast').toast('show');
-				},
-				timeout: 3000
-			});
-			
-		};
-	<?php } ?>
-	
-		
+	};	
 	 
 	$('#tdDataPending').on('click', '[id*=undo_add]', function () {
 		var d = {};
@@ -761,6 +646,34 @@ $(document).ready(function() {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <input type="submit" name="skippedFromFormula" class="btn btn-primary" id="skippedFromFormula" value="Skip">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scale Amount Modal -->
+<div class="modal fade" id="scaleAmountModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="scaleAmountModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scaleAmountModalLabel">Scale formula</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="scaleAmountMsg"></div>
+        <p>This will re-calculate the ingredients quantity as per the new total.</p>
+        <hr />
+        <div class="mb-3">
+          <label for="scaleAmountInput" class="form-label"><strong>New total amount</strong></label>
+          <div class="input-group">
+            <input name="scaleAmountInput" type="text" class="form-control" id="scaleAmountInput" value="100" />
+            <span class="input-group-text"><strong><?=$settings['mUnit']?></strong></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="scaleAmountConfirm">Scale Formula</button>
       </div>
     </div>
   </div>

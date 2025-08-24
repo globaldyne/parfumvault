@@ -1,179 +1,208 @@
 //MAKE FORMULA js HELPERS
 $(document).ready(function() {
 
+	// Confirm Scale Amount
+	$('#scaleAmountConfirm').click(function() {
+		$('#scaleAmountMsg').html('');
+		$.ajax({
+			url: '/core/core.php',
+			type: 'POST',
+			data: {
+				action: "scaleFormula",
+				scaleAmount: $("#scaleAmountInput").val(),
+				fid: fid,
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+					$('#scaleAmountModal').modal('toggle');
+					reload_data();
+					$('.toast').toast('show');
+				} else if(data.error) {
+					$('#scaleAmountMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+				}
+			}, error: function (xhr, status, error) {
+				$('#scaleAmountMsg').html('<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + error + '</div>');
+			}
+		});
+	});
 
-$('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
-    var ingID = $(this).data('ing-id');
-    var ingredient = $(this).data('ingredient');
-    var rowID = $(this).data('row-id');
-    var quantity = $(this).data('quantity');
-    var qr = $(this).data('qr');
-    
-    // Clear previous error messages and reset input fields
-    $('#errMsg').html('');
-    $("#ingAdded").text(ingredient);
-    $("#ingID").text(ingID);
-    $("#idRow").text(rowID);
-    $("#amountAdded").val(quantity);
-    $("#qr").text(qr);
-    $("#updateStock").prop("checked", true);
-    $('#supplier').prop('disabled', false);
+
+	// Confirm Add Ingredient
+	$('#tdDataPending').on('click', '[data-bs-target*=confirm_add]', function () {
+		var ingID = $(this).data('ing-id');
+		var ingredient = $(this).data('ingredient');
+		var rowID = $(this).data('row-id');
+		var quantity = $(this).data('quantity');
+		var qr = $(this).data('qr');
+		
+		// Clear previous error messages and reset input fields
+		$('#errMsg').html('');
+		$("#ingAdded").text(ingredient);
+		$("#ingID").text(ingID);
+		$("#idRow").text(rowID);
+		$("#amountAdded").val(quantity);
+		$("#qr").text(qr);
+		$("#updateStock").prop("checked", true);
+		$('#supplier').prop('disabled', false);
+		
+		// Clear supplier select2 selection
+		$("#supplier").val(null).trigger('change');
+		$("#replacement").val(null).trigger('change');
+
+		$("#notes").val('');
+		$("#collapseAdvanced").removeClass('show');
+		
+		$('#msgReplace').html('');
+		$("#replacement").val('');
 	
-	// Clear supplier select2 selection
-	$("#supplier").val(null).trigger('change');
-	$("#replacement").val(null).trigger('change');
-
-    $("#notes").val('');
-    $("#collapseAdvanced").removeClass('show');
-    
-    $('#msgReplace').html('');
-    $("#replacement").val('');
- 
-    
-    // Initialize the replacement select2 component
-    $("#replacement").select2({
-        width: '100%',
-        placeholder: 'Search for ingredient (name)..',
-        allowClear: true,
-        dropdownAutoWidth: true,
-        containerCssClass: "replacement",
-        dropdownParent: $('#confirm_add .modal-content'),
-        templateResult: formatIngredients,
-        templateSelection: formatIngredientsSelection,
-        ajax: {
-            url: '/pages/views/ingredients/getIngInfo.php',
-            dataType: 'json',
-            type: 'GET',
-            delay: 100,
-            data: function (params) {
-                return {
-                    ingID: ingID,
-                    replacementsOnly: true,
-                    search: params.term
-                };
-            },
-            processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(obj) {
-                        return {
-                            id: obj.id,
-                            stock: obj.stock,
-                            name: obj.name
-                        };
-                    })
-                };
-            },
-            cache: false,
-        }
-    }).on('select2:selecting', function (e) {
-        repName = e.params.args.data.name;
-        repID = e.params.args.data.id;
-    });
-    
-    // Initialize the supplier select2 component
-    $("#supplier").select2({
-        width: '100%',
-        placeholder: 'Search for supplier (name)',
-        allowClear: true,
-        dropdownAutoWidth: true,
-        containerCssClass: "supplier",
-        templateResult: formatSuppliers,
-        templateSelection: formatSuppliersSelection,
-        dropdownParent: $('#confirm_add .modal-content'),
-        minimumResultsForSearch: -1,
-        ajax: {
-            url: '/core/list_ing_suppliers_data.php',
-            dataType: 'json',
-            type: 'GET',
-            delay: 100,
-            quietMillis: 250,
-            data: function (params) {
-                return {
-                    id: ingID
-                };
-            },
-            processResults: function(data) {
-                return {
-                    results: $.map(data.data, function(obj) {
-                        return {
-                            id: obj.ingSupplierID,
-                            name: obj.supplierName
-                        };
-                    })
-                };
-            },
-            cache: true,
-        }
-    }).on('select2:selecting', function (e) {
-        suppName = e.params.args.data.name;
-        suppID = e.params.args.data.id;
-    });
-});
+		
+		// Initialize the replacement select2 component
+		$("#replacement").select2({
+			width: '100%',
+			placeholder: 'Search for ingredient (name)..',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			containerCssClass: "replacement",
+			dropdownParent: $('#confirm_add .modal-content'),
+			templateResult: formatIngredients,
+			templateSelection: formatIngredientsSelection,
+			ajax: {
+				url: '/pages/views/ingredients/getIngInfo.php',
+				dataType: 'json',
+				type: 'GET',
+				delay: 100,
+				data: function (params) {
+					return {
+						ingID: ingID,
+						replacementsOnly: true,
+						search: params.term
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+							return {
+								id: obj.id,
+								stock: obj.stock,
+								name: obj.name
+							};
+						})
+					};
+				},
+				cache: false,
+			}
+		}).on('select2:selecting', function (e) {
+			repName = e.params.args.data.name;
+			repID = e.params.args.data.id;
+		});
+		
+		// Initialize the supplier select2 component
+		$("#supplier").select2({
+			width: '100%',
+			placeholder: 'Search for supplier (name)',
+			allowClear: true,
+			dropdownAutoWidth: true,
+			containerCssClass: "supplier",
+			templateResult: formatSuppliers,
+			templateSelection: formatSuppliersSelection,
+			dropdownParent: $('#confirm_add .modal-content'),
+			minimumResultsForSearch: -1,
+			ajax: {
+				url: '/core/list_ing_suppliers_data.php',
+				dataType: 'json',
+				type: 'GET',
+				delay: 100,
+				quietMillis: 250,
+				data: function (params) {
+					return {
+						id: ingID
+					};
+				},
+				processResults: function(data) {
+					return {
+						results: $.map(data.data, function(obj) {
+							return {
+								id: obj.ingSupplierID,
+								name: obj.supplierName
+							};
+						})
+					};
+				},
+				cache: true,
+			}
+		}).on('select2:selecting', function (e) {
+			suppName = e.params.args.data.name;
+			suppID = e.params.args.data.id;
+		});
+	});
 
 
 
 
-function formatIngredients (ingredientData) {
-	if (ingredientData.loading) {
+	function formatIngredients (ingredientData) {
+		if (ingredientData.loading) {
+			return ingredientData.name;
+		}
+	
+		if (!ingredientData.name){
+			return 'No replacement found...';
+		}
+		
+		
+		var $container = $(
+			"<div class='select_result_igredient clearfix'>" +
+			"<div class='select_result_igredient_meta'>" +
+				"<div class='select_igredient_title'></div>" +
+				"<span id='stock'></span></div>"+
+			"</div>" +
+			"</div>"
+		);
+		
+		$container.find(".select_igredient_title").text(ingredientData.name);
+		if(ingredientData.stock  > 0){
+			$container.find("#stock").text('In stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-instock");
+		}else{
+			$container.find("#stock").text('Not in stock ('+ingredientData.stock+')');
+			$container.find("#stock").attr("class", "stock badge badge-nostock");
+		}
+
+		return $container;
+	}
+
+
+	function formatIngredientsSelection (ingredientData) {
 		return ingredientData.name;
 	}
- 
-	if (!ingredientData.name){
-		return 'No replacement found...';
-	}
 	
-	
-	var $container = $(
-		"<div class='select_result_igredient clearfix'>" +
-		  "<div class='select_result_igredient_meta'>" +
-			"<div class='select_igredient_title'></div>" +
-			"<span id='stock'></span></div>"+
-		  "</div>" +
-		"</div>"
-	);
-	
-	$container.find(".select_igredient_title").text(ingredientData.name);
-	if(ingredientData.stock  > 0){
-		$container.find("#stock").text('In stock ('+ingredientData.stock+')');
-		$container.find("#stock").attr("class", "stock badge badge-instock");
-	}else{
-		$container.find("#stock").text('Not in stock ('+ingredientData.stock+')');
-		$container.find("#stock").attr("class", "stock badge badge-nostock");
+	function formatSuppliers (supplierData) {
+		if (supplierData.loading) {
+			return supplierData.name;
+		}
+
+		if (!supplierData.name){
+			return 'No supplier found...';
+		}
+		
+		
+		var $container = $(
+			"<div class='select_result_supplier clearfix'>" +
+				"<div class='select_supplier_name'></div>" +
+			"</div>"
+		);
+		
+		$container.find(".select_supplier_name").text(supplierData.name);
+		
+		return $container;
 	}
 
-	return $container;
-}
 
-
-function formatIngredientsSelection (ingredientData) {
-	return ingredientData.name;
-}
-	
-function formatSuppliers (supplierData) {
-	if (supplierData.loading) {
+	function formatSuppliersSelection (supplierData) {
 		return supplierData.name;
 	}
-
-	if (!supplierData.name){
-		return 'No supplier found...';
-	}
-	
-	
-	var $container = $(
-		"<div class='select_result_supplier clearfix'>" +
-			"<div class='select_supplier_name'></div>" +
-		"</div>"
-	);
-	
-	  $container.find(".select_supplier_name").text(supplierData.name);
-	  
-	  return $container;
-}
-
-
-function formatSuppliersSelection (supplierData) {
-	return supplierData.name;
-}
 
 	//UPDATE AMOUNT
 	$('#addedToFormula').click(function() {
@@ -197,7 +226,7 @@ function formatSuppliersSelection (supplierData) {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				$('#confirm_add').modal('toggle');
 				reload_data();
@@ -211,52 +240,53 @@ function formatSuppliersSelection (supplierData) {
 	});
 	
 	
-		$('#markComplete, #markCompleteMenu').click(function() {
-		   bootbox.dialog({
-		   title: "Confirm formula completion",
-		   message : "Mark formula <strong> <?php echo $meta['name'];?></strong> as complete?",
-		   buttons :{
-			  main: {
-			  label : "Mark as complete",
-			  className : "btn-warning",
-              callback: function (){
-				 $.ajax({ 
-					url: '/core/core.php', 
-						type: 'POST',
-						data: {
-							action: "todo",
-							markComplete: 1,
-							totalQuantity: total_quantity,
-							fid: fid
-						},
-						dataType: 'json',
-						success: function (data) {
-							if(data.success) {
-								var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
-								reload_data();
-							} else {
-								var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-							}	
-							$('#msg').html(msg);
-						},
-						error: function (xhr, status, error) {
-							$('#msg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
+	$('#markComplete, #markCompleteMenu').click(function() {
+		bootbox.dialog({
+		title: "Confirm formula completion",
+		message : "Mark formula <strong> <?php echo $meta['name'];?></strong> as complete?",
+		buttons :{
+			main: {
+			label : "Mark as complete",
+			className : "btn-warning",
+			callback: function (){
+				$.ajax({ 
+				url: '/core/core.php', 
+					type: 'POST',
+					data: {
+						action: "todo",
+						markComplete: 1,
+						totalQuantity: total_quantity,
+						fid: fid
+					},
+					dataType: 'json',
+					success: function (data) {
+						if(data.success) {
+							var msg = '<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.success + '</div>';
+							reload_data();
+						} else {
+							var msg = '<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
+						}	
+						$('#msg').html(msg);
+					},
+					error: function (xhr, status, error) {
+						$('#msg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
 
-						}
-					});
-						
-					 return true;
-				   }
-			   },
-			   cancel: {
-				   label : "Cancel",
-				   className : "btn-secondary",
-				   callback : function() {
-					   return true;
-				   }
-			   }   
-		   },onEscape: function () {return true;}
-		
+					}
+				});
+					
+					return true;
+				}
+			},
+			cancel: {
+				label : "Cancel",
+				className : "btn-secondary",
+				callback : function() {
+					return true;
+				}
+			}   
+		},onEscape: function () {
+				return true;
+			}
 		});
 	});
 	
@@ -276,7 +306,7 @@ function formatSuppliersSelection (supplierData) {
 		dataType: 'json',
 		success: function (data) {
 			if(data.success){
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+				$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 				$('.toast-header').removeClass().addClass('toast-header alert-success');
 				$('#confirm_skip').modal('toggle');
 				reload_data();
@@ -308,11 +338,11 @@ function formatSuppliersSelection (supplierData) {
 			dataType: 'json',
 			success: function (data) {
 				if(data.success){
-					$('#toast-title').html('<i class="fa-solid fa-circle-check mr-2"></i>' + data.success);
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
 					$('.toast-header').removeClass().addClass('toast-header alert-success');
 					reload_data();
 				}else if(data.error){
-					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mr-2"></i>' + data.error);
+					$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
 					$('.toast-header').removeClass().addClass('toast-header alert-danger');
 				}
 				$('.toast').toast('show');
