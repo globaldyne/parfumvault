@@ -7391,7 +7391,7 @@ if ($_POST['action'] == 'scaleFormula' && $_POST['fid'] && $_POST['scaleAmount']
     $scaleFactor = $scaleAmount / $total;
 
     // Update each ingredient's quantity and originalQuantity proportionally
-    $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
+    $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = originalQuantity * $scaleFactor, originalQuantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
 
     if ($update) {
         $response['success'] = 'Formula scaled successfully';

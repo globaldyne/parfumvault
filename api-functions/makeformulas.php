@@ -118,8 +118,8 @@ switch ($action) {
         $m = [
             'total_ingredients' => (int)countElement("$table", "fid = '$fid'"),
             'total_ingredients_left' => (int)countElement("$table", "fid = '$fid' AND toAdd = '1' AND skip = '0'"),
-            'total_quantity' => (float)ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']),
-            'total_quantity_left' => (float)ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']),
+            'total_quantity' => ml2l($mg['total_mg'], $settings['qStep'], $settings['mUnit']),
+            'total_quantity_left' => ml2l($mg['total_mg_left'], $settings['qStep'], $settings['mUnit']),
             'quantity_unit' => (string)$settings['mUnit'],
             'last_updated' => (string)mysqli_fetch_assoc(mysqli_query($conn, "SELECT updated_at FROM $table WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1"))['updated_at']
         ];
@@ -411,16 +411,33 @@ switch ($action) {
             return;
         }
 
-        // Scale action should update the formula's scale factor
-        $scaleFactor = isset($_POST['scaleFactor']) ? (float)$_POST['scaleFactor'] : 1;
-        $updateMeta = mysqli_query($conn, "UPDATE formulasMetaData SET scale = '$scaleFactor' WHERE fid = '$fid' AND owner_id = '$userID'");
-
-        if (!$updateMeta) {
-            echo json_encode(['error' => 'Failed to update formula metadata.']);
+        // Get the new total amount to scale to
+        $scaleAmount = isset($_POST['scaleAmount']) ? (float)$_POST['scaleAmount'] : 0;
+        if ($scaleAmount <= 0) {
+            echo json_encode(['error' => 'Invalid scale amount.']);
             return;
         }
 
-        if ($updateMeta) {
+        // Get the current total quantity of the formula
+        $currentTotalResult = mysqli_query($conn, "SELECT SUM(quantity) AS total FROM makeFormula WHERE fid = '$fid' AND owner_id = '$userID'");
+        $currentTotalRow = mysqli_fetch_assoc($currentTotalResult);
+        $currentTotal = (float)$currentTotalRow['total'];
+
+        if ($currentTotal <= 0) {
+            echo json_encode(['error' => 'Current total quantity is zero, cannot scale.']);
+            return;
+        }
+
+        // Calculate scale factor
+        $scaleFactor = $scaleAmount / $currentTotal;
+
+        // Update each ingredient's quantity and originalQuantity proportionally
+        $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = quantity * $scaleFactor, originalQuantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
+
+        // Optionally, store the scale factor and new total in formulasMetaData
+        $updateMeta = mysqli_query($conn, "UPDATE formulasMetaData SET scale = '$scaleFactor', scaledTotal = '$scaleAmount' WHERE fid = '$fid' AND owner_id = '$userID'");
+
+        if ($update && $updateMeta) {
             echo json_encode(['success' => 'Formula scaled successfully.']);
         } else {
             echo json_encode(['error' => 'Failed to scale the formula. Please try again.']);

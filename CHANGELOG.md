@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 13.8
+- Fix incorrect scaling in the formula making
+- Fix incorrect total unit shown if above 1000g
 
 ### Version 13.7
 - Prevent add formula for making if ingredients missing from the database
