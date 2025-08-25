@@ -2,6 +2,7 @@
 ### Version 13.8
 - Fix incorrect scaling in the formula making
 - Fix incorrect total unit shown if above 1000g
+- Fix skip and AI assistant buttons in the Formula making
 - Added improved ml2l functions for the PV Making app api
 - Removed links fro Android PV Making app
 - Improved PV Making app API

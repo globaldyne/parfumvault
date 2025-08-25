@@ -45,11 +45,23 @@ $(document).ready(function() {
 		$("#idRow").text(rowID);
 		$("#amountAdded").val(quantity);
 		$("#qr").text(qr);
-		$("#updateStock").prop("checked", true);
-		$('#supplier').prop('disabled', false);
+		//DEFAULT
+		$("#updateStock").prop("checked", false);
+		$('#supplier').prop('disabled', true);
 		
-		// Clear supplier select2 selection
-		$("#supplier").val(null).trigger('change');
+		// Clear supplier select2 selection or preselect supplier if provided
+		var supplierID = $(this).data('supplier-id');
+		var supplierName = $(this).data('supplier-name');
+		if (supplierID) {
+			// Ensure supplier select2 is enabled and preselect the provided supplier
+			$("#supplier").val(null).trigger('change');
+			var supplierOption = new Option(supplierName || supplierID, supplierID, true, true);
+			$("#supplier").append(supplierOption).trigger('change');
+			$('#supplier').prop('disabled', false);
+		} else {
+			// No supplier provided, clear selection
+			$("#supplier").val(null).trigger('change');
+		}
 		$("#replacement").val(null).trigger('change');
 
 		$("#notes").val('');
@@ -139,9 +151,6 @@ $(document).ready(function() {
 		});
 	});
 
-
-
-
 	function formatIngredients (ingredientData) {
 		if (ingredientData.loading) {
 			return ingredientData.name;
@@ -150,7 +159,6 @@ $(document).ready(function() {
 		if (!ingredientData.name){
 			return 'No replacement found...';
 		}
-		
 		
 		var $container = $(
 			"<div class='select_result_igredient clearfix'>" +
@@ -207,39 +215,41 @@ $(document).ready(function() {
 	//UPDATE AMOUNT
 	$('#addedToFormula').click(function() {
 		$.ajax({ 
-		url: '/core/core.php', 
-		type: 'POST',
-		data: {
-			action: "makeFormula",
-			q: $("#amountAdded").val(),
-			notes: $("#notes").val(),
-			qr: $("#qr").text(),
-			updateStock: $("#updateStock").is(':checked'),
-			supplier: $("#supplier").val(),
-			ing: $("#ingAdded").text(),
-			id: $("#idRow").text(),
-			repName: repName,
-			repID: repID,
-			ingId: $("#ingID").text(),
-			fid: fid,
-		},
-		dataType: 'json',
-		success: function (data) {
-			if(data.success){
-				$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
-				$('.toast-header').removeClass().addClass('toast-header alert-success');
-				$('#confirm_add').modal('toggle');
-				reload_data();
-				$('.toast').toast('show');
-			} else if(data.error) {
-				var msg = '<div class="alert alert-danger alert-dismissible"><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>';
-				$('#errMsg').html(msg);
+			url: '/core/core.php', 
+			type: 'POST',
+			data: {
+				action: "makeFormula",
+				q: $("#amountAdded").val(),
+				notes: $("#notes").val(),
+				qr: $("#qr").text(),
+				updateStock: $("#updateStock").is(':checked'),
+				supplier: $("#supplier").val(),
+				ing: $("#ingAdded").text(),
+				id: $("#idRow").text(),
+				repName: repName,
+				repID: repID,
+				ingId: $("#ingID").text(),
+				fid: fid,
+			},
+			dataType: 'json',
+			success: function (data) {
+				if(data.success){
+					$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
+					$('.toast-header').removeClass().addClass('toast-header alert-success');
+					$('#confirm_add').modal('toggle');
+					reload_data();
+					$('.toast').toast('show');
+				} else if(data.error) {
+					$('#errMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>' + data.error + '</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#errMsg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
 			}
-		}
 	  });
 	});
-	
-	
+
+	//MARK COMPLETE
 	$('#markComplete, #markCompleteMenu').click(function() {
 		bootbox.dialog({
 		title: "Confirm formula completion",
@@ -270,7 +280,6 @@ $(document).ready(function() {
 					},
 					error: function (xhr, status, error) {
 						$('#msg').html('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-triangle-exclamation mx-2"></i><a href="#" class="close" data-bs-dismiss="alert" aria-label="close">x</a>An ' + status + ' occurred, check server logs for more info. ' + error + '</div>');
-
 					}
 				});
 					
@@ -355,6 +364,7 @@ $(document).ready(function() {
 	  	});
 	});
 	
+	//INGREDIENT INFO MODAL
 	$('#tdDataPending').on('click', '[id*=ingInfo]', function () {
 		var id = $(this).data('id');
 		var name = $(this).data('name');
@@ -377,17 +387,13 @@ $(document).ready(function() {
 		   }
 		})
 	 });
-	
-	
+
+	//CLEAR MESSAGE
 	$('#title').click(function() {
 		$('#msg').html('');
 	});
-	
-	$('#print').click(() => {
-		$('#tdDataPending').DataTable().button(0).trigger();
-	});
-	
-	
+
+	//CONFIRM SKIP
 	$('#tdDataPending').on('click', '[data-bs-target*=confirm_skip]', function () {
 		$('#errSkip').html('');													
 		$("#ingSkipped").text('Skipping ' + $(this).attr('data-ingredient'));
@@ -395,29 +401,10 @@ $(document).ready(function() {
 		$("#idRow").text($(this).attr('data-row-id'));
 		$("#notes").val('');
 	});
-	
+
+	//RELOAD DATA
 	function reload_data() {
 		$('#tdDataPending').DataTable().ajax.reload(null, true);
 	}
-	
-	
-	$('.export_as').click(function() {	
-	  var format = $(this).attr('data-format');
-	  $("#tdDataPending").tableHTMLExport({
-		type: format,
-		filename: myFNAME + "." + format,
-		separator: ',',
-		newline: '\r\n',
-		trimContent: true,
-		quoteFields: true,
-		ignoreColumns: '.noexport',
-		ignoreRows: '.noexport',
-		htmlContent: false,
-		orientation: 'l',
-		subtitle: 'Created with Perfumer\'s Vault Pro',
-		maintitle: myFNAME,
-	  });
-	});
-	
 	
 });
