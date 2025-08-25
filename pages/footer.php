@@ -117,12 +117,12 @@ if (empty($commit)) {
             </a>
           </div>
           <div class="col-md-6 mb-3">
-            <a href="https://github.com/globaldyne/pv-making-public/raw/refs/heads/main/pvMaking.apk" target="_blank" class="btn btn-outline-success w-100 p-3">
+            <a href="#" target="_blank" class="btn btn-outline-success w-100 p-3">
               <div class="d-flex align-items-center justify-content-center">
                 <i class="bi bi-google-play me-2" style="font-size: 1.5rem;"></i>
                 <div>
                   <div class="fw-bold">APK Download</div>
-                  <small class="text-muted">for Android devices</small>
+                  <small class="text-muted">for Android devices (not available yet)</small>
                 </div>
               </div>
             </a>

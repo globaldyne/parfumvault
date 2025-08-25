@@ -122,12 +122,17 @@ switch ($action) {
             $mg['total_mg_left'] += (float)$rq['quantity'];
         }
 
+        $total_conv = ml2Ladv($mg['total_mg'], $user_settings['qStep'], $user_settings['mUnit']);
+        $left_conv = ml2Ladv($mg['total_mg_left'], $user_settings['qStep'], $user_settings['mUnit']);
+
         $m = [
             'total_ingredients' => (int)countElement("$table", "fid = '$fid'"),
             'total_ingredients_left' => (int)countElement("$table", "fid = '$fid' AND toAdd = '1' AND skip = '0'"),
-            'total_quantity' => ml2l($mg['total_mg'], $user_settings['qStep'], $user_settings['mUnit']),
-            'total_quantity_left' => ml2l($mg['total_mg_left'], $user_settings['qStep'], $user_settings['mUnit']),
-            'quantity_unit' => (string)$user_settings['mUnit'],
+
+            'total_quantity' => (float)$total_conv['value'],
+            'total_quantity_left' => (float)$left_conv['value'],
+            'quantity_unit' => (string)($total_conv['unit'] ?: ($user_settings['mUnit'] ?? 'ml')),
+
             'last_updated' => (string)mysqli_fetch_assoc(mysqli_query($conn, "SELECT updated_at FROM $table WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1"))['updated_at']
         ];
         $response['meta'] = $m;

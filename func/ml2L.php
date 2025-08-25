@@ -12,4 +12,20 @@ function ml2L($ml, $s=2, $mUnit){
     }
     return $conv;
 }
+
+function ml2Ladv($ml, $s=2, $mUnit){
+    $s = is_int($s) ? $s : 2;
+    if ($ml >= 1000) {
+        $value = round($ml / 1000, $s);
+        $unit = 'L';
+    } else {
+        $value = round($ml, $s);
+        $unit = $mUnit;
+    }
+    return [
+        'value' => $value,
+        'unit' => $unit
+    ];
+}
+
 ?>
