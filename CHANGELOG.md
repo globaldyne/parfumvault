@@ -1,5 +1,6 @@
 # CHANGELOG
 ### Version 13.8
+- Added AI service status for the PV Making app
 - Fix incorrect scaling in the formula making
 - Fix incorrect total unit shown if above 1000g
 - Fix skip and AI assistant buttons in the Formula making

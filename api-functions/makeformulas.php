@@ -132,6 +132,7 @@ switch ($action) {
             'total_quantity' => (float)$total_conv['value'],
             'total_quantity_left' => (float)$left_conv['value'],
             'quantity_unit' => (string)($total_conv['unit'] ?: ($user_settings['mUnit'] ?? 'ml')),
+            'is_ai_enabled' => (bool)$user_settings['use_ai_service'],
 
             'last_updated' => (string)mysqli_fetch_assoc(mysqli_query($conn, "SELECT updated_at FROM $table WHERE fid = '$fid' AND owner_id = '$userID' ORDER BY updated_at DESC LIMIT 1"))['updated_at']
         ];
