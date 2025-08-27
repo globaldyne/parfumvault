@@ -899,9 +899,6 @@ if ($_POST['action'] === 'update_openai_settings') {
     $google_gemini_api_key = isset($_POST['google_gemini_api_key']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_api_key']) : null;
     $google_gemini_model = isset($_POST['google_gemini_model']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_model']) : null;
 
-    // Pedro Perfumer Settings (only if present)
-    $pedro_perfumer_api_key = isset($_POST['pedro_perfumer_api_key']) ? mysqli_real_escape_string($conn, $_POST['pedro_perfumer_api_key']) : null;
-
     function upsert_user_setting($conn, $userID, $key, $value) {
         $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
         if (!$stmt) {
@@ -971,10 +968,6 @@ if ($_POST['action'] === 'update_openai_settings') {
 
     if ($google_gemini_model !== null) {
         $success &= upsert_user_setting($conn, $userID, 'google_gemini_model', $google_gemini_model);
-    }
-
-    if ($pedro_perfumer_api_key !== null) {
-        $success &= upsert_user_setting($conn, $userID, 'pedro_perfumer_api_key', $pedro_perfumer_api_key);
     }
 
     if ($making_ai_chat !== null) {

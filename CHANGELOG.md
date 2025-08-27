@@ -7,6 +7,7 @@
 - Added improved ml2l functions for the PV Making app api
 - Removed links fro Android PV Making app
 - Improved PV Making app API
+- Removed unused code
 
 ### Version 13.7
 - Prevent add formula for making if ingredients missing from the database

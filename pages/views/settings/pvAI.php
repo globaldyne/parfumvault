@@ -32,7 +32,6 @@ require_once(__ROOT__.'/inc/settings.php');
                         <select name="ai_service_provider" id="ai_service_provider" class="form-control">
                             <option value="openai" <?= $user_settings['ai_service_provider'] == 'openai' ? 'selected' : '' ?>>OpenAI</option>
                             <option value="google_gemini" <?= $user_settings['ai_service_provider'] == 'google_gemini' ? 'selected' : '' ?>>Google Gemini</option>
-                     <!--       <option value="pedro_perfumer" <?= $user_settings['ai_service_provider'] == 'pedro_perfumer' ? 'selected' : '' ?>>Pedro Perfumer</option> -->
                         </select>
                     </div>
 
@@ -83,17 +82,7 @@ require_once(__ROOT__.'/inc/settings.php');
                         </div>
                     </div>
 
-                    <div id="pedro-perfumer-fields" class="provider-fields" style="display: none;">
-                        <div class="mb-3">
-                            <label for="pedro_perfumer_api_key" class="form-label">Pedro Perfumer API Key</label>
-                            <a href="#" class="ms-2 fas fa-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Enter your Pedro Perfumer API key here"></a>
-                            <div class="input-group">
-                                <input name="pedro_perfumer_api_key" type="password" class="form-control" id="pedro_perfumer_api_key" value="<?= $user_settings['pedro_perfumer_api_key'] ?? '' ?>" />
-                                <button class="btn btn-outline-secondary toggle-api-key-visibility" type="button" tabindex="-1" data-target="#pedro_perfumer_api_key"><i class="fa fa-eye"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    
+                                 
                 </div>
             </div>
         </div>
@@ -143,65 +132,6 @@ require_once(__ROOT__.'/inc/settings.php');
                     <li><strong>Gemini 1.5 Pro:</strong> A robust model offering balanced performance and versatility, ideal for a wide range of applications.</li>
                 </ul>
             </div>
-            <div id="pedro-perfumer-help" class="provider-help" style="display: none;">
-                <h5>Pedro Perfumer Settings</h5>
-                <div class="mb-2">
-                    Pedro Perfumer is an AI service specialized in perfumery. It focuses on perfume formulas, ingredients, and suggestions for creating or improving fragrances.
-                    Enter your Pedro Perfumer API key to enable tailored assistance for all your perfumery formulation needs.
-                    <br>
-                    <span class="text-warning fw-semibold d-block mt-2">
-                        Note: This service is currently <strong>experimental</strong> and comes without any warranty.
-                    </span>
-                    <span class="text-danger d-block mt-1" style="font-size: 0.95em;">
-                        Important: All user prompts and interactions with Pedro Perfumer may be used for model training and service improvement.
-                    </span>
-                    <button id="pedro-create-api-key-btn" type="button" class="btn btn-outline-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#pedroApiKeyModal">
-                        Create Pedro Perfumer API Key
-                    </button>
-                </div>
-            </div>
-
-            <!-- Modal for Pedro API Key creation -->
-            <div class="modal fade" id="pedroApiKeyModal" tabindex="-1" aria-labelledby="pedroApiKeyModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <form id="pedro-api-key-form" autocomplete="off">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="pedroApiKeyModalLabel">Create Pedro Perfumer API Key</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="mb-3">
-                        <div class="form-text">
-                            The API key will be registered to your email: <strong><?php echo htmlspecialchars($user['email']); ?></strong>
-                        </div>
-                      </div>
-                      <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="pedro-accept-logging" required>
-                        <label class="form-check-label" for="pedro-accept-logging">
-                          I understand all prompts and responses will be logged and used for training purposes.
-                        </label>
-                      </div>
-                      <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="pedro-accept-experimental" required>
-                        <label class="form-check-label" for="pedro-accept-experimental">
-                          I understand this is an experimental service and may not be reliable.
-                        </label>
-                      </div>
-                      <div id="pedro-api-key-result" class="alert d-none"></div>
-                    </div>
-                    <div class="modal-footer flex-column">
-                      <button type="submit" class="btn btn-primary mb-2">Request API Key</button>
-                      <small>
-                        <a href="https://www.perfumersvault.com/privacy" target="_blank" class="link-secondary me-3">Privacy Policy</a>
-                        <a href="https://www.perfumersvault.com/terms" target="_blank" class="link-secondary me-3">Terms of Service</a>
-                        <a href="https://www.perfumersvault.com/pedro-ai" target="_blank" class="link-secondary">Find more about Pedro AI</a>
-                      </small>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
         </div>
     </div>
     <div class="row">
@@ -220,15 +150,12 @@ $(document).ready(function() {
         const provider = $("#ai_service_provider").val();
         let apiKeyField, modelField;
 
-        
         if (provider === 'openai') {
             apiKeyField = $("#openai_api_key");
             modelField = $("#openai_model");
         } else if (provider === 'google_gemini') {
             apiKeyField = $("#google_gemini_api_key");
             modelField = $("#google_gemini_model");
-        } else if (provider === 'pedro_perfumer') {
-            apiKeyField = $("#pedro_perfumer_api_key");
         }
 
         // Validate API key is not empty
@@ -254,8 +181,6 @@ $(document).ready(function() {
         } else if (provider === 'google_gemini') {
             data.google_gemini_api_key = apiKeyField.val();
             data.google_gemini_model = modelField.val();
-        } else if (provider === 'pedro_perfumer') {
-            data.pedro_perfumer_api_key = apiKeyField.val();
         }
 
         $.ajax({
@@ -306,13 +231,6 @@ $(document).ready(function() {
         const provider = $(this).val();
         $('.provider-fields').hide();
         $('.provider-help').hide();
-        $('#pedro-status-badge').remove(); // Remove any previous badge
-
-        // Clear interval if switching away from Pedro
-        if (window.pedroStatusInterval) {
-            clearInterval(window.pedroStatusInterval);
-            window.pedroStatusInterval = null;
-        }
 
         if (provider === 'openai') {
             $('#openai-fields').show();
@@ -320,52 +238,6 @@ $(document).ready(function() {
         } else if (provider === 'google_gemini') {
             $('#google-gemini-fields').show();
             $('#google-gemini-help').show();
-        } else if (provider === 'pedro_perfumer') {
-            $('#pedro-perfumer-fields').show();
-            $('#pedro-perfumer-help').show();
-
-            function checkPedroStatus() {
-                let $badge = $('#pedro-status-badge');
-                $.ajax({
-                    url: '/components/pedro_status.php',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(resp) {
-                        let newBadge;
-                        if (resp && resp.status && resp.status.toLowerCase() === 'ok') {
-                            newBadge = '<span id="pedro-status-badge" class="badge bg-success align-middle ms-2">Service Available</span>';
-                        } else {
-                            let msg = (resp && resp.message) ? resp.message : 'Service Unavailable';
-                            newBadge = '<span id="pedro-status-badge" class="badge bg-danger align-middle ms-2" data-bs-toggle="tooltip" title="' + $('<div>').text(msg).html() + '">Unavailable</span>';
-                        }
-                        // Only update if different
-                        if ($badge.length === 0 || $badge.prop('outerHTML') !== newBadge) {
-                            $badge.remove();
-                            $('#pedro-perfumer-help h5').append(newBadge);
-                            $('[data-bs-toggle="tooltip"]').tooltip();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        let $badge = $('#pedro-status-badge');
-                        let newBadge = '<span id="pedro-status-badge" class="badge bg-danger align-middle ms-2" data-bs-toggle="tooltip" title="' + $('<div>').text(error).html() + '">Unavailable</span>';
-                        if ($badge.length === 0 || $badge.prop('outerHTML') !== newBadge) {
-                            $badge.remove();
-                            $('#pedro-perfumer-help h5').append(newBadge);
-                            $('[data-bs-toggle="tooltip"]').tooltip();
-                        }
-                    }
-                });
-            }
-
-            checkPedroStatus();
-            window.pedroStatusInterval = setInterval(function() {
-                if ($('#ai_service_provider').val() === 'pedro_perfumer') {
-                    checkPedroStatus();
-                } else if (window.pedroStatusInterval) {
-                    clearInterval(window.pedroStatusInterval);
-                    window.pedroStatusInterval = null;
-                }
-            }, 5000);
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 	
@@ -382,94 +254,17 @@ $(document).ready(function() {
         }
     }).trigger('change'); // Trigger change on page load to set initial state
 
-    // Pedro API Key Modal logic
-$('#pedro-api-key-form').on('submit', function(e) {
-    e.preventDefault();
-    var $result = $('#pedro-api-key-result');
-    $result.removeClass('alert-success alert-danger').addClass('d-none').text('');
-    var email = "<?php echo htmlspecialchars($user['email']); ?>";
-
-    // Check both checkboxes
-    if (!$('#pedro-accept-logging').is(':checked') || !$('#pedro-accept-experimental').is(':checked')) {
-        $result.removeClass('d-none').addClass('alert alert-danger').text('You must accept both conditions to request an API key.');
-        return;
-    }
-
-    if (!email) {
-        $result.removeClass('d-none').addClass('alert alert-danger').text('Please enter your email.');
-        return;
-    }
-
-    $result.removeClass('d-none').addClass('alert alert-info').text('Requesting API key...');
-
-        $.ajax({
-            url: '/components/pedro_api_proxy.php',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ user: email }),
-            dataType: 'json',
-            success: function(resp) {
-                if (resp.success && resp.api_key) {
-                    $result
-                        .removeClass('alert-info alert-danger')
-                        .addClass('alert alert-success')
-                        .html(
-                            'Your API Key: <code id="pedro-api-key-value">' + resp.api_key + '</code>' +
-                            '<button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copy-pedro-api-key">Copy</button>' +
-                            '<button type="button" class="btn btn-outline-primary btn-sm ms-2" id="fill-pedro-api-key">Auto Fill</button>'
-                        );
-                    // Copy button logic
-                    $('#copy-pedro-api-key').off('click').on('click', function() {
-                        const apiKey = $('#pedro-api-key-value').text();
-                        navigator.clipboard.writeText(apiKey).then(function() {
-                            $('#copy-pedro-api-key').text('Copied!').removeClass('btn-outline-secondary').addClass('btn-success');
-                            setTimeout(function() {
-                                $('#copy-pedro-api-key').text('Copy').removeClass('btn-success').addClass('btn-outline-secondary');
-                            }, 1500);
-                        });
-                    });
-                    // Auto fill button logic
-                    $('#fill-pedro-api-key').off('click').on('click', function() {
-                        $('#pedro_perfumer_api_key').val(resp.api_key).focus();
-                    });
-                } else {
-                    $result.removeClass('alert-info alert-success').addClass('alert alert-danger')
-                        .text(resp.error || 'Failed to create API key.');
-                }
-            },
-            error: function(xhr, status, error) {
-                $result.removeClass('alert-info alert-success').addClass('alert alert-danger')
-                    .text('Error: ' + error);
-            }
-        });
+    // Toggle API key visibility
+    $(document).on('click', '.toggle-api-key-visibility', function() {
+        var target = $($(this).data('target'));
+        var icon = $(this).find('i');
+        if (target.attr('type') === 'password') {
+            target.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            target.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
     });
-});
-
-// Prevent Pedro API Key modal if service is unavailable
-$('#pedro-create-api-key-btn').on('click', function(e) {
-    // Check if the badge is present and is not green
-    var $badge = $('#pedro-status-badge');
-    if ($badge.length && $badge.hasClass('bg-danger')) {
-        e.preventDefault();
-        // Optionally show a toast or alert
-        $('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>Pedro Perfumer service is unavailable. Please try again later.');
-        $('.toast-header').removeClass().addClass('toast-header alert-danger');
-        $('.toast').toast('show');
-        return false;
-    }
-    // Otherwise, allow modal to open
-});
-
-// Toggle API key visibility
-$(document).on('click', '.toggle-api-key-visibility', function() {
-    var target = $($(this).data('target'));
-    var icon = $(this).find('i');
-    if (target.attr('type') === 'password') {
-        target.attr('type', 'text');
-        icon.removeClass('fa-eye').addClass('fa-eye-slash');
-    } else {
-        target.attr('type', 'password');
-        icon.removeClass('fa-eye-slash').addClass('fa-eye');
-    }
 });
 </script>
