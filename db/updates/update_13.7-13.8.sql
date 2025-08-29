@@ -1,0 +1,14 @@
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'SYSTEM_chkVersion';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'USER_terms_url';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'USER_privacy_url';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'INTEGRATIONS_enable';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'USER_selfRegister';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'announcements';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_isEnabled';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_smtp_host';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_smtp_port';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_from';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_from_display_name';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_smtp_user';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_smtp_pass';
+DELETE FROM `system_settings` WHERE `system_settings`.`key_name` = 'EMAIL_smtp_secure';

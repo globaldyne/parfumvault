@@ -70,7 +70,7 @@ $(document).ready(function() {
 	var qStep = "<?=$_POST['qStep']?>";
 	var fid = "<?=$id?>";
 	var fontSize = parseInt("<?=$_POST['fontSize']?>");
-	var image = "<?php echo $settings['brandLogo'] ?: "data:image/png;base64,".base64_encode(file_get_contents(__ROOT__.'/img/logo_def.png')); ?>";
+	var image = "<?php echo $settings['brandLogo'] ?: "data:image/png;base64,".base64_encode(file_get_contents(__ROOT__.'/img/logo.png')); ?>";
 	
 	var logoSizeW = parseInt("<?=$_POST['logoSizeW'] ?: 200 ?>");
 	var logoSizeH = parseInt("<?=$_POST['logoSizeH'] ?: 200 ?>");

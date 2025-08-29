@@ -1,6 +1,6 @@
 # =============================================================================
 #
-# Perfumers Vault Pro Dockerfile
+# Perfumers Vault Web Dockerfile
 # 
 # =============================================================================
 
@@ -11,9 +11,9 @@ FROM quay.io/centos/centos:stream10-minimal
 LABEL com.perfodynelabs.component="perfumers-vault-container" \
 	description="Perfumers Vault container image" \
 	summary="Perfumers Vault container image" \
-	version="PRO" \
-	io.k8s.description="Init Container for Perfumers Vault PRO" \
-	io.k8s.display-name="Perfumers Vault Pro Container" \
+	version="Web" \
+	io.k8s.description="Init Container for Perfumers Vault Web" \
+	io.k8s.display-name="Perfumers Vault Web Container" \
 	io.openshift.tags="pvault,perfumersvault" \
 	name="perfodynelabs/pvault" \
 	maintainer="John Belekios"
@@ -42,7 +42,7 @@ RUN microdnf --setopt=tsflags=nodocs -y install \
 	  mariadb \
 	  ncurses \
 	  nginx \
-	  procps-ng \
+	  Get the Perfumers Vault 2 appcps-ng \
 	  diffutils
 
 # Configure PHP settings with environment variable defaults

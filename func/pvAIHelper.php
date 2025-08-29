@@ -3,7 +3,7 @@
  * Generates a formula and Chat responses using AI based on the given provider and prompt.
  *
  * This function interacts with AI providers (e.g., OpenAI, Gemini) to generate a response
- * based on the provided prompt and user_settings. It supports OpenAI, Gemini, and Pedro Perfumer.
+ * based on the provided prompt and user_settings. It supports OpenAI and Gemini.
  *
  * @param string $prompt The user-provided input to guide the AI's response.
  * @return array An associative array containing:
@@ -36,19 +36,13 @@ function pvAIHelper($prompt) {
 
     // Validate the provider
     $provider = strtolower($user_settings['ai_service_provider'] ?? 'openai');
-    if (!in_array($provider, ['openai', 'google_gemini', 'pedro_perfumer'])) {
+    if (!in_array($provider, ['openai', 'google_gemini'])) {
         return ['error' => 'Unsupported AI provider'];
     }
 
     // Validate the prompt
     if (empty($prompt)) {
         return ['error' => 'Prompt cannot be empty'];
-    }
-
-    // PEDRO PERFUMER
-    if ($provider === 'pedro_perfumer') {
-        require_once(__ROOT__.'/func/pvAIPedro.php');
-        return pvAIPedroHelper($prompt, $user_settings);
     }
 
     // GEMINI or OPENAI

@@ -221,7 +221,7 @@ $(document).ready(function() {
 				if(response){
 					var $td = $(tfoot).find('th');
 					$td.eq(0).html("Ingredients left: "+ response.meta['total_ingredients_left'] + ' of ' + response.meta['total_ingredients'] );
-					$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] + response.meta['quantity_unit'] );
+					$td.eq(2).html("Total left: " + response.meta['total_quantity_left'] + ' of ' + response.meta['total_quantity'] );//+ response.meta['quantity_unit'] );
 					total_quantity = response.meta['total_quantity'];
 				}
 			},
@@ -296,7 +296,9 @@ $(document).ready(function() {
 		data ='<div class="listIngNameCas-with-separator"><a href="#" class="dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+row.ingredient+'</a><span class="listIngHeaderSub"> CAS: <i class="subHeaderCAS">'+row.cas+'</i></span><div class="dropdown-menu dropdown-menu-right">';
 		data+='<li><a class="dropdown-item " href="#infoModal" id="ingInfo" data-bs-toggle="modal" data-id="'+row.ingID+'" data-name="'+row.ingredient+'" ><i class="fa-solid fa-circle-info mx-2"></i>Quick Info</a></li>';
 		data+='<li><a class="dropdown-item popup-link" href="/pages/mgmIngredient.php?id='+row.ingID+'" target="_blank"><i class="fa-solid fa-eye mx-2"></i>Go to ingredient</a></li>';
+		<?php if($settings['use_ai_service'] == '1') { ?>
 		data+= '<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ai_replacement" data-ingredient="' + row.ingredient + '" data-row-id="' + row.id + '"><i class="bi bi-robot mx-2"></i>Suggest a replacement</a></li>';
+		<?php } ?>
 		data+='</div></div>';
 		return data;
 	};
@@ -317,10 +319,10 @@ $(document).ready(function() {
 		if (row.toAdd == 1 && row.toSkip == 0) {
 			actionsHtml += `
 				<i data-bs-toggle="modal" data-bs-target="#confirm_add" data-quantity="${row.quantity}" data-ingredient="${row.ingredient}" data-row-id="${row.id}" data-ing-id="${row.ingID}" data-qr="${row.quantity}" class="mr fas fa-check pv_point_gen" title="Confirm add ${row.ingredient}"></i>
-				<?php if( $user_settings['use_ai_service'] == '1') { ?>
 				<i data-bs-toggle="modal" data-bs-target="#confirm_skip" data-quantity="${row.quantity}" data-ingredient="${row.ingredient}" data-row-id="${row.id}" data-ing-id="${row.ingID}" data-qr="${row.quantity}" class="mr fas fa-forward pv_point_gen" title="Skip ${row.ingredient}"></i>
-				<?php } ?>
+				<?php if( $user_settings['use_ai_service'] == '1') { ?>
 				<i data-bs-toggle="modal" data-bs-target="#ai_replacement" data-ingredient="${row.ingredient}" data-row-id="${row.id}" class="mr bi bi-robot pv_point_gen" title="Suggest a replacement"></i>
+				<?php } ?>
 			`;
 		}
 
@@ -583,10 +585,10 @@ $(document).ready(function() {
 
         <div class="dropdown-divider"></div>
 
-        <div class="mb-3 form-check">
-          <input name="updateStock" id="updateStock" type="checkbox" class="form-check-input" value="1" checked>
-          <label class="form-check-label" for="updateStock">Update stock</label>
-        </div>
+		<div class="mb-3 form-check">
+		  <input name="updateStock" id="updateStock" type="checkbox" class="form-check-input" value="1">
+		  <label class="form-check-label" for="updateStock">Update stock</label>
+		</div>
         
         <div class="mb-3">
           <label for="supplier" class="form-label">Supplier</label>
@@ -796,7 +798,6 @@ $(document).ready(function() {
   <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
-<script src="/js/pvMakingApp.js"></script>
 
 </body>
 </html>

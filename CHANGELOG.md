@@ -1,4 +1,17 @@
 # CHANGELOG
+### Version 13.8
+- Added AI service status for the PV Making app
+- Fix incorrect scaling in the formula making
+- Fix incorrect total unit shown if above 1000g
+- Fix skip and AI assistant buttons in the Formula making
+- Added improved ml2l functions for the PV Making app api
+- Removed links fro Android PV Making app
+- Improved PV Making app API
+- Removed unused code
+- Branding update
+- Removed PV Making app link
+- Removed db update files prior to 13.x
+
 ### Version 13.7
 - Prevent add formula for making if ingredients missing from the database
 - Allow formula to be scalled before added for making and in making

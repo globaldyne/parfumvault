@@ -1,2 +1,0 @@
-UPDATE `settings` SET `pv_online_api_url` = 'https://library.perfumersvault.com/api-data/api.php' WHERE `settings`.`id` = 1;
-ALTER TABLE `settings` CHANGE `pv_online_api_url` `pv_library_api_url` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL DEFAULT 'https://library.perfumersvault.com/api.php';

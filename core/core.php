@@ -12,7 +12,6 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
-require_once(__ROOT__.'/func/mailSys.php');
 
 // Ensure the user is authenticated
 if (!isset($userID) || $userID === '') {
@@ -899,9 +898,6 @@ if ($_POST['action'] === 'update_openai_settings') {
     $google_gemini_api_key = isset($_POST['google_gemini_api_key']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_api_key']) : null;
     $google_gemini_model = isset($_POST['google_gemini_model']) ? mysqli_real_escape_string($conn, $_POST['google_gemini_model']) : null;
 
-    // Pedro Perfumer Settings (only if present)
-    $pedro_perfumer_api_key = isset($_POST['pedro_perfumer_api_key']) ? mysqli_real_escape_string($conn, $_POST['pedro_perfumer_api_key']) : null;
-
     function upsert_user_setting($conn, $userID, $key, $value) {
         $stmt = $conn->prepare("SELECT COUNT(*) FROM user_settings WHERE key_name = ? AND owner_id = ?");
         if (!$stmt) {
@@ -973,10 +969,6 @@ if ($_POST['action'] === 'update_openai_settings') {
         $success &= upsert_user_setting($conn, $userID, 'google_gemini_model', $google_gemini_model);
     }
 
-    if ($pedro_perfumer_api_key !== null) {
-        $success &= upsert_user_setting($conn, $userID, 'pedro_perfumer_api_key', $pedro_perfumer_api_key);
-    }
-
     if ($making_ai_chat !== null) {
         $success &= upsert_user_setting($conn, $userID, 'making_ai_chat', $making_ai_chat);
     }
@@ -1023,7 +1015,6 @@ if ($_POST['action'] === 'update_user_settings') {
     $temp_sys = $_POST['temp_sys'];
     
     $chem_vs_brand = isset($_POST["chem_vs_brand"]) && $_POST["chem_vs_brand"] === 'true' ? '1' : '0';
-    $chkVersion = isset($_POST["chkVersion"]) && $_POST["chkVersion"] === 'true' ? '1' : '0';
     $multi_dim_perc = isset($_POST["multi_dim_perc"]) && $_POST["multi_dim_perc"] === 'true' ? '1' : '0';
     $allow_incomplete_ingredients = isset($_POST["allow_incomplete_ingredients"]) && $_POST["allow_incomplete_ingredients"] === 'true' ? '1' : '0';
     
@@ -7391,7 +7382,7 @@ if ($_POST['action'] == 'scaleFormula' && $_POST['fid'] && $_POST['scaleAmount']
     $scaleFactor = $scaleAmount / $total;
 
     // Update each ingredient's quantity and originalQuantity proportionally
-    $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
+    $update = mysqli_query($conn, "UPDATE makeFormula SET quantity = originalQuantity * $scaleFactor, originalQuantity = originalQuantity * $scaleFactor WHERE fid = '$fid' AND owner_id = '$userID'");
 
     if ($update) {
         $response['success'] = 'Formula scaled successfully';

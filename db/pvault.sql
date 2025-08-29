@@ -891,22 +891,8 @@ CREATE TABLE `system_settings` (
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `description`) VALUES
-('SYSTEM_chkVersion', '1', 'Check for updates', 'checkbox', 'Check for updates'),
-('SYSTEM_pubChem', '1', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
-('SYSTEM_server_url', '', 'Server URL', 'text', 'This is your Perfumers Vault installation server URL.'),
-('INTEGRATIONS_enable', '0', 'Enable integrations', 'checkbox', 'Enable or disable integrations'),
-('USER_selfRegister', '0', 'Enable user registration', 'checkbox', 'Enable or disable user self registration'),
-('USER_terms_url', 'https://www.perfumersvault.com/terms-of-service', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and conditions info for users'),
-('USER_privacy_url', 'https://www.perfumersvault.com/privacy-policy', 'Privacy Policy URL', 'text', 'Point this to your web site that hosts the privacy policy info for users'),
-('announcements', '', 'Announcement', 'textarea', 'Add here any announcement for your users when login'),
-('EMAIL_isEnabled', '0', 'Enable email', 'checkbox', 'Enable or disable email functions, like user welcome email when register, password reset, email confirmation etc'),
-('EMAIL_smtp_host', '', 'SMPT Host', 'text', 'This is your smtp email server ip or hostname'),
-('EMAIL_smtp_port', '', 'SMTP Port', 'text', 'Optional, Defaults to 25'),
-('EMAIL_from', '', 'From', 'text', 'This is the From address'),
-('EMAIL_from_display_name', 'Perfumers Vault', 'From display name', 'text', 'A user-friendly name for the \'From\' address (optional).'),
-('EMAIL_smtp_user', '', 'Username', 'text', 'Optional field, use only if your email server requires authentication'),
-('EMAIL_smtp_pass', '', 'Password', 'password', 'Optional field, use only if your email server requires authentication'),
-('EMAIL_smtp_secure', '0', 'Enable SSL', 'checkbox', 'Enable secure connection if your server supports it'),
+('SYSTEM_pubChem', '0', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
+('SYSTEM_server_url', '<UPDATE_TO_YOUR_SERVER_URL>', 'Server URL', 'text', 'This is your Perfumers Vault installation server URL.'),
 ('API_enabled', '0', 'API access', 'checkbox', 'Enable or disable API access globally');
 
 CREATE TABLE `user_settings` (

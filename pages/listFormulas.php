@@ -1014,8 +1014,6 @@ $(document).ready(function() {
 							echo 'OpenAI';
 						} else if ($user_settings['ai_service_provider'] === 'google_gemini') {
 							echo 'Google Gemini';
-						} else if ($user_settings['ai_service_provider'] === 'pedro_ai' || $user_settings['ai_service_provider'] === 'pedro_perfumer') {
-							echo 'Pedro Perfumer';
 						} else {
 							echo 'Unknown Provider';
 						}

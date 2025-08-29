@@ -55,7 +55,7 @@ $branding = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM branding WHERE
 <script>
 $(document).ready(function() {
 
-	$('#brandLogo_pic').html('<img class="img-profile-avatar" src="<?=$branding['brandLogo']?: '/img/logo_def.png'; ?>">');
+	$('#brandLogo_pic').html('<img class="img-profile-avatar" src="<?=$branding['brandLogo']?: '/img/logo.png'; ?>">');
 	
 	$('#save-brand').click(function() {
 		var brandName = $("#brandName").val().trim();

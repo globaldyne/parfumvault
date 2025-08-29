@@ -8,7 +8,7 @@ require_once(__ROOT__.'/inc/settings.php');
 ?>
 <div class="row">
     <div class="col">
-        <strong>Perfumers Vault Pro</strong>
+        <strong>Perfumers Vault Web</strong>
     </div>
 </div>
 <div class="row my-4">
@@ -22,7 +22,7 @@ require_once(__ROOT__.'/inc/settings.php');
 </div>
 <div class="row">
     <div class="col">
-        <p>Version: <strong><?php echo file_get_contents(__ROOT__.'/VERSION.md');?></strong> PRO</p>
+        <p>Version: <strong><?php echo file_get_contents(__ROOT__.'/VERSION.md');?></strong> Web</p>
         <p>DB Schema Version: <strong><?php echo $pv_meta['schema_ver'];?></strong></p>
         <p>Release <a href="CHANGELOG.md" target="_blank"><strong>CHANGELOG</strong></a></p>
         <p><a href="https://www.perfumersvault.com" target="_blank">https://www.perfumersvault.com</a></p>

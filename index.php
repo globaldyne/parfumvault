@@ -69,38 +69,6 @@ $(document).ready(function() {
   <?php if ($role === 1 && $show_release_notes) { ?>
     $('#release_notes').modal('show');
   <?php } ?>
-
-  <?php if ($role === 1 && isset($system_settings['SYSTEM_chkVersion']) && $system_settings['SYSTEM_chkVersion'] === '1' && (!isset($disable_updates) || $disable_updates === false)) { ?>
-    chkUpdate();
-  <?php } ?>
-
-  <?php if ($role === 1) { ?>
-
-  function chkUpdate() {
-    $.ajax({
-      url: '/core/checkVer.php',
-      type: 'GET',
-      data: { app_ver: '<?= $ver ?>' },
-      dataType: 'json',
-      success: function (data) {
-        if (data.success) {
-          $('#chkUpdMsg').html(`<button type="button" class="btn btn-outline-primary">${data.success}</button>`);
-        } else if (data.error) {
-          showToast('danger', data.error);
-        }
-      },
-      error: function (xhr, status, error) {
-        showToast('danger', `An ${status} occurred, check server logs for more info. ${error}`);
-      }
-    });
-  }
-
-  function showToast(type, message) {
-    $('#toast-title').html(`<i class="fa-solid fa-circle-exclamation mr-2"></i> ${message}`);
-    $('.toast-header').removeClass().addClass(`toast-header alert-${type}`);
-    $('.toast').toast('show');
-  }
-  <?php } ?>
 });
 </script>
 </head>

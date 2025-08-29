@@ -35,13 +35,7 @@ if (empty($commit)) {
             <a href="https://apps.apple.com/us/app/perfumers-vault-2/id6748814424" target="_blank">
               <img src="/img/appstore/get_pv.png" alt="App Store" style="width: 150px;">
             </a>
-            <div class="mt-1">Get the Perfumers Vault app</div>
-          </div>
-          <div style="text-align: center;">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#pvmaking_app_modal">
-              <img src="/img/appstore/get_aroma_track.png" alt="App Store" style="width: 150px;">
-            </a>
-            <div class="mt-1">Get the PV Making app</div>
+            <div class="mt-1">Get the Perfumers Vault 2 app</div>
           </div>
         </div>
         <div class="mt-2">Copyright &copy; 2017-<?php echo date('Y'); ?></div>
@@ -94,50 +88,6 @@ if (empty($commit)) {
   </div>
 </div>
 
-<!-- PV Making App Modal -->
-<div class="modal fade" id="pvmaking_app_modal" tabindex="-1" aria-labelledby="pvmaking_app_modal_label" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="pvmaking_app_modal_label">Get PV Making</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p class="mb-4">Choose your platform to download the PV Making app:</p>
-        <div class="row justify-content-center">
-          <div class="col-md-6 mb-3">
-            <a href="https://apps.apple.com/us/app/pvmaking/id6746516633" target="_blank" class="btn btn-outline-primary w-100 p-3">
-              <div class="d-flex align-items-center justify-content-center">
-                <i class="bi bi-apple me-2" style="font-size: 1.5rem;"></i>
-                <div>
-                  <div class="fw-bold">App Store</div>
-                  <small class="text-muted">for iOS devices</small>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-6 mb-3">
-            <a href="https://github.com/globaldyne/pv-making-public/raw/refs/heads/main/pvMaking.apk" target="_blank" class="btn btn-outline-success w-100 p-3">
-              <div class="d-flex align-items-center justify-content-center">
-                <i class="bi bi-google-play me-2" style="font-size: 1.5rem;"></i>
-                <div>
-                  <div class="fw-bold">APK Download</div>
-                  <small class="text-muted">for Android devices</small>
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
-        <hr class="my-4">
-        <p class="mb-3">Or visit our website:</p>
-        <a href="https://www.perfumersvault.com" target="_blank" class="btn btn-outline-secondary">
-          <i class="bi bi-globe me-2"></i>
-          perfumersvault.com
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 $('#footer_release').click(function() {

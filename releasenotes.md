@@ -1,8 +1,12 @@
-- Prevented adding formulas for making if ingredients are missing from the database
-- Enabled scaling of formulas before and during the making process
-- Ingredient IDs are now retrieved from the ingredients table when adding for making, instead of from the formulas table
-- Added a scale parameter to the `makeformula` API
-- Removed the `PVScale` function
-- Removed deprecated print, PDF, and CSV export actions from formula making
+## Release Notes
 
-For a complete list of changes and previous versions, see `CHANGELOG.md`.
+- Added AI service status feature to the PV Making app.
+- Fixed incorrect scaling in formula making.
+- Fixed issue where total unit displayed incorrectly when above 1000g.
+- Fixed skip and AI assistant buttons in formula making.
+- Enhanced PV Making app API performance and reliability.
+- Branding update
+- PV Integrations will be removed in the upcoming release
+- Google backups integration will be removed in the upcoming release
+
+For a complete list of changes and previous versions, see [`CHANGELOG.md`](CHANGELOG.md).

@@ -11,15 +11,12 @@
     onReady(function() {
         var userAgent = navigator.userAgent || window.opera;
         var isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-        var isAndroid = /android/i.test(userAgent);
 
-        // App links
+        // App links (iOS only)
         var iosAppUrl = "https://apps.apple.com/app/6746516633";
         var iosAppScheme = "parfumvaultmaking://";
-        var androidAppUrl = "https://github.com/globaldyne/pv-making-public/raw/refs/heads/main/pvMaking.apk";
-        var androidAppScheme = "parfumvaultmaking://";
 
-        if (!(isIOS || isAndroid)) return;
+        if (!isIOS) return;
 
         var bar = document.createElement("div");
         bar.className = "text-primary-emphasis bg-primary-subtle d-flex align-items-center justify-content-between shadow-sm border-0";
@@ -35,9 +32,9 @@
 
         var openBtnId = "openAppBtn";
         var getBtnId = "getAppBtn";
-        var appType = isIOS ? "iOS" : "Android";
-        var appUrl = isIOS ? iosAppUrl : androidAppUrl;
-        var appScheme = isIOS ? iosAppScheme : androidAppScheme;
+        var appType = "iOS";
+        var appUrl = iosAppUrl;
+        var appScheme = iosAppScheme;
 
         bar.innerHTML = `
             <div class="d-flex align-items-center">
