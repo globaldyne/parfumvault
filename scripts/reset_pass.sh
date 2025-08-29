@@ -1,11 +1,3 @@
-#!/bin/sh
-#
-#
-# Reset admin pass
-# Script Version: v1.7
-#
-#
-
 #!/bin/bash
 
 EMAIL=$1
