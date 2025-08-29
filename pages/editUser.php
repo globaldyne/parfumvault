@@ -126,7 +126,7 @@ $(document).ready(function () {
         }
     });
 
-	$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo_def.png'; ?>">');
+	$('#profile_pic').html('<img class="img-profile-avatar" src="<?=$doc['avatar']?: '/img/logo.png'; ?>">');
 	
 	$('#save-profile').click(function() {
 		$.ajax({ 

@@ -798,7 +798,6 @@ $(document).ready(function() {
   <?php require_once(__ROOT__.'/components/pvAIChat.php'); ?>
 <?php } ?>
 <script src="/js/pvAIChat.js"></script>
-<script src="/js/pvMakingApp.js"></script>
 
 </body>
 </html>

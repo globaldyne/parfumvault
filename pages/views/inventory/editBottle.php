@@ -113,7 +113,7 @@ $stmtSup->close();
 <script>
 $(document).ready(function() {
 
-    $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo_def.png'; ?>">');
+    $('#bottle_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo.png'; ?>">');
     $('#bottle-save').click(function() {
         $.ajax({ 
             url: '/core/core.php', 

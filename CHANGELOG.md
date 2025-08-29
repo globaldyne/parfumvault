@@ -8,6 +8,9 @@
 - Removed links fro Android PV Making app
 - Improved PV Making app API
 - Removed unused code
+- Branding update
+- Removed PV Making app link
+- Removed db update files prior to 13.x
 
 ### Version 13.7
 - Prevent add formula for making if ingredients missing from the database

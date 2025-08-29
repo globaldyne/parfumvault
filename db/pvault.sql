@@ -891,13 +891,12 @@ CREATE TABLE `system_settings` (
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `system_settings` ( `key_name`, `value`, `slug`, `type`, `description`) VALUES
-('SYSTEM_chkVersion', '1', 'Check for updates', 'checkbox', 'Check for updates'),
-('SYSTEM_pubChem', '1', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
-('SYSTEM_server_url', '', 'Server URL', 'text', 'This is your Perfumers Vault installation server URL.'),
+('SYSTEM_pubChem', '0', 'Enable PubChem', 'checkbox', 'Enable or disable pubChem integration'),
+('SYSTEM_server_url', '<UPDATE_TO_YOUR_SERVER_URL>', 'Server URL', 'text', 'This is your Perfumers Vault installation server URL.'),
 ('INTEGRATIONS_enable', '0', 'Enable integrations', 'checkbox', 'Enable or disable integrations'),
 ('USER_selfRegister', '0', 'Enable user registration', 'checkbox', 'Enable or disable user self registration'),
-('USER_terms_url', 'https://www.perfumersvault.com/terms-of-service', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and conditions info for users'),
-('USER_privacy_url', 'https://www.perfumersvault.com/privacy-policy', 'Privacy Policy URL', 'text', 'Point this to your web site that hosts the privacy policy info for users'),
+('USER_terms_url', '<UPDATE_TO_YOUR_TERMS_URL>', 'Terms and Conditions', 'text', 'Point this to your web site that hosts the terms and conditions info for users'),
+('USER_privacy_url', '<UPDATE_TO_YOUR_PRIVACY_URL>', 'Privacy Policy URL', 'text', 'Point this to your web site that hosts the privacy policy info for users'),
 ('announcements', '', 'Announcement', 'textarea', 'Add here any announcement for your users when login'),
 ('EMAIL_isEnabled', '0', 'Enable email', 'checkbox', 'Enable or disable email functions, like user welcome email when register, password reset, email confirmation etc'),
 ('EMAIL_smtp_host', '', 'SMPT Host', 'text', 'This is your smtp email server ip or hostname'),

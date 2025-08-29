@@ -376,4 +376,3 @@ setInterval(monitorAndReloadScheduledTable, 5000);
 
 
 <script src="/js/import.making.js"></script>
-<script src="/js/pvMakingApp.js"></script>

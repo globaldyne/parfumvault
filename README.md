@@ -1,4 +1,4 @@
-# Perfumers Vault
+# Perfumers Vault Web
 
 Perfumers Vault is an advanced formulation management platform tailored for the fragrance industry. It enables precise creation, organization, and compliance validation of perfume formulas, with full support for regulatory standards such as IFRA. Designed for efficiency and accuracy, Perfumers Vault offers robust material tracking, impact analysis, and automated documentation to support both creative development and regulatory compliance.
 
@@ -23,8 +23,6 @@ This is FREE software provided "as is" without ANY warranty under the MIT licens
 * Dark mode support
 * Batch history tracking
 * Customizable document HTML templates
-
-For the full feature list, please visit the [Knowledge Base](https://www.perfumersvault.com/kb/).
 
 ---
 
@@ -126,7 +124,3 @@ docker-compose up -d
 Once the container is running, open your browser and navigate to:
 
 [http://localhost:8000](http://localhost:8000)
-
-For more information, please refer to the [Knowledge Base](https://www.perfumersvault.com/kb/).
-
-

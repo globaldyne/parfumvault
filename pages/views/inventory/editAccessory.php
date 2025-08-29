@@ -79,7 +79,7 @@ while ($suppliers = mysqli_fetch_array($sup)){
 <script>
 $(document).ready(function() {
 
-	$('#accessory_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo_def.png'; ?>">');
+	$('#accessory_pic').html('<img class="img-profile-avatar" src="<?=$doc['photo']?: '/img/logo.png'; ?>">');
 	
 	$('#accessory-save').click(function() {
 		$.ajax({ 

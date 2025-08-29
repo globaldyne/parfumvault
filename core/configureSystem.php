@@ -6,7 +6,6 @@ define('pvault_panel', TRUE);
 if ($_POST['action'] == 'selfregister') {
     require_once(__ROOT__ . '/inc/opendb.php');
     require_once(__ROOT__ . '/inc/settings.php');
-    require_once(__ROOT__.'/func/mailSys.php');
     require_once(__ROOT__.'/func/validateInput.php');
 
     if ($system_settings['USER_selfRegister'] == '0') {
@@ -148,7 +147,6 @@ if ($_POST['action'] == 'register') {
 if ($_POST['action'] == 'resetPassword') {
     require_once(__ROOT__ . '/inc/opendb.php');
     require_once(__ROOT__ . '/inc/settings.php');
-    require_once(__ROOT__ . '/func/mailSys.php');
     require_once(__ROOT__ . '/func/validateInput.php');
 
     $response = [];

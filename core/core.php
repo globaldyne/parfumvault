@@ -12,7 +12,6 @@ require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
 require_once(__ROOT__.'/func/priceScrape.php');
 require_once(__ROOT__.'/func/create_thumb.php');
-require_once(__ROOT__.'/func/mailSys.php');
 
 // Ensure the user is authenticated
 if (!isset($userID) || $userID === '') {
@@ -1016,7 +1015,6 @@ if ($_POST['action'] === 'update_user_settings') {
     $temp_sys = $_POST['temp_sys'];
     
     $chem_vs_brand = isset($_POST["chem_vs_brand"]) && $_POST["chem_vs_brand"] === 'true' ? '1' : '0';
-    $chkVersion = isset($_POST["chkVersion"]) && $_POST["chkVersion"] === 'true' ? '1' : '0';
     $multi_dim_perc = isset($_POST["multi_dim_perc"]) && $_POST["multi_dim_perc"] === 'true' ? '1' : '0';
     $allow_incomplete_ingredients = isset($_POST["allow_incomplete_ingredients"]) && $_POST["allow_incomplete_ingredients"] === 'true' ? '1' : '0';
     
