@@ -42,7 +42,7 @@ spec:
               value: ENABLED
             - name: TMP_PATH
               value: /tmp/
-          image: globaldyne/perfumersvault:latest
+          image: jbparfum/perfumersvault:latest
           name: pvault
           ports:
             - containerPort: 8000

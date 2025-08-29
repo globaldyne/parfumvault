@@ -64,7 +64,7 @@ docker run --name pvault \
   -e DB_BACKUP_PARAMETERS='--single-transaction --routines --triggers' \
   -e SYS_LOGS=DISABLED \
   -p 8000:8000 \
-  -d globaldyne/perfumersvault
+  -d jbparfum/perfumersvault
 ```
 
 > **Note:** All `DB_` variables are required.
@@ -92,7 +92,7 @@ services:
       - 3306
 
   pvault:
-    image: globaldyne/perfumersvault:latest
+    image: jbparfum/perfumersvault:latest
     ports:
       - 8000:8000
     restart: always

@@ -15,7 +15,7 @@ services:
     expose:
       - 3306
   pvault:
-    image: globaldyne/perfumersvault:latest
+    image: jbparfum/perfumersvault:latest
     ports:
       - 8000:8000
     restart: always
