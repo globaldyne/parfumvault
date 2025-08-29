@@ -500,25 +500,14 @@ $(document).ready(function() {
 
 
 	function actions(data, type, row, meta){
-		if(meta.settings.json.source == 'PVLibrary'){
-			data = '<div class="dropdown">' +
-				'<button type="button" class="btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-					'<ul class="dropdown-menu dropdown-menu-right">' + 
-					'<li><a rel="tip" title="Import '+ row.name +'" class="pv_point_gen" id="impIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-download mx-2"></i>Import to local DB</a></li>'; 
-			data += '</ul></div>';		
-		}else{//Treat the rest as local
-			data = '<div class="dropdown">' +
-				'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
-					'<ul class="dropdown-menu dropdown-menu-right">';
-			data += '<li><a href="/pages/mgmIngredient.php?id=' + row.id + '" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
-			
-			data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
-	
-			data += '<div class="dropdown-divider"></div>';
-	
-			data += '<li><a rel="tip" title="Remove '+ row.name +'" class="dropdown-item pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>'; 
-			data += '</ul></div>';		
-		}
+		data = '<div class="dropdown">' +
+			'<button type="button" class="btn btn-floating hidden-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>' +
+				'<ul class="dropdown-menu dropdown-menu-right">';
+		data += '<li><a href="/pages/mgmIngredient.php?id=' + row.id + '" class="dropdown-item popup-link"><i class="fas fa-edit mx-2"></i>Manage</a></li>';
+		data += '<li><a class="dropdown-item" href="/pages/export.php?format=json&kind=single-ingredient&id=' + row.id + '" rel="tip" title="Export '+ row.name +' as JSON" ><i class="fas fa-download mx-2"></i>Export as JSON</a></li>';
+		data += '<div class="dropdown-divider"></div>';
+		data += '<li><a rel="tip" title="Remove '+ row.name +'" class="dropdown-item pv_point_gen text-danger" id="rmIng" data-name="'+ row.name +'" data-id='+ row.id +'><i class="fas fa-trash mx-2"></i>Delete</a></li>'; 
+		data += '</ul></div>';
 		
 		return data;
 	};
@@ -566,61 +555,6 @@ $(document).ready(function() {
 		document.body.removeChild(tempTextarea); // Remove the temporary element
 	});
 
-	
-	$('#tdDataIng').on('click', '[id*=impIng]', function () {
-		var ing = {};
-		ing.ID = $(this).attr('data-id');
-		ing.Name = $(this).attr('data-name');
-		
-		bootbox.dialog({
-		   title: "Confirm ingredient import",
-		   message : 'Import <strong>'+ ing.Name +'</strong>\'s data from PVLibrary? <hr/><div class="alert alert-warning"><strong>Please note: data maybe incorrect and/or incomplete, you should validate them after import.</strong></div>',
-		   buttons :{
-			   main: {
-				   label : "Import",
-				   className : "btn-warning",
-				   callback: function (){
-						
-					$.ajax({
-						url: '/core/core.php', 
-						type: 'POST',
-						data: {
-							action: "import",
-							source: "PVLibrary",
-							kind: "ingredient",
-							ing_id: ing.ID,
-						},
-						dataType: 'json',
-						success: function (data) {
-							if ( data.success ) {
-								$('#toast-title').html('<i class="fa-solid fa-circle-check mx-2"></i>' + data.success);
-								$('.toast-header').removeClass().addClass('toast-header alert-success');
-							} else {
-								$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>' + data.error);
-								$('.toast-header').removeClass().addClass('toast-header alert-danger');
-							}
-							$('.toast').toast('show');
-						},
-						error: function (xhr, status, error) {
-							$('#toast-title').html('<i class="fa-solid fa-circle-exclamation mx-2"></i>An ' + status + ' occurred, check server logs for more info. '+ error);
-							$('.toast-header').removeClass().addClass('toast-header alert-danger');
-							$('.toast').toast('show');
-						}
-					});
-					
-					 return true;
-				   }
-			   },
-			   cancel: {
-				   label : "Cancel",
-				   className : "btn-secondary",
-				   callback : function() {
-					   return true;
-				   }
-			   }   
-		   },onEscape: function () {return true;}
-	   });
-	});
 	
 	
 	$('#tdDataIng').on('click', '[id*=rmIng]', function () {

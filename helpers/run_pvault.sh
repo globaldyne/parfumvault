@@ -2,15 +2,14 @@
 #
 #
 # Run Perfumer's Vault
-# Script Version: v1.6
-# Author: John Belekios <john@globaldyne.co.uk>
+# Script Version: v1.6a
 #
 #
 DOCKER_BIN=$(which docker)
 TMP_DIR_PV=$(dirname $(mktemp -u))
 CONTAINER=pvault
 COMPOSE_FILE=compose.yaml
-REPO=https://raw.githubusercontent.com/globaldyne/parfumvault/master/docker-compose/$COMPOSE_FILE
+REPO=https://raw.githubusercontent.com/jbparfum/parfumvault/master/docker-compose/$COMPOSE_FILE
 
 echo "Checking if Docker is up and runnning..."
 $DOCKER_BIN info --format "{{.OperatingSystem}}" | grep -q "Docker\|Linux"

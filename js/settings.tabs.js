@@ -49,10 +49,7 @@ $(document).ready(function() {
 		get_maintenance();
 	});
 		
-	$('#pvLibrary_tab').on( 'click', function () {
-		get_pvlibrary();
-	});
-	
+		
 	$('#api_tab').on( 'click', function () {
 		
 	});
@@ -67,10 +64,6 @@ $(document).ready(function() {
 	
 	$('#brand_tab').on( 'click', function () {
 		get_brand();
-	});
-	
-	$('#integrations_tab').on( 'click', function () {
-		get_integrations();
 	});
 	
 	$('#logs_tab').on( 'click', function () {
@@ -179,15 +172,6 @@ $(document).ready(function() {
 		});
 	};
 	
-	function get_integrations(){
-		$.ajax({ 
-			url: '/pages/views/settings/integrations.php', 
-			dataType: 'html',
-			success: function (data) {
-				$('#integrations').html(data);
-			}
-		});
-	};
 	
 	function get_about(){
 		$.ajax({ 

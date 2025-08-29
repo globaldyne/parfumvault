@@ -1,5 +1,7 @@
 # CHANGELOG
 ### Version 13.9
+- Obsolete code removed
+- urls update
 
 ### Version 13.8
 - Added AI service status for the PV Making app

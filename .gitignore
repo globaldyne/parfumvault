@@ -6,9 +6,4 @@ uploads/
 batches/
 inc/config.php
 tests/
-pvLibraryDEV.json
-pvLibraryDEV.php
 classes/
-integrations/pvscale/
-go.mod
-go.sum

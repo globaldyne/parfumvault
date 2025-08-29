@@ -25,15 +25,6 @@ if ($result = mysqli_query($conn, $query)) {
     mysqli_free_result($result);
 }
 
-$integrations_settings = [];
-$integrations_query = "SELECT * FROM integrations_settings";
-if ($integrations_result = mysqli_query($conn, $integrations_query)) {
-    while ($integrations_row = mysqli_fetch_assoc($integrations_result)) {
-        $integrations_settings[$integrations_row['key_name']] = $integrations_row['value'];
-    }
-    mysqli_free_result($integrations_result);
-}
-
 $countriesJson = file_get_contents(__ROOT__.'/db/countries.json');
 $pubChemApi = 'https://pubchem.ncbi.nlm.nih.gov/rest';
 $countries = json_decode(file_get_contents(__ROOT__.'/db/countries.json'), true);

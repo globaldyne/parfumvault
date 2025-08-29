@@ -928,15 +928,6 @@ CREATE TABLE `sdsSettings` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `integrations_settings` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT ,
-    `key_name` VARCHAR(255) NOT NULL ,
-    `value` LONGTEXT NOT NULL , 
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 CREATE TABLE `session_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `owner_id` varchar(255) NOT NULL,

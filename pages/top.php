@@ -164,12 +164,7 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
             <i class="fas fa-tools fa-sm fa-fw mx-2 text-gray-400"></i>
             Calculation Tools
           </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="https://www.perfumersvault.com/kb" target="_blank">
-            <i class="fas fa-book fa-sm fa-fw mx-2 text-gray-400"></i>
-            Documentation
-          </a>
-          <a class="dropdown-item" href="https://github.com/globaldyne/parfumvault/issues" target="_blank">
+          <a class="dropdown-item" href="https://github.com/jbparfum/parfumvault/issues" target="_blank">
             <i class="fas fa-lightbulb fa-sm fa-fw mx-2 text-gray-400"></i>
             Bug report
           </a>
@@ -186,16 +181,6 @@ if (!empty($system_settings['announcements']) && !empty($user_settings)) {
 
   <script>
     $(document).ready(function() {
-     
-      $('#load-rel-notes').click(function() {
-        var relUrl = 'https://raw.githubusercontent.com/globaldyne/parfumvault/master/releasenotes.md';
-        $('#new-rel').load(relUrl);
-      });
-
-      <?php if ($role === 1 && $show_db_upgrade) { ?>
-        $('#dbUpgradeDialog').modal('show');
-        $('#dbUpOk').hide();
-      <?php } ?>
 
       $(function() {
         $.ajax({

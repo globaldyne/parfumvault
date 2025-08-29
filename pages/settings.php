@@ -22,9 +22,6 @@ require_once(__ROOT__.'/func/php-settings.php');
         <li><a href="#templates" id="templates_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-file-earmark-code mx-2"></i>HTML Templates</a></li>
         <li><a href="#sds" id="sds_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-file-earmark-text mx-2"></i>SDS Settings</a></li>
         <li><a href="#brand" id="brand_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-palette mx-2"></i>Branding</span></a></li>
-        <?php if($system_settings['INTEGRATIONS_enable'] === '1') {?>
-          <li><a href="#integrations" id="integrations_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-plug mx-2"></i>Integrations</a></li>
-        <?php } ?>
         <?php if($role === 1){?>
           <li><a href="#maintenance" id="maintenance_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-tools mx-2"></i>Maintenance</a></li>
           <li><a href="#syslogs" id="logs_tab" role="tab" data-bs-toggle="tab"><i class="bi bi-journal-text mx-2"></i>System logs</a></li>
@@ -134,14 +131,6 @@ require_once(__ROOT__.'/func/php-settings.php');
           <div class="loader-text"></div>
         </div>
       </div>
-      <?php if($system_settings['INTEGRATIONS_enable'] === '1') {?>
-      <div id="integrations">
-        <div class="loader-center">
-          <div class="loader"></div>
-          <div class="loader-text"></div>
-        </div>
-      </div>
-      <?php } ?>
       <?php if($role === 1){?>  
       <div id="maintenance">
         <div class="loader-center">

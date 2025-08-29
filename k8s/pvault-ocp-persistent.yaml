@@ -7,34 +7,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    com.jbparfum.service: phpmyadmin
-  name: phpmyadmin
-  namespace: pvault
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      com.jbparfum.service: phpmyadmin
-  template:
-    metadata:
-      labels:
-        com.jbparfum.service: phpmyadmin
-    spec:
-      containers:
-        - env:
-            - name: DB_HOST
-              value: pvdb
-          image: globaldyne/phpmyadmin:cloud
-          name: phpmyadmin
-          ports:
-            - containerPort: 8000
-              protocol: TCP
-      restartPolicy: Always
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     com.jbparfum.service: pvault
   name: pvault
   namespace: pvault
@@ -74,22 +46,6 @@ spec:
           name: pvault
           ports:
             - containerPort: 8000
-              protocol: TCP
-        - env:
-            - name: DB_HOST
-              value: pvdb
-            - name: DB_NAME
-              value: pvault
-            - name: DB_PASS
-              value: pvault
-            - name: DB_USER
-              value: pvault
-            - name: VERBOSE
-              value: 'true'
-          image: globaldyne/gbkagent:latest
-          name: gbkagent
-          ports:
-            - containerPort: 3000
               protocol: TCP
       restartPolicy: Always
 ---
@@ -143,21 +99,6 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    com.jbparfum.service: phpmyadmin
-  name: phpmyadmin
-  namespace: pvault
-spec:
-  ports:
-    - name: "9000"
-      port: 9000
-      targetPort: 8000
-  selector:
-    com.jbparfum.service: phpmyadmin
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
     com.jbparfum.service: pvault
   name: pvault
   namespace: pvault
@@ -168,36 +109,6 @@ spec:
       targetPort: 8000
   selector:
     com.jbparfum.service: pvault
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    com.jbparfum.service: gbkagent
-  name: gbkagent
-  namespace: pvault
-spec:
-  ports:
-    - name: "3000"
-      port: 3000
-      targetPort: 3000
-  selector:
-    com.jbparfum.service: gbkagent
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    com.jbparfum.service: pvdb
-  name: pvdb
-  namespace: pvault
-spec:
-  ports:
-    - name: "3306"
-      port: 3306
-      targetPort: 3306
-  selector:
-    com.jbparfum.service: pvdb
 ---
 kind: Route
 apiVersion: route.openshift.io/v1
@@ -214,24 +125,4 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
   port:
     targetPort: '8000'
-  alternateBackends: 
----
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: phpmyadmin
-  namespace: pvault
-  labels:
-    com.jbparfum.service: phpmyadmin
-spec:
-  to:
-    kind: Service
-    name: phpmyadmin
-  tls:
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
-    destinationCACertificate: ''
-  path: /
-  port:
-    targetPort: '9000'
   alternateBackends: []

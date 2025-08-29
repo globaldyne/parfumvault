@@ -4,7 +4,7 @@ Perfumers Vault is an advanced formulation management platform tailored for the 
 
 This is FREE software provided "as is" without ANY warranty under the MIT license.
 
-[![Current Release](https://img.shields.io/github/v/release/globaldyne/parfumvault.svg "Current Release")](https://github.com/globaldyne/parfumvault/releases/latest)
+[![Current Release](https://img.shields.io/github/v/release/jbparfum/parfumvault.svg "Current Release")](https://github.com/jbparfum/parfumvault/releases/latest)
 
 ---
 
@@ -43,7 +43,7 @@ Ensure you have the following installed:
 Run the latest Docker image using the following command:
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/globaldyne/parfumvault/master/helpers/run_pvault.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/jbparfum/parfumvault/master/helpers/run_pvault.sh)"
 ```
 
 ### Manual Setup
