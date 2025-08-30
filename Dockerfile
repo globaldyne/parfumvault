@@ -13,7 +13,6 @@ ENV LANG=en_GB.UTF-8
 # Define user and group IDs
 ARG uid=100001
 ARG gid=100001
-ARG INSTALL_SESS_MONITOR=false
 
 
 # Update the system
@@ -46,11 +45,6 @@ RUN sed -i \
 # Install additional PHP extensions
 RUN pear install mail Mail_mime Auth_SASL Net_SMTP
 
-# Conditionally install Go for session monitor
-RUN if [ "$INSTALL_SESS_MONITOR" = "true" ]; then \
-	microdnf -y install golang; \
-	fi
-
 # Clean up package manager cache
 RUN microdnf clean all && \
 	rm -rf /var/cache/yum/*
@@ -71,15 +65,6 @@ ADD scripts/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD scripts/reset_pass.sh /usr/bin/reset_pass.sh
 ADD scripts/create_db_schema.sh /usr/bin/create_db_schema.sh
 ADD scripts/update_db_schema.sh /usr/bin/update_db_schema.sh
-
-# Build Go-based session monitor if enabled
-RUN if [ "$INSTALL_SESS_MONITOR" = "true" ]; then \
-		cd /html/scripts/session_monitor && \
-		[ ! -f go.mod ] && go mod init session_monitor || true && \
-		go mod tidy && go build -o session_monitor . && \
-		cp session_monitor /usr/bin/session_monitor && \
-		chmod +x /usr/bin/session_monitor; \
-	fi
 
 # Clean up unnecessary files
 RUN rm -rf /html/scripts /html/helpers /html/docker-compose /html/k8s /html/.git /html/.github 
