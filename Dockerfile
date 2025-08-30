@@ -9,8 +9,8 @@ FROM quay.io/centos/centos:stream10-minimal
 
 # Metadata labels
 LABEL com.perfodynelabs.component="perfumers-vault-container" \
-	description="Perfumers Vault container image" \
-	summary="Perfumers Vault container image" \
+	description="Perfumers Vault Web container image" \
+	summary="Perfumers Vault Web container image" \
 	version="Web" \
 	io.k8s.description="Init Container for Perfumers Vault Web" \
 	io.k8s.display-name="Perfumers Vault Web Container"
