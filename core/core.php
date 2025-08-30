@@ -6,7 +6,6 @@ require_once(__ROOT__.'/inc/opendb.php');
 require_once(__ROOT__.'/inc/settings.php');
 require_once(__ROOT__.'/inc/product.php');
 require_once(__ROOT__.'/func/get_formula_notes.php');
-require_once(__ROOT__.'/func/pvPost.php');
 require_once(__ROOT__.'/func/pvFileGet.php');
 require_once(__ROOT__.'/func/validateInput.php');
 require_once(__ROOT__.'/func/sanChar.php');
