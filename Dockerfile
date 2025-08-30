@@ -13,11 +13,7 @@ LABEL com.perfodynelabs.component="perfumers-vault-container" \
 	summary="Perfumers Vault container image" \
 	version="Web" \
 	io.k8s.description="Init Container for Perfumers Vault Web" \
-	io.k8s.display-name="Perfumers Vault Web Container" \
-	io.openshift.tags="pvault,perfumersvault" \
-	name="perfodynelabs/pvault" \
-	maintainer="John Belekios"
-
+	io.k8s.display-name="Perfumers Vault Web Container"
 # Set default environment variables
 ENV LANG=en_GB.UTF-8
 
