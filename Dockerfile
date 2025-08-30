@@ -7,13 +7,6 @@
 # Base image
 FROM quay.io/centos/centos:stream10-minimal
 
-# Metadata labels
-LABEL com.perfodynelabs.component="perfumers-vault-container" \
-	description="Perfumers Vault Web container image" \
-	summary="Perfumers Vault Web container image" \
-	version="Web" \
-	io.k8s.description="Init Container for Perfumers Vault Web" \
-	io.k8s.display-name="Perfumers Vault Web Container"
 # Set default environment variables
 ENV LANG=en_GB.UTF-8
 
